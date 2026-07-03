@@ -11,10 +11,8 @@
     "postinstall": "nuxt prepare",
     "lint": "prettier --list-different --write . && eslint . --fix",
     "typecheck": "nuxt typecheck",
-    "typecheck:watch": "vue-tsc --noEmit --watch",
     "check": "node scripts/check-alias-sync.mjs && nuxt typecheck && prettier --list-different --write . && eslint . --fix",
     "test": "vitest run",
-    "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
