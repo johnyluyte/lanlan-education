@@ -1,0 +1,39 @@
+@import 'tailwindcss';
+@import '@nuxt/ui';
+
+/* Tailwind 預設只掃 Nuxt 來源目錄(app/)。以下 domain layer 在專案 root、又未登記 extends，
+   需手動納入掃描，否則「只在這些資料夾用到」的 utility class 不會被產生（例：HomePage 的 pt-8）。
+   路徑相對於本檔(app/assets/css/)，往上 3 層到 root。新增 domain 資料夾時要在此補一行。 */
+@source '../../../app_00_shared';
+
+@theme static {
+  --font-sans:
+    'Noto Sans TC', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+}
+
+/* 拖曳排序清單共用樣式（搭配 shared/ui/useDragSort.ts）。
+   .sortable-ghost-placeholder：被拖曳項在原位留下的虛線佔位；.sortable-drag-item：跟隨游標的拖曳影像。 */
+.sortable-ghost-placeholder {
+  color: transparent !important;
+  background-color: color-mix(in srgb, var(--ui-bg-muted) 25%, transparent) !important;
+  border-style: dashed !important;
+}
+
+.sortable-ghost-placeholder * {
+  visibility: hidden !important;
+}
+
+.sortable-drag-item {
+  background-color: var(--ui-bg-muted) !important;
+  opacity: 1 !important;
+  rotate: 2deg;
+}
+
+/* Toast（NuxtUI Toaster）會 portal 到 body，獨立於頁面 DOM，故用全域 print 樣式隱藏，
+   避免列印時把右下角通知一起印出來。viewport 是 <ol data-slot="viewport">。 */
+@media print {
+  ol[data-slot='viewport'] {
+    display: none !important;
+  }
+}

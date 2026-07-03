@@ -43,14 +43,7 @@ Accepted orientation types are one of `"landscape-primary"`, `"landscape-seconda
 ```ts
 export type OrientationType = 'portrait-primary' | 'portrait-secondary' | 'landscape-primary' | 'landscape-secondary'
 export type OrientationLockType =
-  | 'any'
-  | 'natural'
-  | 'landscape'
-  | 'portrait'
-  | 'portrait-primary'
-  | 'portrait-secondary'
-  | 'landscape-primary'
-  | 'landscape-secondary'
+  'any' | 'natural' | 'landscape' | 'portrait' | 'portrait-primary' | 'portrait-secondary' | 'landscape-primary' | 'landscape-secondary'
 export interface ScreenOrientation extends EventTarget {
   lock: (orientation: OrientationLockType) => Promise<void>
   unlock: () => void

@@ -90,9 +90,7 @@ onClickOutside(target, handler, { detectIframe: true })
 <template>
   <OnClickOutside
     :options="{
-      ignore: [
-        /* ... */
-      ],
+      ignore: [/* ... */],
     }"
     @trigger="count++"
   >

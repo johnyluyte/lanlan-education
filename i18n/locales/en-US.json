@@ -1,0 +1,18 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "print": "Print",
+    "save": "Save",
+    "add": "Add",
+    "logout": "Logout",
+    "confirm": "Confirm",
+    "loading": "Loading…",
+    "refresh": "Refresh"
+  },
+  "userSetting": {
+    "toggleTheme": "Toggle Theme",
+    "toggleLocale": "Toggle Language"
+  }
+}

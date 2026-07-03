@@ -1,5 +1,122 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
+  // 若有要讓 layers 實現 nuxt 的 pages, layouts, middleware 等功能的話，才需要 extends
+  // extends: ['./app_20_admin'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxt/test-utils', '@pinia/nuxt', '@nuxtjs/i18n'],
+
+  // 禁用 SSR，並啟用 SPA 模式
+  ssr: false,
+
+  // 關閉 user codebase 的 components auto-import 功能
+  components: { dirs: [] },
+  // 關閉 user codebase 的 utils, composables 的 auto-import 功能，但保留 vue, nuxt, pinia 等核心模組的 auto-import 功能
+  imports: { scan: false },
+
+  devtools: {
+    enabled: false,
+  },
+
+  // TODO_5 最後要把這裡的 title 和 description 改成正式的內容，還有 favicon.ico 等等
+  app: {
+    head: {
+      title: '蘭芳 Education',
+      // titleTemplate: '%s - pixi-hex ',
+      meta: [
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { charset: 'utf-8' },
+        { name: 'description', content: '蘭芳 Education' },
+      ],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    },
+  },
+
+  css: ['~/assets/css/main.css'],
+
+  runtimeConfig: {
+    public: {
+      // Mapped from NUXT_PUBLIC_SUPABASE_URL / NUXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY at runtime
+      supabaseUrl: '',
+      supabasePublishableKey: '',
+      //
+      CURRENT_ENV: '',
+    },
+  },
+
+  // Domain 別名：與實體路徑解耦，日後搬資料夾只需改這裡，不必全 repo 改 import
+  // 只要搜尋 "#alias-shared" 找到的就一定是 alias
+  alias: {
+    '#alias-shared': fileURLToPath(new URL('./app_00_shared', import.meta.url)),
+  },
+
+  routeRules: {
+    '/login/**': {
+      appLayout: 'layout-fullscreen',
+    },
+
+    '/print/**': {
+      appLayout: 'layout-print',
+    },
+
+    // 其他所有頁面
+    '/**': {
+      appLayout: 'layout-main',
+    },
+  },
+
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true }
+
+  // Pre-bundle them in your nuxt.config.ts to avoid page reloads:
+  // Learn more: https://vite.dev/guide/dep-pre-bundling.html
+  vite: {
+    optimizeDeps: {
+      include: ['@supabase/supabase-js', '@vueuse/core', 'nanoid', 'sortablejs', 'valibot'],
+    },
+  },
+
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        // "module": "esnext",
+        // "moduleResolution": "bundler",
+        // "target": "es2024",
+        allowJs: true,
+        checkJs: true,
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+        forceConsistentCasingInFileNames: true,
+        resolveJsonModule: true,
+        skipLibCheck: true,
+        sourceMap: true,
+        strict: true,
+        // 以下兩個是新加的，不一定要套用啦
+        // https://www.typescriptlang.org/docs/handbook/2/basic-types.html
+        noImplicitAny: true,
+        strictNullChecks: true,
+      },
+      vueCompilerOptions: {
+        checkUnknownComponents: true,
+      },
+    },
+  },
+
+  eslint: {
+    config: {
+      stylistic: {
+        commaDangle: 'never',
+        braceStyle: '1tbs',
+      },
+    },
+  },
+
+  // @nuxt/i18n 模組的配置
+  i18n: {
+    locales: [
+      { code: 'zh-TW', name: '繁體中文 (Trad. Chinese)', file: 'zh-TW.json' },
+      { code: 'en-US', name: 'English (English)', file: 'en-US.json' },
+    ],
+    defaultLocale: 'en-US',
+    strategy: 'no_prefix', // 不使用路徑前綴，這樣我們就可以在根路徑下直接訪問不同語言的內容，而不需要在 URL 中添加語言代碼
+  },
 })

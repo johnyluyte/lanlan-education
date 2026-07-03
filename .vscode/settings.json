@@ -1,0 +1,14 @@
+{
+  // 不要在搜尋中顯示這些資料夾
+  "search.exclude": {
+    "android/": true,
+    "ios/": true,
+    "node_modules/": true,
+    "dist/": true,
+    ".nuxt/": true,
+    ".output/": true,
+    ".agents/": true,
+    ".claude/": true,
+    ".ai/": true
+  }
+}

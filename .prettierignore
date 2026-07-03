@@ -1,0 +1,27 @@
+.DS_Store
+node_modules
+.pnpm-store
+
+# Nuxt build output
+.nuxt
+.output
+dist
+
+# Capacitor
+android
+ios
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Logs and coverage
+*.log
+coverage
+
+# Package manager locks
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+bun.lock

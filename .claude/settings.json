@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell($d = Get-Content \"d:/git/cctech/recall-master/app/assets/lol-items/starter-items.json\" -Raw | ConvertFrom-Json; \"valid JSON | items: $\\($d.items.Count\\)\"; \\($d.items.name -join \", \"\\))",
+      "PowerShell($d = Get-Content \"d:/git/cctech/recall-master/app/assets/lol-items/consumables.json\" -Raw | ConvertFrom-Json; \"valid JSON | items: $\\($d.items.Count\\)\"; \\($d.items.name -join \", \"\\))",
+      "PowerShell($d = Get-Content \"d:/git/cctech/recall-master/app/assets/lol-items/epic-items.json\" -Raw | ConvertFrom-Json; \"epic valid | count=$\\($d.count\\) items=$\\($d.items.Count\\)\")",
+      "PowerShell($d = Get-Content \"d:/git/cctech/recall-master/app/assets/lol/runes/_sample.json\" -Raw | ConvertFrom-Json; \"valid JSON | runes=$\\($d.runes.Count\\)\"; $d.runes | ForEach-Object { \"{0,-20} path={1,-11} slot={2,-9} legends={3} hunters={4}\" -f $_.name,$_.path,$_.slot,$_.legends.Count,$_.hunters.Count })",
+      "PowerShell(fnm env --shell powershell | Out-String | Invoke-Expression; node -v; pnpm -v)",
+      "WebFetch(domain:ddragon.leagueoflegends.com)",
+      "WebFetch(domain:communitydragon.org)",
+      "WebFetch(domain:raw.communitydragon.org)",
+      "WebFetch(domain:www.reddit.com)",
+      "WebFetch(domain:discord.com)",
+      "WebFetch(domain:leagueoflegends.fandom.com)",
+      "PowerShell($url = \"https://raw.communitydragon.org/latest/game/data/characters/ahri/ahri.bin.json\"; $out = \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\champions-json\\\\ahri\\\\ahri.bin.json\"; Invoke-WebRequest -Uri $url -OutFile $out; $f = Get-Item $out; \"Saved: $\\($f.Length\\) bytes\")",
+      "PowerShell($j = Get-Content \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\champions-json\\\\ahri\\\\ahri.bin.json\" -Raw | ConvertFrom-Json; $top = $j.PSObject.Properties.Name; \"Top-level key count: $\\($top.Count\\)\"; \"--- sample keys ---\"; $top | Select-Object -First 15)",
+      "PowerShell(& \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\_scripts\\\\fetch-lol-data.ps1\" -Type champion -Name Ahri)",
+      "Bash(sed -i 's/\\\\$DDragon/\\\\$BaseDDragon/g; s/\\\\$CDragon/\\\\$BaseCDragon/g' fetch-lol-data.ps1)",
+      "Bash(grep -n 'BaseDDragon\\\\|BaseCDragon\\\\|\\\\$ddragon\\\\|\\\\$cdragon' fetch-lol-data.ps1)",
+      "PowerShell(& \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\_scripts\\\\fetch-lol-data.ps1\" -Type item -Name \"Dark Seal\" -Id 1082)",
+      "PowerShell(& \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\_scripts\\\\fetch-lol-data.ps1\" -Type champion -Name Ahri -WithImages)",
+      "PowerShell(& \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\_scripts\\\\fetch-lol-data.ps1\" -Type champion -Name Ahri -WithImages 2>&1)",
+      "PowerShell(& \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\_scripts\\\\fetch-lol-data.ps1\" -Type champion -Name Ahri -WithClips 2>&1)",
+      "PowerShell(& \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\_scripts\\\\fetch-lol-data.ps1\" -Type champion -Name Ahri -WithImages -WithClips 2>&1)",
+      "PowerShell(& \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\_scripts\\\\fetch-lol-data.ps1\" -Type champion -Name Elise 2>&1)",
+      "PowerShell(& \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\_scripts\\\\fetch-lol-data.ps1\" -Type champion -Name Gnar -WithImages -MultiForm 2>&1)",
+      "Read(//c/Users/johny/AppData/Local/Temp/**)",
+      "Bash(sed -i 's#數值解析見 _PARSE_BIN_GUIDE.md#數值解析見 .ai/skills/lol-data-sources/references/fetch-champion-skills.md#' champions/ahri/raw/ahri.raw.json champions/elise/raw/elise.raw.json)",
+      "Bash(sed -i 's#解析見 _PARSE_GUIDE.md#解析見 .ai/skills/lol-data-sources/references/fetch-item.md#' items/dark_seal/raw/dark_seal.raw.json)",
+      "Bash(grep -rln '_PARSE_GUIDE\\\\|_PARSE_BIN_GUIDE' . ../.ai/skills/lol-data-sources/)",
+      "PowerShell(& \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\_scripts\\\\fetch-lol-data.ps1\" -Type summoner -Name Flash -WithImages)",
+      "PowerShell(\"=== flash ���c ===\")",
+      "PowerShell(foreach\\($s in @\\('smite','ignite'\\)\\){ $null = Get-Content \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\summoner_spells\\\\$s\\\\$s.resolved.json\" -Raw | ConvertFrom-Json; \"$s resolved JSON valid ✅\" })",
+      "WebFetch(domain:lolvalue.com)",
+      "WebFetch(domain:theglobalgaming.com)"
+    ]
+  }
+}

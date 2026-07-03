@@ -15,9 +15,7 @@ can easily react to changes in the users' authentication status.
   import { initializeApp } from 'firebase/app'
   import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 
-  const app = initializeApp({
-    /* config */
-  })
+  const app = initializeApp({/* config */})
   const auth = getAuth(app)
   const { isAuthenticated, user } = useAuth(auth)
 
