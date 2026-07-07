@@ -42,12 +42,12 @@
   // 要挖空的格子（flat index = row * side + col）；挖空數 = 總數 − 顯示數
   const holes = ref(randomHoles(total.value - shownCount.value))
 
-  // 重新出題：依目前顯示數重抽 mask
+  // 套用目前的「顯示格子數」重抽 mask。
+  // 注意：拖曳 slider 只改 shownCount 數字，不會動題目；要按「僅切換遮罩」才套用。
+  // 這樣拖曳期間不會每 tick 觸發昂貴的 puzzle/countSolutions 重算，避免瀏覽器卡住。
   function reroll() {
     holes.value = randomHoles(total.value - shownCount.value)
   }
-
-  watch(shownCount, reroll) // 調整顯示數時自動重抽
 
   // 換大小時：clamp 顯示數到新範圍 → 換新答案 → 重抽遮罩
   watch(base, () => {
