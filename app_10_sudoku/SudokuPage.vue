@@ -12,6 +12,9 @@
   const total = computed(() => side.value * side.value) // 總格數 N²
   const minShown = computed(() => side.value) // 顯示下限（太少難以推算）
 
+  // 可選的題目大小（base 值列表）：MIN_BASE..MAX_BASE
+  const baseOptions = computed(() => Array.from({ length: MAX_BASE - MIN_BASE + 1 }, (_, i) => MIN_BASE + i))
+
   // 唯一資料來源：正確解答，演算法 A 隨機產生
   const answer = ref(generateSolution(base.value))
 
@@ -88,8 +91,22 @@
       <h3 class="text-base">題目</h3>
       <div class="flex flex-col gap-6">
         <div>
-          <span class="text-sm font-medium">大小：{{ side }} × {{ side }}（{{ base }}×{{ base }} 宮）</span>
-          <USlider v-model="base" :min="MIN_BASE" :max="MAX_BASE" :step="1" class="mt-3" />
+          <span class="text-sm font-medium">大小：</span>
+          <UFieldGroup orientation="horizontal" class="mt-3 flex-wrap">
+            <UButton
+              v-for="b in baseOptions"
+              :key="b"
+              :color="base === b ? 'primary' : 'neutral'"
+              :variant="base === b ? 'solid' : 'outline'"
+              @click="
+                () => {
+                  base = b
+                }
+              "
+            >
+              {{ b * b }} × {{ b * b }}
+            </UButton>
+          </UFieldGroup>
         </div>
         <UButton icon="i-lucide-dices" color="primary" block @click="newAnswer">換新題目</UButton>
       </div>
