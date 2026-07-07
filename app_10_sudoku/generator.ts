@@ -1,4 +1,4 @@
-// 產生一個隨機的 N×N 數獨完整解（演算法 A：種子樣式 + 洗牌，詳見 sudoku.md）
+// 產生一個隨機的 N×N 數獨完整解（演算法 A：種子樣式 + 洗牌，詳見 algorithm.md）
 // base = 宮邊長，N = base²。base=2 → 4×4；base=3 → 9×9
 export function generateSolution(base = 3): number[][] {
   const side = base * base

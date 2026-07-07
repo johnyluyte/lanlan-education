@@ -32,7 +32,10 @@
       "PowerShell(\"=== flash ���c ===\")",
       "PowerShell(foreach\\($s in @\\('smite','ignite'\\)\\){ $null = Get-Content \"d:\\\\git\\\\cctech\\\\recall-master\\\\app_01_lol_data\\\\summoner_spells\\\\$s\\\\$s.resolved.json\" -Raw | ConvertFrom-Json; \"$s resolved JSON valid ✅\" })",
       "WebFetch(domain:lolvalue.com)",
-      "WebFetch(domain:theglobalgaming.com)"
+      "WebFetch(domain:theglobalgaming.com)",
+      "PowerShell(fnm env --shell powershell | Out-String | Invoke-Expression; pnpm check 2>&1 | Select-Object -Last 60)",
+      "PowerShell(fnm env --shell powershell | Out-String | Invoke-Expression; pnpm check 2>&1 | Select-Object -Last 40)",
+      "PowerShell(fnm env --shell powershell | Out-String | Invoke-Expression; pnpm check 2>&1 | Select-Object -Last 10; \"EXIT=$LASTEXITCODE\")"
     ]
   }
 }
