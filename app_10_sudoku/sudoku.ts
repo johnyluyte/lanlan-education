@@ -32,10 +32,14 @@ export function generateSolution(base = 3): number[][] {
 
 // 計算某題目（grid，0 = 空格）的解答數量，最多算到 limit 就提早停止。
 // 回傳 1 代表唯一解；>= 2 代表有多個解（老師難以批改）。
-export function countSolutions(grid: number[][], base = 3, limit = 2): number {
+// maxSteps：回溯步數上限保險。大盤（如 9×9）遇到病態遮罩時，回溯可能爆量卡住主執行緒；
+// 超過上限就中止，並「保守地」當成多解回傳 —— 寧可誤報多解讓老師警覺，也不要卡死或漏報。
+export function countSolutions(grid: number[][], base = 3, limit = 2, maxSteps = 200_000): number {
   const side = base * base
   const board = grid.map((row) => [...row]) // 複製，避免改到原資料
   let count = 0
+  let steps = 0 // 已走的回溯節點數
+  let aborted = false // 是否因超過 maxSteps 而中止
 
   // v 放在 (r, c) 是否不違反列/行/宮限制
   const valid = (r: number, c: number, v: number): boolean => {
@@ -53,7 +57,11 @@ export function countSolutions(grid: number[][], base = 3, limit = 2): number {
   }
 
   const solve = (): void => {
-    if (count >= limit) return // 已達上限，不必再找
+    if (count >= limit || aborted) return // 已達解答上限或已中止，不必再找
+    if (++steps > maxSteps) {
+      aborted = true // 超過步數上限 → 中止搜尋
+      return
+    }
     // 找第一個空格
     for (let r = 0; r < side; r++) {
       for (let c = 0; c < side; c++) {
@@ -74,5 +82,6 @@ export function countSolutions(grid: number[][], base = 3, limit = 2): number {
   }
 
   solve()
-  return count
+  // 中止代表無法在預算內判定 → 保守當成多解（回傳 limit，即 >= 2）
+  return aborted ? limit : count
 }

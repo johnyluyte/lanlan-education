@@ -117,7 +117,7 @@
           <span class="text-sm font-medium">顯示格子數：{{ shownCount }} / {{ total }}</span>
           <USlider v-model="shownCount" :min="minShown" :max="total" :step="1" class="mt-3" />
         </div>
-        <UButton icon="i-lucide-shuffle" color="neutral" block @click="reroll">僅切換遮罩</UButton>
+        <UButton icon="i-lucide-shuffle" color="neutral" block @click="reroll">套用遮罩設定</UButton>
       </div>
     </div>
 
