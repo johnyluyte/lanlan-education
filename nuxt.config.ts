@@ -48,6 +48,7 @@ export default defineNuxtConfig({
   // 只要搜尋 "#alias-shared" 找到的就一定是 alias
   alias: {
     '#alias-shared': fileURLToPath(new URL('./app_00_shared', import.meta.url)),
+    '#alias-sudoku': fileURLToPath(new URL('./app_10_sudoku', import.meta.url)),
   },
 
   routeRules: {

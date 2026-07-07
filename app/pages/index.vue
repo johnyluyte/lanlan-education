@@ -1,25 +1,13 @@
 <script setup lang="ts">
-  const pending = ref(false)
-  const open = ref(true)
-
-  function onDelete() {
-    pending.value = true
-    setTimeout(() => {
-      pending.value = false
-      open.value = false
-    }, 300)
-  }
-
-  function onCancel() {
-    open.value = false
-  }
+  //
 </script>
 
 <template>
-  <div class="p-12">
-    <div class="flex w-full gap-2">
-      <UButton color="neutral" variant="ghost" :disabled="pending" @click="onCancel">{{ $t('common.cancel') }}</UButton>
-      <UButton color="error" :loading="pending" @click="onDelete">{{ $t('common.delete') }}</UButton>
+  <div class="flex w-full gap-2 p-12">
+    <div class="flex h-screen w-screen flex-col items-center justify-center gap-12 overflow-y-auto">
+      <UButton color="secondary" to="/"> {{ $t('common.cancel') }} </UButton>
+      <UButton color="secondary" to="/"> {{ $t('common.delete') }} </UButton>
+      <UButton color="secondary" to="/sudoku"> Sudoku </UButton>
     </div>
   </div>
 </template>

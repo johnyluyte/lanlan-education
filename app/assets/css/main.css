@@ -5,6 +5,7 @@
    需手動納入掃描，否則「只在這些資料夾用到」的 utility class 不會被產生（例：HomePage 的 pt-8）。
    路徑相對於本檔(app/assets/css/)，往上 3 層到 root。新增 domain 資料夾時要在此補一行。 */
 @source '../../../app_00_shared';
+@source '../../../app_10_sudoku';
 
 @theme static {
   --font-sans:
