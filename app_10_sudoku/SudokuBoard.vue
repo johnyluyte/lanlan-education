@@ -1,22 +1,51 @@
 <script setup lang="ts">
-  // 純顯示元件：由外面餵 grid（4x4，0 代表留空）
-  defineProps<{
+  import { computed } from 'vue'
+
+  // 純顯示元件：由外面餵 grid（N×N，0 代表留空）與 base（宮邊長，side = base²）
+  const props = defineProps<{
     grid: number[][]
+    base: number
     // 選填：數字顏色（例如解答用藍色）
     color?: string
   }>()
+
+  const side = computed(() => props.grid.length) // 盤面邊長 N
+
+  // 盤面越大，格子與字級越小
+  const cell = computed(() => {
+    if (side.value <= 4) return { size: '3.5rem', font: '1.75rem' }
+    if (side.value <= 9) return { size: '2.5rem', font: '1.25rem' }
+    return { size: '1.75rem', font: '0.9rem' }
+  })
+
+  // 外框粗線由 container 的上/左邊界畫；每格只畫右/下邊界，避免雙線重疊
+  const boardStyle = computed(() => ({
+    gridTemplateColumns: `repeat(${side.value}, ${cell.value.size})`,
+    gridTemplateRows: `repeat(${side.value}, ${cell.value.size})`,
+    borderTop: '3px solid #333',
+    borderLeft: '3px solid #333',
+    fontSize: cell.value.font,
+  }))
+
+  const THICK = '3px solid #333'
+  const THIN = '1px solid #bbb'
+
+  // 每格：宮分界（含最外緣）用粗線，其餘細線
+  function cellStyle(r: number, c: number) {
+    return {
+      borderRight: (c + 1) % props.base === 0 ? THICK : THIN,
+      borderBottom: (r + 1) % props.base === 0 ? THICK : THIN,
+      color: props.color,
+    }
+  }
 </script>
 
 <template>
-  <div class="grid grid-cols-[repeat(4,4rem)] grid-rows-[repeat(4,4rem)] border-[3px] border-gray-800">
-    <!-- 2x2 宮格粗邊界：col2(第4n+2格) 右邊、row2(第5~8格) 下邊 -->
-    <div
-      v-for="(cell, i) in grid.flat()"
-      :key="i"
-      class="flex items-center justify-center border border-gray-300 text-[2rem] font-bold nth-[4n+2]:border-r-[3px] nth-[4n+2]:border-r-gray-800 nth-[n+5]:nth-[-n+8]:border-b-[3px] nth-[n+5]:nth-[-n+8]:border-b-gray-800"
-      :style="{ color }"
-    >
-      {{ cell === 0 ? '' : cell }}
-    </div>
+  <div class="grid" :style="boardStyle">
+    <template v-for="(row, r) in grid" :key="r">
+      <div v-for="(value, c) in row" :key="c" class="flex items-center justify-center font-bold" :style="cellStyle(r, c)">
+        {{ value === 0 ? '' : value }}
+      </div>
+    </template>
   </div>
 </template>

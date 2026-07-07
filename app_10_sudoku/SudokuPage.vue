@@ -3,25 +3,29 @@
   import SudokuBoard from './SudokuBoard.vue'
   import { countSolutions, generateSolution } from './sudoku'
 
-  const BASE = 2 // 宮邊長；4x4 幼兒版 → base=2
+  // ── 題目大小 ──
+  // base = 宮邊長：2 → 4×4、3 → 9×9。上限暫定 3，因 countSolutions 在更大盤會過慢。
+  const MIN_BASE = 2
+  const MAX_BASE = 3
+  const base = ref(2)
+  const side = computed(() => base.value * base.value) // 盤面邊長 N
+  const total = computed(() => side.value * side.value) // 總格數 N²
+  const minShown = computed(() => side.value) // 顯示下限（太少難以推算）
 
-  // 唯一資料來源：正確解答（4x4，數字 1~4），演算法 A 隨機產生
-  const answer = ref(generateSolution(BASE))
+  // 唯一資料來源：正確解答，演算法 A 隨機產生
+  const answer = ref(generateSolution(base.value))
 
-  // 換新答案：重新產生一組完整解
+  // 換新題目：以目前大小重新產生一組完整解
   function newAnswer() {
-    answer.value = generateSolution(BASE)
+    answer.value = generateSolution(base.value)
   }
 
-  const TOTAL = 16 // 4x4 總格數
-  const MIN_SHOWN = 4 // 顯示格子數下限（太少會難以推算解答）
-
-  // 要顯示（不挖空）的格子數，可由 Slider 調整
+  // ── 遮罩（要顯示、不挖空的格子數）──
   const shownCount = ref(8)
 
-  // 從 0~15 隨機挑 count 個 flat index（不重複）作為要挖空的格子
+  // 從 0..total-1 隨機挑 count 個 flat index（不重複）作為要挖空的格子
   function randomHoles(count: number) {
-    const all = [...Array(TOTAL).keys()] // 0~15
+    const all = [...Array(total.value).keys()]
     // Fisher-Yates 洗牌後取前 count 個
     for (let i = all.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
@@ -32,23 +36,28 @@
     return new Set(all.slice(0, count))
   }
 
-  // 要挖空的格子（flat index = row * 4 + col）；題目由此遮蓋答案而來
-  // 挖空數 = 總數 − 顯示數
-  const holes = ref(randomHoles(TOTAL - shownCount.value))
+  // 要挖空的格子（flat index = row * side + col）；挖空數 = 總數 − 顯示數
+  const holes = ref(randomHoles(total.value - shownCount.value))
 
   // 重新出題：依目前顯示數重抽 mask
   function reroll() {
-    holes.value = randomHoles(TOTAL - shownCount.value)
+    holes.value = randomHoles(total.value - shownCount.value)
   }
 
-  // 調整顯示數時自動重抽
-  watch(shownCount, reroll)
+  watch(shownCount, reroll) // 調整顯示數時自動重抽
+
+  // 換大小時：clamp 顯示數到新範圍 → 換新答案 → 重抽遮罩
+  watch(base, () => {
+    shownCount.value = Math.min(Math.max(shownCount.value, minShown.value), total.value)
+    newAnswer()
+    reroll()
+  })
 
   // 題目：命中 holes 的格子填 0（留空），其餘沿用答案
-  const puzzle = computed(() => answer.value.map((row, r) => row.map((v, c) => (holes.value.has(r * 4 + c) ? 0 : v))))
+  const puzzle = computed(() => answer.value.map((row, r) => row.map((v, c) => (holes.value.has(r * side.value + c) ? 0 : v))))
 
   // 檢查目前題目是否為「唯一解」；非唯一時老師難以批改，需提醒
-  const isUnique = computed(() => countSolutions(puzzle.value, BASE) === 1)
+  const isUnique = computed(() => countSolutions(puzzle.value, base.value) === 1)
 </script>
 
 <template>
@@ -57,19 +66,19 @@
       <div class="flex items-start justify-center gap-12">
         <section>
           <h2 class="mb-4 text-center text-xl font-bold">原始題目(解答)</h2>
-          <SudokuBoard :grid="answer" color="#2563eb" />
+          <SudokuBoard :grid="answer" :base="base" color="#2563eb" />
         </section>
 
         <section>
           <h2 class="mb-4 text-center text-xl font-bold">遮罩後的題目(給學生寫)</h2>
-          <SudokuBoard :grid="puzzle" />
+          <SudokuBoard :grid="puzzle" :base="base" />
         </section>
       </div>
 
       <p v-if="!isUnique" class="mt-6 flex items-center gap-1 text-sm font-medium text-amber-600">
         在這個題目遮罩下，除了目前答案外也會有其他的正確解答。
         <br />
-        若想要確保只有唯一解，請調整「顯示格子數」或換新答案。
+        若想要確保只有唯一解，請調整「顯示格子數」或「切換遮罩」或「換新題目/答案」。
       </p>
     </div>
 
@@ -79,8 +88,8 @@
       <h3 class="text-base">題目</h3>
       <div class="flex flex-col gap-6">
         <div>
-          <span class="text-sm font-medium">大小：3 x 3</span>
-          <USlider v-model="shownCount" :min="MIN_SHOWN" :max="TOTAL" :step="1" class="mt-3" />
+          <span class="text-sm font-medium">大小：{{ side }} × {{ side }}（{{ base }}×{{ base }} 宮）</span>
+          <USlider v-model="base" :min="MIN_BASE" :max="MAX_BASE" :step="1" class="mt-3" />
         </div>
         <UButton icon="i-lucide-dices" color="primary" block @click="newAnswer">換新題目</UButton>
       </div>
@@ -88,8 +97,8 @@
       <h3 class="mt-6 text-base">遮罩</h3>
       <div class="flex flex-col gap-6">
         <div>
-          <span class="text-sm font-medium">顯示格子數：{{ shownCount }} / {{ TOTAL }}</span>
-          <USlider v-model="shownCount" :min="MIN_SHOWN" :max="TOTAL" :step="1" class="mt-3" />
+          <span class="text-sm font-medium">顯示格子數：{{ shownCount }} / {{ total }}</span>
+          <USlider v-model="shownCount" :min="minShown" :max="total" :step="1" class="mt-3" />
         </div>
         <UButton icon="i-lucide-shuffle" color="neutral" block @click="reroll">僅切換遮罩</UButton>
       </div>
