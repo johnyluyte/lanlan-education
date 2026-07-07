@@ -11,20 +11,17 @@
 
   const side = computed(() => props.grid.length) // 盤面邊長 N
 
-  // 盤面越大，格子與字級越小
-  const cell = computed(() => {
-    if (side.value <= 4) return { size: '3.5rem', font: '1.75rem' }
-    if (side.value <= 9) return { size: '2.5rem', font: '1.25rem' }
-    return { size: '1.75rem', font: '0.9rem' }
-  })
+  // 格子尺寸/字級暫時固定（之後再開放使用者調整）
+  const CELL_SIZE = '4rem'
+  const FONT_SIZE = '2rem'
 
   // 外框粗線由 container 的上/左邊界畫；每格只畫右/下邊界，避免雙線重疊
   const boardStyle = computed(() => ({
-    gridTemplateColumns: `repeat(${side.value}, ${cell.value.size})`,
-    gridTemplateRows: `repeat(${side.value}, ${cell.value.size})`,
+    gridTemplateColumns: `repeat(${side.value}, ${CELL_SIZE})`,
+    gridTemplateRows: `repeat(${side.value}, ${CELL_SIZE})`,
     borderTop: '3px solid #333',
     borderLeft: '3px solid #333',
-    fontSize: cell.value.font,
+    fontSize: FONT_SIZE,
   }))
 
   const THICK = '3px solid #333'
