@@ -82,8 +82,8 @@
       </p>
     </div>
 
-    <div class="absolute top-8 right-8 flex w-64 flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-      <h2 class="border-muted border-b pb-2 text-center text-base font-bold">設定</h2>
+    <div class="absolute top-8 left-8 flex w-64 flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <h2 class="border-muted border-b pb-2 text-center text-base font-bold">題目設定</h2>
 
       <h3 class="text-base">題目</h3>
       <div class="flex flex-col gap-6">
@@ -102,6 +102,21 @@
         </div>
         <UButton icon="i-lucide-shuffle" color="neutral" block @click="reroll">僅切換遮罩</UButton>
       </div>
+    </div>
+
+    <div class="absolute top-8 right-8 flex w-64 flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <h2 class="border-muted border-b pb-2 text-center text-base font-bold">樣式設定</h2>
+
+      <h3 class="text-base">格子尺寸</h3>
+      <!-- 之後再做 -->
+      <h3 class="text-base">字體大小</h3>
+      <!-- 之後再做 -->
+      <h3 class="text-base">粗框線寬度</h3>
+      <!-- 之後再做 -->
+      <h3 class="text-base">細框線寬度</h3>
+      <!-- 之後再做 -->
+      <h3 class="text-base">數字顏色</h3>
+      <!-- 之後再做 -->
     </div>
   </div>
 </template>
