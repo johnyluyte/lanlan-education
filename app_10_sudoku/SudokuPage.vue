@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
   import SudokuBoard from './SudokuBoard.vue'
-  import { generateSolution } from './sudoku'
+  import { countSolutions, generateSolution } from './sudoku'
 
   const BASE = 2 // 宮邊長；4x4 幼兒版 → base=2
 
@@ -46,6 +46,9 @@
 
   // 題目：命中 holes 的格子填 0（留空），其餘沿用答案
   const puzzle = computed(() => answer.value.map((row, r) => row.map((v, c) => (holes.value.has(r * 4 + c) ? 0 : v))))
+
+  // 檢查目前題目是否為「唯一解」；非唯一時老師難以批改，需提醒
+  const isUnique = computed(() => countSolutions(puzzle.value, BASE) === 1)
 </script>
 
 <template>
@@ -59,6 +62,13 @@
       <UButton icon="i-lucide-dices" color="primary" @click="newAnswer">換新答案</UButton>
       <UButton icon="i-lucide-shuffle" color="neutral" @click="reroll">不調整答案，僅切換題目遮罩</UButton>
     </div>
+
+    <!-- 唯一解檢查：非唯一時老師無法確定標準答案，需老實提醒 -->
+    <p v-if="!isUnique" class="flex items-center gap-1 text-sm font-medium text-amber-600">
+      在這個題目遮罩下，除了目前答案外，也會有其他的正確解答，請老師注意批改。
+      <br />
+      若想要確保只有唯一解，請調整「顯示格子數」或換新答案。
+    </p>
 
     <div class="flex items-start justify-center gap-12">
       <section>

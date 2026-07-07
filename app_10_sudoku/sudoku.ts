@@ -29,3 +29,50 @@ export function generateSolution(base = 3): number[][] {
   // 依打亂後的列/行順序套用公式並 relabel
   return rows.map((r) => cols.map((c) => nums[pattern(r, c)]!))
 }
+
+// 計算某題目（grid，0 = 空格）的解答數量，最多算到 limit 就提早停止。
+// 回傳 1 代表唯一解；>= 2 代表有多個解（老師難以批改）。
+export function countSolutions(grid: number[][], base = 3, limit = 2): number {
+  const side = base * base
+  const board = grid.map((row) => [...row]) // 複製，避免改到原資料
+  let count = 0
+
+  // v 放在 (r, c) 是否不違反列/行/宮限制
+  const valid = (r: number, c: number, v: number): boolean => {
+    for (let i = 0; i < side; i++) {
+      if (board[r]![i] === v || board[i]![c] === v) return false
+    }
+    const r0 = Math.floor(r / base) * base
+    const c0 = Math.floor(c / base) * base
+    for (let dr = 0; dr < base; dr++) {
+      for (let dc = 0; dc < base; dc++) {
+        if (board[r0 + dr]![c0 + dc] === v) return false
+      }
+    }
+    return true
+  }
+
+  const solve = (): void => {
+    if (count >= limit) return // 已達上限，不必再找
+    // 找第一個空格
+    for (let r = 0; r < side; r++) {
+      for (let c = 0; c < side; c++) {
+        if (board[r]![c] === 0) {
+          for (let v = 1; v <= side; v++) {
+            if (valid(r, c, v)) {
+              board[r]![c] = v
+              solve()
+              board[r]![c] = 0 // 回溯
+              if (count >= limit) return
+            }
+          }
+          return // 此空格無合法值 → 死路
+        }
+      }
+    }
+    count++ // 沒有空格 → 找到一組完整解
+  }
+
+  solve()
+  return count
+}
