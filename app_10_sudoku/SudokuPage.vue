@@ -52,34 +52,47 @@
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-8 p-8">
-    <div class="flex w-64 flex-col gap-2">
-      <span class="text-center text-sm font-medium">顯示格子數：{{ shownCount }} / {{ TOTAL }}</span>
-      <USlider v-model="shownCount" :min="MIN_SHOWN" :max="TOTAL" :step="1" />
+  <div class="relative flex justify-center p-8">
+    <div>
+      <div class="flex items-start justify-center gap-12">
+        <section>
+          <h2 class="mb-4 text-center text-xl font-bold">原始題目(解答)</h2>
+          <SudokuBoard :grid="answer" color="#2563eb" />
+        </section>
+
+        <section>
+          <h2 class="mb-4 text-center text-xl font-bold">遮罩後的題目(給學生寫)</h2>
+          <SudokuBoard :grid="puzzle" />
+        </section>
+      </div>
+
+      <p v-if="!isUnique" class="mt-6 flex items-center gap-1 text-sm font-medium text-amber-600">
+        在這個題目遮罩下，除了目前答案外也會有其他的正確解答。
+        <br />
+        若想要確保只有唯一解，請調整「顯示格子數」或換新答案。
+      </p>
     </div>
 
-    <div class="flex gap-4">
-      <UButton icon="i-lucide-dices" color="primary" @click="newAnswer">換新答案</UButton>
-      <UButton icon="i-lucide-shuffle" color="neutral" @click="reroll">不調整答案，僅切換題目遮罩</UButton>
-    </div>
+    <div class="absolute top-8 right-8 flex w-64 flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <h2 class="border-muted border-b pb-2 text-center text-base font-bold">設定</h2>
 
-    <!-- 唯一解檢查：非唯一時老師無法確定標準答案，需老實提醒 -->
-    <p v-if="!isUnique" class="flex items-center gap-1 text-sm font-medium text-amber-600">
-      在這個題目遮罩下，除了目前答案外，也會有其他的正確解答，請老師注意批改。
-      <br />
-      若想要確保只有唯一解，請調整「顯示格子數」或換新答案。
-    </p>
+      <h3 class="text-base">題目</h3>
+      <div class="flex flex-col gap-6">
+        <div>
+          <span class="text-sm font-medium">大小：3 x 3</span>
+          <USlider v-model="shownCount" :min="MIN_SHOWN" :max="TOTAL" :step="1" class="mt-3" />
+        </div>
+        <UButton icon="i-lucide-dices" color="primary" block @click="newAnswer">換新題目</UButton>
+      </div>
 
-    <div class="flex items-start justify-center gap-12">
-      <section>
-        <h2 class="mb-4 text-center text-xl font-bold">題目</h2>
-        <SudokuBoard :grid="puzzle" />
-      </section>
-
-      <section>
-        <h2 class="mb-4 text-center text-xl font-bold">解答</h2>
-        <SudokuBoard :grid="answer" color="#2563eb" />
-      </section>
+      <h3 class="mt-6 text-base">遮罩</h3>
+      <div class="flex flex-col gap-6">
+        <div>
+          <span class="text-sm font-medium">顯示格子數：{{ shownCount }} / {{ TOTAL }}</span>
+          <USlider v-model="shownCount" :min="MIN_SHOWN" :max="TOTAL" :step="1" class="mt-3" />
+        </div>
+        <UButton icon="i-lucide-shuffle" color="neutral" block @click="reroll">僅切換遮罩</UButton>
+      </div>
     </div>
   </div>
 </template>
