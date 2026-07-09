@@ -13,16 +13,47 @@ type Dir = 'top' | 'right' | 'bottom' | 'left'
 const OPPOSITE: Record<Dir, Dir> = { top: 'bottom', right: 'left', bottom: 'top', left: 'right' }
 const DELTA: Record<Dir, [number, number]> = { top: [-1, 0], right: [0, 1], bottom: [1, 0], left: [0, -1] }
 
-function shuffle<T>(arr: T[]): T[] {
+// 亂數函式：回傳 [0,1)。用種子化 PRNG 取代 Math.random，讓「同 seed → 同迷宮」可重現。
+export type Rng = () => number
+
+// mulberry32：小而穩的 32-bit 種子 PRNG
+function mulberry32(seed: number): Rng {
+  let a = seed >>> 0
+  return () => {
+    a = (a + 0x6d2b79f5) | 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+// 把任意字串 seed 雜湊成 32-bit 整數（讓使用者能輸入 "hello" 這種文字 seed）
+function hashSeed(str: string): number {
+  let h = 1779033703 ^ str.length
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(h ^ str.charCodeAt(i), 3432918353)
+    h = (h << 13) | (h >>> 19)
+  }
+  h = Math.imul(h ^ (h >>> 16), 2246822507)
+  h = Math.imul(h ^ (h >>> 13), 3266489909)
+  return (h ^ (h >>> 16)) >>> 0
+}
+
+// 由字串 seed 建立可重現的亂數函式
+export function makeRng(seed: string): Rng {
+  return mulberry32(hashSeed(seed))
+}
+
+function shuffle<T>(arr: T[], rng: Rng): T[] {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
+    const j = Math.floor(rng() * (i + 1))
     ;[a[i], a[j]] = [a[j]!, a[i]!]
   }
   return a
 }
 
-export function generateMaze(rows: number, cols: number): Cell[][] {
+export function generateMaze(rows: number, cols: number, rng: Rng): Cell[][] {
   // 初始：每格四面皆有牆
   const grid: Cell[][] = Array.from({ length: rows }, () =>
     Array.from({ length: cols }, () => ({ top: true, right: true, bottom: true, left: true })),
@@ -44,7 +75,7 @@ export function generateMaze(rows: number, cols: number): Cell[][] {
       continue
     }
 
-    const { dir, nr, nc } = shuffle(neighbors)[0]!
+    const { dir, nr, nc } = shuffle(neighbors, rng)[0]!
     // 拆牆：同一道牆兩邊一起拆
     grid[r]![c]![dir] = false
     grid[nr]![nc]![OPPOSITE[dir]] = false
@@ -63,7 +94,7 @@ function openings(cell: Cell): number {
 // braiding：以機率 factor 打通死路（開口=1 的格），減少死路、製造迴圈。
 // factor 越高 → 死路越少、路線越多 → 越簡單。factor=0 → 不動（純完美迷宮，最難）。
 // 詳見 docs/maze-algorithm.md
-export function braidMaze(grid: Cell[][], factor: number): void {
+export function braidMaze(grid: Cell[][], factor: number, rng: Rng): void {
   if (factor <= 0) return
   const rows = grid.length
   const cols = grid[0]?.length ?? 0
@@ -78,7 +109,7 @@ export function braidMaze(grid: Cell[][], factor: number): void {
 
   for (const [r, c] of deadEnds) {
     if (openings(grid[r]![c]!) !== 1) continue // 可能已被前面的打通
-    if (Math.random() >= factor) continue
+    if (rng() >= factor) continue
 
     // 仍是牆、且鄰居在界內的方向 = 可打通的候選
     const walled = (['top', 'right', 'bottom', 'left'] as Dir[])
@@ -89,7 +120,7 @@ export function braidMaze(grid: Cell[][], factor: number): void {
     const toDeadEnd = walled.filter(({ nr, nc }) => openings(grid[nr]![nc]!) === 1)
     const pool = toDeadEnd.length > 0 ? toDeadEnd : walled
     if (pool.length === 0) continue
-    const { dir, nr, nc } = pool[Math.floor(Math.random() * pool.length)]!
+    const { dir, nr, nc } = pool[Math.floor(rng() * pool.length)]!
 
     // 拆牆：兩邊一起
     grid[r]![c]![dir] = false
