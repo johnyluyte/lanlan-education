@@ -8,6 +8,7 @@
     cols: number
     cellSize: number
     showGrid: boolean
+    dotRadius: number // 黃點半徑 (px)，跟 cellSize 分開設定，故不用比例換算
   }>()
 
   const STROKE = 2 // 框線寬
@@ -53,7 +54,7 @@
 
     <!-- 圖層 2：黃點 -->
     <g class="layer-dots">
-      <circle v-for="(d, i) in dots" :key="i" :cx="d.cx" :cy="d.cy" :r="cellSize * 0.28" fill="rgb(250 204 21)" />
+      <circle v-for="(d, i) in dots" :key="i" :cx="d.cx" :cy="d.cy" :r="dotRadius" fill="rgb(250 204 21)" />
     </g>
   </svg>
 </template>
