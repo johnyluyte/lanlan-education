@@ -1,4 +1,5 @@
 import { ref, shallowRef, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { generateMaze, braidMaze, solveMaze, makeRng, type Cell } from './generator'
 
 const MIN = 2
@@ -25,7 +26,11 @@ export function useMaze() {
   const rows = ref(12)
   const cols = ref(18)
   const difficulty = ref<Difficulty>('medium')
-  const seed = ref<string>(randomSeed()) // 同 seed + 同尺寸/難度 → 同一張迷宮
+
+  // seed 與網址 ?seed=xxx 雙向同步，方便分享地圖。網址有 seed 就用它，否則隨機。
+  const route = useRoute()
+  const router = useRouter()
+  const seed = ref<string>(typeof route.query.seed === 'string' && route.query.seed ? route.query.seed : randomSeed())
 
   // 依目前 seed/尺寸/難度產生一張迷宮：先 DFS 完美迷宮，再依難度 braiding。
   // 全程用同一條種子化 rng → 可重現。
@@ -60,6 +65,23 @@ export function useMaze() {
     if (c !== cols.value) cols.value = c
     grid.value = buildGrid()
   })
+
+  // seed → 網址（用 replace 不灌爆歷史；初始也寫一次，讓連結一開即可分享）
+  watch(
+    seed,
+    (v) => {
+      if (route.query.seed !== v) router.replace({ query: { ...route.query, seed: v } })
+    },
+    { immediate: true },
+  )
+
+  // 網址 → seed（使用者上一頁/下一頁或貼分享連結時同步回來）
+  watch(
+    () => route.query.seed,
+    (q) => {
+      if (typeof q === 'string' && q && q !== seed.value) seed.value = q
+    },
+  )
 
   return {
     rows,
