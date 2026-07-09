@@ -17,6 +17,7 @@ export default defineConfig({
       { find: /^#alias-shared\//, replacement: fileURLToPath(new URL('./app_00_shared/', import.meta.url)) },
       { find: /^#alias-sudoku\//, replacement: fileURLToPath(new URL('./app_10_sudoku/', import.meta.url)) },
       { find: /^#alias-maze\//, replacement: fileURLToPath(new URL('./app_11_maze/', import.meta.url)) },
+      { find: /^#alias-matching-game\//, replacement: fileURLToPath(new URL('./app_12_matching_game/', import.meta.url)) },
     ],
   },
   test: {

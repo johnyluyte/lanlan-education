@@ -18,6 +18,7 @@
   "nav": {
     "home": "Home",
     "sudoku": "Sudoku",
-    "maze": "Maze"
+    "maze": "Maze",
+    "matchingGame": "Matching Game"
   }
 }

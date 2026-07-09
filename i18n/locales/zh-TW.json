@@ -18,6 +18,7 @@
   "nav": {
     "home": "首頁",
     "sudoku": "Sudoku",
-    "maze": "迷宮"
+    "maze": "迷宮",
+    "matchingGame": "連連看"
   }
 }

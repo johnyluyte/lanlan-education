@@ -50,6 +50,7 @@ export default defineNuxtConfig({
     '#alias-shared': fileURLToPath(new URL('./app_00_shared', import.meta.url)),
     '#alias-sudoku': fileURLToPath(new URL('./app_10_sudoku', import.meta.url)),
     '#alias-maze': fileURLToPath(new URL('./app_11_maze', import.meta.url)),
+    '#alias-matching-game': fileURLToPath(new URL('./app_12_matching_game', import.meta.url)),
   },
 
   routeRules: {
