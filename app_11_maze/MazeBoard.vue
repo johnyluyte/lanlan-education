@@ -1,8 +1,9 @@
 <script setup lang="ts">
   // 迷宮繪製：SVG 三圖層（起終點標記 → 牆壁 → 解答），疊序 = 文件順序，不用 z-index。
-  import { ref, computed, watch } from 'vue'
+  import { ref, computed, watch, toRef } from 'vue'
   import type { ContextMenuItem } from '@nuxt/ui'
   import type { Cell } from './generator'
+  import { useCellPointer } from './useCellPointer'
 
   const props = defineProps<{
     grid: Cell[][]
@@ -72,35 +73,15 @@
     },
   )
 
-  // 座標→格：用 getScreenCTM().inverse() 把螢幕座標換算回 SVG 使用者座標，
-  // 再除以 cellSize 得到 (row, col)。此法即使 SVG 被 CSS 縮放也準。回傳 null = 點到外框留白。
-  function cellFromEvent(e: MouseEvent): [number, number] | null {
-    const svg = e.currentTarget as SVGSVGElement
-    const ctm = svg.getScreenCTM()
-    if (!ctm) return null
-    const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse())
-    const col = Math.floor(pt.x / props.cellSize)
-    const row = Math.floor(pt.y / props.cellSize)
-    if (row < 0 || row >= R.value || col < 0 || col >= C.value) return null
-    return [row, col]
-  }
-
-  const clicked = ref<[number, number] | null>(null) // 左鍵最後點擊格（琥珀高亮）
-  const rightClicked = ref<[number, number] | null>(null) // 右鍵最後點擊格（紫色高亮）
-
-  function onClick(e: MouseEvent) {
-    const cell = cellFromEvent(e)
-    if (!cell) return
-    clicked.value = cell
-    emit('cellClick', cell[0], cell[1])
-  }
-
-  function onContextMenu(e: MouseEvent) {
-    const cell = cellFromEvent(e)
-    if (!cell) return
-    rightClicked.value = cell
-    emit('cellRightClick', cell[0], cell[1])
-  }
+  // 滑鼠命中測試（座標→格、左/右鍵、highlight 狀態）抽到 useCellPointer；
+  // clicked/rightClicked 給下方 highlight 用，命中時 emit 給父層
+  const { clicked, rightClicked, onClick, onContextMenu } = useCellPointer({
+    cellSize: toRef(props, 'cellSize'),
+    rows: R,
+    cols: C,
+    onClick: (r, c) => emit('cellClick', r, c),
+    onRightClick: (r, c) => emit('cellRightClick', r, c),
+  })
 
   // 右鍵選單項目（暫時不做事）
   const menuItems: ContextMenuItem[] = [{ label: 'button1' }, { label: 'button2' }]
