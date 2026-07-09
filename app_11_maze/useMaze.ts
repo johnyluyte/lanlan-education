@@ -44,14 +44,9 @@ export function useMaze() {
     grid.value = buildGrid()
   }
 
-  const setDifficulty = (d: Difficulty) => {
-    difficulty.value = d
-    grid.value = buildGrid()
-  }
-
-  // 改尺寸 → 自動重生一張新迷宮（尺寸先 clamp 回合法範圍），沿用目前難度
-  // solutionIndex 是 computed，會跟著新 grid 自動重算，不需手動清
-  watch([rows, cols], () => {
+  // 改尺寸或難度 → 自動重生一張新迷宮（尺寸先 clamp 回合法範圍）
+  // solutionPath 是 computed，會跟著新 grid 自動重算
+  watch([rows, cols, difficulty], () => {
     const r = clamp(rows.value)
     const c = clamp(cols.value)
     if (r !== rows.value) rows.value = r
@@ -63,7 +58,6 @@ export function useMaze() {
     rows,
     cols,
     difficulty,
-    setDifficulty,
     grid,
     reroll,
     showSolution,
