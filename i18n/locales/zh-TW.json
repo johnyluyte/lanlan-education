@@ -14,5 +14,9 @@
   "userSetting": {
     "toggleTheme": "切換主題",
     "toggleLocale": "切換語言"
+  },
+  "nav": {
+    "home": "首頁",
+    "sudoku": "Sudoku"
   }
 }

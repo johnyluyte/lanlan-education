@@ -14,5 +14,9 @@
   "userSetting": {
     "toggleTheme": "Toggle Theme",
     "toggleLocale": "Toggle Language"
+  },
+  "nav": {
+    "home": "Home",
+    "sudoku": "Sudoku"
   }
 }

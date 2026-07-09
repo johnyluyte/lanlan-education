@@ -18,6 +18,8 @@
 <template>
   <header class="border-muted/90 bg-default flex h-12 shrink-0 items-center border-b px-2 lg:pr-2 lg:pl-3.5">
     <div class="flex flex-1 items-center gap-2">
+      <slot name="leading" />
+
       <span class="text-highlighted text-sm font-medium">蘭芳教育</span>
 
       <UTooltip text="回到首頁">

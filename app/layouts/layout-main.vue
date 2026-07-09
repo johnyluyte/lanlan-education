@@ -1,15 +1,17 @@
 <script setup lang="ts">
-  import LayoutHeader from '#alias-shared/LayoutHeader.vue'
+  import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+  import LayoutDrawerDesktop from '#alias-shared/LayoutDrawerDesktop.vue'
+  import LayoutDrawerMobile from '#alias-shared/LayoutDrawerMobile.vue'
+
+  // lg (1024px) 以下走手機殼
+  const isMobile = useBreakpoints(breakpointsTailwind).smaller('lg')
 </script>
 
 <template>
-  <div class="flex min-h-screen">
-    <div class="flex flex-1 flex-col overflow-hidden">
-      <LayoutHeader />
-
-      <main class="flex-1 overflow-y-auto">
-        <slot />
-      </main>
-    </div>
-  </div>
+  <LayoutDrawerMobile v-if="isMobile">
+    <slot />
+  </LayoutDrawerMobile>
+  <LayoutDrawerDesktop v-else>
+    <slot />
+  </LayoutDrawerDesktop>
 </template>
