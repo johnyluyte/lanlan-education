@@ -42,15 +42,7 @@
 <template>
   <svg :width="dims.w + STROKE" :height="dims.h + STROKE" :viewBox="viewBox" class="text-gray-800 dark:text-gray-200">
     <!-- 圖層 1：框線（預設隱藏，由 showGrid 開關控制） -->
-    <path
-      v-if="showGrid"
-      class="layer-grid"
-      :d="gridD"
-      fill="none"
-      stroke="currentColor"
-      :stroke-width="STROKE"
-      stroke-linecap="square"
-    />
+    <path v-if="showGrid" class="layer-grid" :d="gridD" fill="none" stroke="currentColor" :stroke-width="STROKE" stroke-linecap="square" />
 
     <!-- 圖層 2：黃點 -->
     <g class="layer-dots">

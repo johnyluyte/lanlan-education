@@ -1,7 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import BearOutlineSvg from './BearOutlineSvg.vue'
+  import WhaleOutlineSvg from './WhaleOutlineSvg.vue'
+  import TurtleOutlineSvg from './TurtleOutlineSvg.vue'
+</script>
 
 <template>
-  <div class="flex justify-center p-8">
-    <h1 class="text-2xl font-bold">Hello World</h1>
+  <div class="flex flex-wrap justify-center gap-8 p-8">
+    <WhaleOutlineSvg />
+    <TurtleOutlineSvg />
+    <BearOutlineSvg />
   </div>
 </template>
