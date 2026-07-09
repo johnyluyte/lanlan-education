@@ -14,6 +14,7 @@
   const items = computed<NavigationMenuItem[]>(() => [
     { label: t('nav.home'), icon: 'i-lucide-home', to: '/', onSelect: () => emit('select') },
     { label: t('nav.sudoku'), icon: 'i-lucide-grid-3x3', to: '/sudoku', onSelect: () => emit('select') },
+    { label: t('nav.maze'), icon: 'i-game-icons-maze', to: '/maze', onSelect: () => emit('select') },
   ])
 </script>
 

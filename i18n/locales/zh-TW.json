@@ -17,6 +17,7 @@
   },
   "nav": {
     "home": "首頁",
-    "sudoku": "Sudoku"
+    "sudoku": "Sudoku",
+    "maze": "迷宮"
   }
 }

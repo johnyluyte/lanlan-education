@@ -16,6 +16,7 @@ export default defineConfig({
       // Domain 別名：需與 nuxt.config.ts 的 alias 保持一致（vitest 不讀 nuxt.config）
       { find: /^#alias-shared\//, replacement: fileURLToPath(new URL('./app_00_shared/', import.meta.url)) },
       { find: /^#alias-sudoku\//, replacement: fileURLToPath(new URL('./app_10_sudoku/', import.meta.url)) },
+      { find: /^#alias-maze\//, replacement: fileURLToPath(new URL('./app_11_maze/', import.meta.url)) },
     ],
   },
   test: {
