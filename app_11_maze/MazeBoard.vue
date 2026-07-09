@@ -13,6 +13,7 @@
 
   const emit = defineEmits<{
     cellClick: [row: number, col: number]
+    cellRightClick: [row: number, col: number]
   }>()
 
   const STROKE = 2 // 牆線寬
@@ -69,19 +70,34 @@
     },
   )
 
-  // 點擊偵測：用 getScreenCTM().inverse() 把螢幕座標換算回 SVG 使用者座標，
-  // 再除以 cellSize 得到 (row, col)。此法即使 SVG 被 CSS 縮放也準。
-  const clicked = ref<[number, number] | null>(null)
-  function onClick(e: MouseEvent) {
+  // 座標→格：用 getScreenCTM().inverse() 把螢幕座標換算回 SVG 使用者座標，
+  // 再除以 cellSize 得到 (row, col)。此法即使 SVG 被 CSS 縮放也準。回傳 null = 點到外框留白。
+  function cellFromEvent(e: MouseEvent): [number, number] | null {
     const svg = e.currentTarget as SVGSVGElement
     const ctm = svg.getScreenCTM()
-    if (!ctm) return
+    if (!ctm) return null
     const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse())
     const col = Math.floor(pt.x / props.cellSize)
     const row = Math.floor(pt.y / props.cellSize)
-    if (row < 0 || row >= R.value || col < 0 || col >= C.value) return // 點到外框留白 → 忽略
-    clicked.value = [row, col]
-    emit('cellClick', row, col)
+    if (row < 0 || row >= R.value || col < 0 || col >= C.value) return null
+    return [row, col]
+  }
+
+  const clicked = ref<[number, number] | null>(null) // 左鍵最後點擊格（琥珀高亮）
+  const rightClicked = ref<[number, number] | null>(null) // 右鍵最後點擊格（紫色高亮）
+
+  function onClick(e: MouseEvent) {
+    const cell = cellFromEvent(e)
+    if (!cell) return
+    clicked.value = cell
+    emit('cellClick', cell[0], cell[1])
+  }
+
+  function onContextMenu(e: MouseEvent) {
+    const cell = cellFromEvent(e)
+    if (!cell) return
+    rightClicked.value = cell
+    emit('cellRightClick', cell[0], cell[1])
   }
 </script>
 
@@ -92,6 +108,7 @@
     :viewBox="viewBox"
     class="cursor-pointer text-gray-800 dark:text-gray-200"
     @click="onClick"
+    @contextmenu.prevent="onContextMenu"
   >
     <!-- 圖層 1：起終點標記 -->
     <g class="layer-markers">
@@ -99,7 +116,7 @@
       <rect :x="(C - 1) * cellSize" :y="(R - 1) * cellSize" :width="cellSize" :height="cellSize" fill="rgb(248 113 113 / 0.4)" />
     </g>
 
-    <!-- 圖層 1.5：目前點擊的格（琥珀色高亮，證明偵測到哪一格） -->
+    <!-- 圖層 1.5：左鍵點擊格（琥珀）、右鍵點擊格（紫），證明偵測到哪一格 -->
     <rect
       v-if="clicked"
       :x="clicked[1] * cellSize"
@@ -107,6 +124,14 @@
       :width="cellSize"
       :height="cellSize"
       fill="rgb(251 191 36 / 0.45)"
+    />
+    <rect
+      v-if="rightClicked"
+      :x="rightClicked[1] * cellSize"
+      :y="rightClicked[0] * cellSize"
+      :width="cellSize"
+      :height="cellSize"
+      fill="rgb(168 85 247 / 0.45)"
     />
 
     <!-- 圖層 2：牆壁 -->

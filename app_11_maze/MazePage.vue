@@ -10,7 +10,10 @@
   const cellSize = ref(24) // 每格小正方形邊長 (px)
   const drawTotal = ref(1.6) // 解答逐段畫出的總秒數
 
-  const clickedCell = ref<[number, number] | null>(null) // Board 回報的最後點擊格
+  const clickedCell = ref<[number, number] | null>(null) // Board 回報的最後「左鍵」點擊格
+  const rightClickedCell = ref<[number, number] | null>(null) // 最後「右鍵」點擊格
+
+  const fmt = (cell: [number, number] | null) => (cell ? `第 ${cell[0]} 列，第 ${cell[1]} 行` : '（尚未點擊）')
 </script>
 
 <template>
@@ -39,10 +42,16 @@
           clickedCell = [r, c]
         }
       "
+      @cell-right-click="
+        (r, c) => {
+          rightClickedCell = [r, c]
+        }
+      "
     />
 
-    <p class="text-sm text-gray-600 dark:text-gray-400">
-      目前點擊格：{{ clickedCell ? `第 ${clickedCell[0]} 列，第 ${clickedCell[1]} 行` : '（尚未點擊）' }}
-    </p>
+    <div class="text-sm text-gray-600 dark:text-gray-400">
+      <p>左鍵點擊格：{{ fmt(clickedCell) }}</p>
+      <p>右鍵點擊格：{{ fmt(rightClickedCell) }}</p>
+    </div>
   </div>
 </template>
