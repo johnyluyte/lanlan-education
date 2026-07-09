@@ -1,45 +1,56 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import { useMaze, DIFFICULTIES } from './useMaze'
-  import type { Cell } from './generator'
 
-  const { rows, cols, difficulty, setDifficulty, grid, reroll, showSolution, solutionIndex, solutionLength, toggleSolution, MIN, MAX } =
-    useMaze()
+  const { rows, cols, difficulty, setDifficulty, grid, reroll, showSolution, solutionPath, toggleSolution, MIN, MAX } = useMaze()
 
   // 每格小正方形邊長 (px)，使用者可調。只影響繪製、不影響迷宮生成
   const cellSize = ref(24)
   const CELL_MIN = 8
   const CELL_MAX = 48
 
-  // 依步序回傳彩虹 hue 底色：沿路徑由藍漸變到桃紅
-  function pathColor(index: number, len: number) {
-    const t = len <= 1 ? 0 : index / (len - 1)
-    const hue = 200 + t * 140 // 200°(藍) → 340°(桃紅)
-    return `hsl(${hue} 85% 55% / 0.55)`
-  }
+  const STROKE = 2 // 牆線寬
 
-  // 牆用 border 畫，每格畫「自己的 4 個 bool」。共用牆會被兩格各畫一次，
-  // 靠 margin-right / -bottom: -2px 讓相鄰格重疊 2px → 兩條疊成單條、不會雙倍粗。
-  // 好處：轉角一定填滿——L 形凹角那格同時擁有兩道牆，自己的兩條 border 同色 miter
-  // 收在角落，不再有 "_|" 的缺口。詳見 docs/maze-algorithm.md
-  function cellStyle(cell: Cell, r: number, c: number) {
-    const wall = '2px solid currentColor'
-    const none = '0'
-    const isStart = r === 0 && c === 0
-    const isEnd = r === rows.value - 1 && c === cols.value - 1
-    const idx = solutionIndex.value.get(`${r},${c}`)
-    const onPath = idx !== undefined && !isStart && !isEnd // 起終點用 class 綠/紅，不設 inline bg
-    return {
-      width: `${cellSize.value}px`,
-      height: `${cellSize.value}px`,
-      marginRight: '-2px', // 與右鄰重疊 2px，共用垂直牆收成單條
-      borderTop: cell.top ? wall : none,
-      borderRight: cell.right ? wall : none,
-      borderBottom: cell.bottom ? wall : none,
-      borderLeft: cell.left ? wall : none,
-      ...(onPath ? { backgroundColor: pathColor(idx, solutionLength.value) } : {}),
+  // SVG 尺寸；外圈牆的 stroke 有一半會超出邊界，故 viewBox 往外留半個 stroke
+  const dims = computed(() => ({ w: cols.value * cellSize.value, h: rows.value * cellSize.value }))
+  const viewBox = computed(() => `${-STROKE / 2} ${-STROKE / 2} ${dims.value.w + STROKE} ${dims.value.h + STROKE}`)
+
+  // 【圖層：牆壁】把每道牆湊成一條 path。每道牆只由一格畫（top/left；最右欄補 right、最底列補 bottom），
+  // SVG 的線畫在格線正中心、同座標重疊也不變粗，故無 border 的缺角/雙倍粗問題。
+  const wallsD = computed(() => {
+    const cell = cellSize.value
+    const R = rows.value
+    const C = cols.value
+    let d = ''
+    for (let r = 0; r < R; r++) {
+      for (let c = 0; c < C; c++) {
+        const x = c * cell
+        const y = r * cell
+        const w = grid.value[r]![c]!
+        if (w.top) d += `M${x} ${y}L${x + cell} ${y}`
+        if (w.left) d += `M${x} ${y}L${x} ${y + cell}`
+        if (c === C - 1 && w.right) d += `M${x + cell} ${y}L${x + cell} ${y + cell}`
+        if (r === R - 1 && w.bottom) d += `M${x} ${y + cell}L${x + cell} ${y + cell}`
+      }
     }
-  }
+    return d
+  })
+
+  // 【圖層：解答】把最短路拆成一段段連線，每段依步序上彩虹 hue（沿走向由藍漸變到桃紅）
+  const solStroke = computed(() => Math.max(2, cellSize.value * 0.28))
+  const solutionSegments = computed(() => {
+    const cell = cellSize.value
+    const p = solutionPath.value
+    const center = ([r, c]: [number, number]): [number, number] => [c * cell + cell / 2, r * cell + cell / 2]
+    const segs: { x1: number; y1: number; x2: number; y2: number; color: string }[] = []
+    for (let i = 0; i < p.length - 1; i++) {
+      const [x1, y1] = center(p[i]!)
+      const [x2, y2] = center(p[i + 1]!)
+      const t = p.length <= 1 ? 0 : i / (p.length - 1)
+      segs.push({ x1, y1, x2, y2, color: `hsl(${200 + t * 140} 85% 55% / 0.75)` })
+    }
+    return segs
+  })
 </script>
 
 <template>
@@ -78,22 +89,32 @@
       </UButton>
     </div>
 
-    <!-- 迷宮：用 flex 逐列排，列間 margin-bottom:-2px 重疊 2px（收掉共用水平牆的雙倍） -->
-    <div class="overflow-visible">
-      <div class="box-border w-max text-gray-800 dark:text-gray-200">
-        <div v-for="(row, r) in grid" :key="r" class="flex" :style="{ marginBottom: '-2px' }">
-          <div
-            v-for="(cell, c) in row"
-            :key="`${r}-${c}`"
-            class="box-border shrink-0"
-            :class="{
-              'bg-green-400/40': r === 0 && c === 0,
-              'bg-red-400/40': r === rows - 1 && c === cols - 1,
-            }"
-            :style="cellStyle(cell, r, c)"
-          />
-        </div>
-      </div>
-    </div>
+    <!-- 迷宮：SVG 分三個圖層（由下到上：起終點標記 → 牆壁 → 解答），疊序 = 文件順序 -->
+    <svg :width="dims.w + STROKE" :height="dims.h + STROKE" :viewBox="viewBox" class="text-gray-800 dark:text-gray-200">
+      <!-- 圖層 1：起終點標記 -->
+      <g class="layer-markers">
+        <rect :x="0" :y="0" :width="cellSize" :height="cellSize" fill="rgb(74 222 128 / 0.4)" />
+        <rect :x="(cols - 1) * cellSize" :y="(rows - 1) * cellSize" :width="cellSize" :height="cellSize" fill="rgb(248 113 113 / 0.4)" />
+      </g>
+
+      <!-- 圖層 2：牆壁 -->
+      <path class="layer-walls" :d="wallsD" fill="none" stroke="currentColor" :stroke-width="STROKE" stroke-linecap="square" />
+
+      <!-- 圖層 3：解答（彩虹最短路） -->
+      <g v-if="showSolution" class="layer-solution">
+        <line
+          v-for="(s, i) in solutionSegments"
+          :key="i"
+          :x1="s.x1"
+          :y1="s.y1"
+          :x2="s.x2"
+          :y2="s.y2"
+          :stroke="s.color"
+          :stroke-width="solStroke"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </g>
+    </svg>
   </div>
 </template>

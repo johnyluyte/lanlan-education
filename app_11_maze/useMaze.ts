@@ -33,13 +33,8 @@ export function useMaze() {
   const grid = shallowRef<Cell[][]>(buildGrid())
   const showSolution = ref(true)
 
-  // showSolution 開啟時算最短路，轉成 `${r},${c}` → 步序 index 的 Map，
-  // 供 template O(1) 查（.has 判在不在路徑上；.get 取步序做漸層）
-  const solutionIndex = computed<Map<string, number>>(() => {
-    if (!showSolution.value) return new Map()
-    return new Map(solveMaze(grid.value).map(([r, c], i) => [`${r},${c}`, i]))
-  })
-  const solutionLength = computed(() => solutionIndex.value.size)
+  // showSolution 開啟時算最短路，回傳「有序」座標陣列（SVG polyline 需依序連線）
+  const solutionPath = computed<[number, number][]>(() => (showSolution.value ? solveMaze(grid.value) : []))
 
   const toggleSolution = () => {
     showSolution.value = !showSolution.value
@@ -72,8 +67,7 @@ export function useMaze() {
     grid,
     reroll,
     showSolution,
-    solutionIndex,
-    solutionLength,
+    solutionPath,
     toggleSolution,
     MIN,
     MAX,
