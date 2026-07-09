@@ -9,6 +9,8 @@
   // 純繪製狀態（不影響迷宮生成），由 Page 持有、同時餵給 Settings 調整與 Board 繪製
   const cellSize = ref(24) // 每格小正方形邊長 (px)
   const drawTotal = ref(1.6) // 解答逐段畫出的總秒數
+
+  const clickedCell = ref<[number, number] | null>(null) // Board 回報的最後點擊格
 </script>
 
 <template>
@@ -26,6 +28,21 @@
       @toggle-solution="toggleSolution"
     />
 
-    <MazeBoard :grid="grid" :solution-path="solutionPath" :show-solution="showSolution" :cell-size="cellSize" :draw-total="drawTotal" />
+    <MazeBoard
+      :grid="grid"
+      :solution-path="solutionPath"
+      :show-solution="showSolution"
+      :cell-size="cellSize"
+      :draw-total="drawTotal"
+      @cell-click="
+        (r, c) => {
+          clickedCell = [r, c]
+        }
+      "
+    />
+
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      目前點擊格：{{ clickedCell ? `第 ${clickedCell[0]} 列，第 ${clickedCell[1]} 行` : '（尚未點擊）' }}
+    </p>
   </div>
 </template>
