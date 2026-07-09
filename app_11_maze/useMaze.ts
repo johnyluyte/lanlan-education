@@ -1,6 +1,7 @@
 import { ref, shallowRef, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { generateMaze, braidMaze, solveMaze, makeRng, type Cell } from './generator'
+import { useMazeDecorations } from './useMazeDecorations'
 
 const MIN = 2
 const MAX = 40
@@ -47,6 +48,9 @@ export function useMaze() {
   // showSolution 開啟時算最短路，回傳「有序」座標陣列（SVG polyline 需依序連線）
   const solutionPath = computed<[number, number][]>(() => (showSolution.value ? solveMaze(grid.value) : []))
 
+  // 裝飾圖層（黃圓）拆到獨立 composable，自有 density 狀態
+  const { decorations } = useMazeDecorations(grid, seed)
+
   const toggleSolution = () => {
     showSolution.value = !showSolution.value
   }
@@ -89,6 +93,7 @@ export function useMaze() {
     difficulty,
     seed,
     grid,
+    decorations,
     reroll,
     showSolution,
     solutionPath,

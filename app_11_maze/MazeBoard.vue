@@ -7,6 +7,7 @@
   const props = defineProps<{
     grid: Cell[][]
     solutionPath: [number, number][]
+    decorations: [number, number][] // 要放黃圓的格座標
     showSolution: boolean
     cellSize: number
     drawTotal: number // 解答逐段畫出的總秒數
@@ -141,6 +142,18 @@
 
       <!-- 圖層 2：牆壁 -->
       <path class="layer-walls" :d="wallsD" fill="none" stroke="currentColor" :stroke-width="STROKE" stroke-linecap="square" />
+
+      <!-- 圖層 2.5：裝飾（隨機黃圓） -->
+      <g class="layer-decorations">
+        <circle
+          v-for="([r, c], i) in decorations"
+          :key="i"
+          :cx="c * cellSize + cellSize / 2"
+          :cy="r * cellSize + cellSize / 2"
+          :r="cellSize * 0.28"
+          fill="rgb(250 204 21)"
+        />
+      </g>
 
       <!-- 圖層 3：解答（彩虹最短路，逐段畫出）。key=drawKey → 重算時重掛重播動畫 -->
       <g v-if="showSolution" :key="drawKey" class="layer-solution">

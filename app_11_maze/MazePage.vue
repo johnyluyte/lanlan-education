@@ -4,7 +4,7 @@
   import MazeSettings from './MazeSettings.vue'
   import MazeBoard from './MazeBoard.vue'
 
-  const { rows, cols, difficulty, seed, grid, reroll, showSolution, solutionPath, toggleSolution, MIN, MAX } = useMaze()
+  const { rows, cols, difficulty, seed, grid, decorations, reroll, showSolution, solutionPath, toggleSolution, MIN, MAX } = useMaze()
 
   // 純繪製狀態（不影響迷宮生成），由 Page 持有、同時餵給 Settings 調整與 Board 繪製
   const cellSize = ref(24) // 每格小正方形邊長 (px)
@@ -35,6 +35,7 @@
     <MazeBoard
       :grid="grid"
       :solution-path="solutionPath"
+      :decorations="decorations"
       :show-solution="showSolution"
       :cell-size="cellSize"
       :draw-total="drawTotal"
