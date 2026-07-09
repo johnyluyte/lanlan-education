@@ -15,7 +15,6 @@
             <tr>
               <td class="border border-gray-400 p-4" colspan="4">蓋印章</td>
             </tr>
-
           </tbody>
         </table>
       </div>
