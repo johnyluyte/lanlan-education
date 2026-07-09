@@ -51,6 +51,8 @@ export default defineNuxtConfig({
     '#alias-sudoku': fileURLToPath(new URL('./app_10_sudoku', import.meta.url)),
     '#alias-maze': fileURLToPath(new URL('./app_11_maze', import.meta.url)),
     '#alias-matching-game': fileURLToPath(new URL('./app_12_matching_game', import.meta.url)),
+    '#alias-connect-the-dots': fileURLToPath(new URL('./app_13_connect_the_dots', import.meta.url)),
+    '#alias-tile-matching': fileURLToPath(new URL('./app_90_tile_matching', import.meta.url)),
   },
 
   routeRules: {

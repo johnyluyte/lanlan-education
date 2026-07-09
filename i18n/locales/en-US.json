@@ -19,6 +19,8 @@
     "home": "Home",
     "sudoku": "Sudoku",
     "maze": "Maze",
-    "matchingGame": "Matching Game"
+    "matchingGame": "Matching Game",
+    "connectTheDots": "Connect the Dots",
+    "tileMatching": "Tile Matching"
   }
 }

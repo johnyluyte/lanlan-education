@@ -16,6 +16,8 @@
     { label: t('nav.sudoku'), icon: 'i-lucide-grid-3x3', to: '/sudoku', onSelect: () => emit('select') },
     { label: t('nav.maze'), icon: 'i-game-icons-maze', to: '/maze', onSelect: () => emit('select') },
     { label: t('nav.matchingGame'), icon: 'i-game-icons-card-pick', to: '/matching-game', onSelect: () => emit('select') },
+    { label: t('nav.connectTheDots'), icon: 'i-game-icons-connected', to: '/connect-the-dots', onSelect: () => emit('select') },
+    { label: t('nav.tileMatching'), icon: 'i-game-icons-domino-tiles', to: '/tile-matching', onSelect: () => emit('select') },
   ])
 </script>
 

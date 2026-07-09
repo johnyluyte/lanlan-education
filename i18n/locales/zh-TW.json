@@ -19,6 +19,8 @@
     "home": "首頁",
     "sudoku": "Sudoku",
     "maze": "迷宮",
-    "matchingGame": "連連看"
+    "matchingGame": "連連看",
+    "connectTheDots": "連點成線",
+    "tileMatching": "方塊消除"
   }
 }

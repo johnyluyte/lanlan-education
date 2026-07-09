@@ -6,6 +6,10 @@
    路徑相對於本檔(app/assets/css/)，往上 3 層到 root。新增 domain 資料夾時要在此補一行。 */
 @source '../../../app_00_shared';
 @source '../../../app_10_sudoku';
+@source '../../../app_11_maze';
+@source '../../../app_12_matching_game';
+@source '../../../app_13_connect_the_dots';
+@source '../../../app_90_tile_matching';
 
 @theme static {
   --font-sans:

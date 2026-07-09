@@ -18,6 +18,8 @@ export default defineConfig({
       { find: /^#alias-sudoku\//, replacement: fileURLToPath(new URL('./app_10_sudoku/', import.meta.url)) },
       { find: /^#alias-maze\//, replacement: fileURLToPath(new URL('./app_11_maze/', import.meta.url)) },
       { find: /^#alias-matching-game\//, replacement: fileURLToPath(new URL('./app_12_matching_game/', import.meta.url)) },
+      { find: /^#alias-connect-the-dots\//, replacement: fileURLToPath(new URL('./app_13_connect_the_dots/', import.meta.url)) },
+      { find: /^#alias-tile-matching\//, replacement: fileURLToPath(new URL('./app_90_tile_matching/', import.meta.url)) },
     ],
   },
   test: {
