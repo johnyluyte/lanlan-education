@@ -21,6 +21,8 @@
     "maze": "Maze",
     "matchingGame": "Matching Game",
     "connectTheDots": "Connect the Dots",
+    "imitateDot": "Imitate the Dot",
+    "imitateLine": "Imitate the Line",
     "tileMatching": "Tile Matching"
   }
 }

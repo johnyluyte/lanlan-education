@@ -21,6 +21,8 @@
     "maze": "迷宮",
     "matchingGame": "連連看",
     "connectTheDots": "連點成線",
+    "imitateDot": "模仿點",
+    "imitateLine": "模仿線",
     "tileMatching": "方塊消除"
   }
 }

@@ -38,7 +38,8 @@
       "PowerShell(fnm env --shell powershell | Out-String | Invoke-Expression; pnpm check 2>&1 | Select-Object -Last 10; \"EXIT=$LASTEXITCODE\")",
       "PowerShell(fnm env --shell powershell | Out-String | Invoke-Expression; pnpm check 2>&1 | Select-Object -Last 15; \"exit=$LASTEXITCODE\")",
       "PowerShell(fnm env --shell powershell | Out-String | Invoke-Expression; pnpm check 2>&1 | Select-Object -Last 20; \"exit=$LASTEXITCODE\")",
-      "PowerShell(fnm env --shell powershell | Out-String | Invoke-Expression; pnpm check 2>&1 | Select-Object -Last 12; \"exit=$LASTEXITCODE\")"
+      "PowerShell(fnm env --shell powershell | Out-String | Invoke-Expression; pnpm check 2>&1 | Select-Object -Last 12; \"exit=$LASTEXITCODE\")",
+      "Bash(pnpm -v)"
     ]
   }
 }
