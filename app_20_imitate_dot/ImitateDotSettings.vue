@@ -1,5 +1,7 @@
 <script setup lang="ts">
   // 控制面板：M（列數）、N（行數）、格子寬。全部用 v-model 雙向綁定。
+  import type { DotKind } from './dotKind'
+
   defineProps<{
     min: number // rows/cols 下限
     max: number // rows/cols 上限
@@ -9,10 +11,9 @@
   const cols = defineModel<number>('cols', { required: true })
   const cellSize = defineModel<number>('cellSize', { required: true })
   const density = defineModel<number>('density', { required: true })
-  const weightYellow = defineModel<number>('weightYellow', { required: true })
-  const weightRed = defineModel<number>('weightRed', { required: true })
-  const weightGreen = defineModel<number>('weightGreen', { required: true })
-  const weightBlue = defineModel<number>('weightBlue', { required: true })
+  // 固定 4 格：每格自帶色碼（UColorPicker）+ 權重（USlider）。dotKinds 是同一個 reactive 陣列，
+  // 直接改 dotKinds[i].color / .weight 就會同步回 Page，不需另外 emit。
+  const dotKinds = defineModel<DotKind[]>('dotKinds', { required: true })
 
   // 純 UI 範圍常數
   const CELL_MIN = 8
@@ -38,22 +39,13 @@
       <USlider v-model="density" :min="0" :max="1" :step="0.01" class="mt-3" />
     </div>
     <div class="border-muted flex flex-col gap-4 border-t pt-4">
-      <span class="text-sm font-medium">顏色比例（相對權重，不需總和為 1）：</span>
-      <div>
-        <span class="text-xs text-gray-500">黃色：{{ weightYellow.toFixed(2) }}</span>
-        <USlider v-model="weightYellow" :min="0" :max="1" :step="0.01" class="mt-2" />
-      </div>
-      <div>
-        <span class="text-xs text-gray-500">紅色：{{ weightRed.toFixed(2) }}</span>
-        <USlider v-model="weightRed" :min="0" :max="1" :step="0.01" class="mt-2" />
-      </div>
-      <div>
-        <span class="text-xs text-gray-500">綠色：{{ weightGreen.toFixed(2) }}</span>
-        <USlider v-model="weightGreen" :min="0" :max="1" :step="0.01" class="mt-2" />
-      </div>
-      <div>
-        <span class="text-xs text-gray-500">藍色：{{ weightBlue.toFixed(2) }}</span>
-        <USlider v-model="weightBlue" :min="0" :max="1" :step="0.01" class="mt-2" />
+      <span class="text-sm font-medium">顏色欄位（色碼可調，權重為相對值、不需總和為 1）：</span>
+      <div v-for="(kind, i) in dotKinds" :key="i" class="flex items-center gap-3">
+        <UColorPicker v-model="kind.color" size="sm" />
+        <div class="flex-1">
+          <span class="text-xs text-gray-500">權重：{{ kind.weight.toFixed(2) }}</span>
+          <USlider v-model="kind.weight" :min="0" :max="1" :step="0.01" class="mt-2" />
+        </div>
       </div>
     </div>
   </div>
