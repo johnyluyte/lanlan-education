@@ -2,7 +2,7 @@
   import { useMaze } from './useMaze'
   import type { Cell } from './generator'
 
-  const { rows, cols, grid, reroll, MIN, MAX } = useMaze()
+  const { rows, cols, grid, reroll, showSolution, solutionSet, toggleSolution, MIN, MAX } = useMaze()
 
   const CELL = 24 // 每格邊長 (px)
 
@@ -36,6 +36,15 @@
         <USlider v-model="cols" :min="MIN" :max="MAX" :step="1" class="mt-3" />
       </div>
       <UButton icon="i-lucide-dices" color="primary" block @click="reroll">換一張迷宮</UButton>
+      <UButton
+        :icon="showSolution ? 'i-lucide-eye-off' : 'i-lucide-route'"
+        color="neutral"
+        variant="outline"
+        block
+        @click="toggleSolution"
+      >
+        {{ showSolution ? '隱藏解答' : '顯示解答' }}
+      </UButton>
     </div>
 
     <!-- 迷宮 -->
@@ -51,7 +60,9 @@
             class="box-border"
             :class="{
               'bg-green-400/40': r === 0 && c === 0,
-              'bg-red-400/40': r === rows - 1 && c === cols - 1
+              'bg-red-400/40': r === rows - 1 && c === cols - 1,
+              'bg-sky-400/40':
+                solutionSet.has(`${r},${c}`) && !(r === 0 && c === 0) && !(r === rows - 1 && c === cols - 1)
             }"
             :style="cellStyle(cell, r, c)"
           />

@@ -54,3 +54,46 @@ export function generateMaze(rows: number, cols: number): Cell[][] {
 
   return grid
 }
+
+// 解迷宮：BFS 找左上(0,0)→右下的最短路，回傳沿途座標 [r,c][]。
+// perfect maze 無環 → 唯一路徑即最短路。詳見 docs/maze-algorithm.md §5
+export function solveMaze(grid: Cell[][]): [number, number][] {
+  const rows = grid.length
+  const cols = grid[0]?.length ?? 0
+  if (rows === 0 || cols === 0) return []
+  const goal: [number, number] = [rows - 1, cols - 1]
+
+  const parent = Array.from({ length: rows }, () => Array<[number, number] | null>(cols).fill(null))
+  const visited = Array.from({ length: rows }, () => Array<boolean>(cols).fill(false))
+  const queue: [number, number][] = [[0, 0]]
+  visited[0]![0] = true
+
+  while (queue.length > 0) {
+    const [r, c] = queue.shift()! // PoC 尺寸 ≤40×40，shift O(n) 可接受
+    if (r === goal[0] && c === goal[1]) break
+    const cell = grid[r]![c]!
+    // 只走「牆是開的」方向（牆 = false 才能通過）
+    const moves: [boolean, number, number][] = [
+      [cell.top, r - 1, c],
+      [cell.right, r, c + 1],
+      [cell.bottom, r + 1, c],
+      [cell.left, r, c - 1]
+    ]
+    for (const [wall, nr, nc] of moves) {
+      if (!wall && nr >= 0 && nr < rows && nc >= 0 && nc < cols && !visited[nr]![nc]) {
+        visited[nr]![nc] = true
+        parent[nr]![nc] = [r, c]
+        queue.push([nr, nc])
+      }
+    }
+  }
+
+  if (!visited[goal[0]]![goal[1]]) return [] // perfect maze 理論上必連通，保險
+  const path: [number, number][] = []
+  let cur: [number, number] | null = goal
+  while (cur) {
+    path.push(cur)
+    cur = parent[cur[0]]![cur[1]]
+  }
+  return path.reverse()
+}
