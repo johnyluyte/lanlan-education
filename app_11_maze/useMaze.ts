@@ -1,6 +1,6 @@
 import { ref, shallowRef, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { generateMaze, braidMaze, solveMaze, makeRng, type Cell } from './generator'
+import { generateMaze, generatePrim, braidMaze, solveMaze, makeRng, type Cell } from './generator'
 import { useMazeDecorations } from './useMazeDecorations'
 
 const MIN = 2
@@ -10,6 +10,16 @@ const clamp = (n: number) => Math.min(MAX, Math.max(MIN, Math.round(n || MIN)))
 
 // 隨機產生一個短 seed 字串（換地圖時用）
 const randomSeed = () => Math.random().toString(36).slice(2, 8)
+
+export type MazeAlgo = 'dfs' | 'prim'
+
+// 演算法選項（value + 標籤 + 對應的生成函式）。同 (rows, cols, rng) 簽名可直接 dispatch。
+export const ALGORITHMS: { value: MazeAlgo; label: string }[] = [
+  { value: 'dfs', label: 'DFS' },
+  { value: 'prim', label: 'Prim' },
+]
+
+const GENERATORS = { dfs: generateMaze, prim: generatePrim } as const
 
 export type Difficulty = 'easy' | 'medium' | 'hard'
 
@@ -26,6 +36,7 @@ export const DIFFICULTIES: { value: Difficulty; label: string }[] = [
 export function useMaze() {
   const rows = ref(12)
   const cols = ref(18)
+  const algorithm = ref<MazeAlgo>('dfs')
   const difficulty = ref<Difficulty>('medium')
 
   // seed 與網址 ?seed=xxx 雙向同步，方便分享地圖。網址有 seed 就用它，否則隨機。
@@ -37,7 +48,7 @@ export function useMaze() {
   // 全程用同一條種子化 rng → 可重現。
   const buildGrid = () => {
     const rng = makeRng(seed.value)
-    const g = generateMaze(clamp(rows.value), clamp(cols.value), rng)
+    const g = GENERATORS[algorithm.value](clamp(rows.value), clamp(cols.value), rng)
     braidMaze(g, BRAID[difficulty.value], rng)
     return g
   }
@@ -62,7 +73,7 @@ export function useMaze() {
 
   // 改 seed/尺寸/難度 → 自動重生一張新迷宮（尺寸先 clamp 回合法範圍）
   // solutionPath 是 computed，會跟著新 grid 自動重算
-  watch([seed, rows, cols, difficulty], () => {
+  watch([seed, rows, cols, algorithm, difficulty], () => {
     const r = clamp(rows.value)
     const c = clamp(cols.value)
     if (r !== rows.value) rows.value = r
@@ -90,6 +101,7 @@ export function useMaze() {
   return {
     rows,
     cols,
+    algorithm,
     difficulty,
     seed,
     grid,

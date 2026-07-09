@@ -86,6 +86,50 @@ export function generateMaze(rows: number, cols: number, rng: Rng): Cell[][] {
   return grid
 }
 
+// 產生 rows×cols 的 perfect maze（Randomized Prim）
+// 維護一條「邊界邊」清單：從已訪格指向未訪鄰居的牆。每次隨機挑一條打通。
+// 風格：短分岔多、死路多，比 DFS 難走。詳見 docs/maze-algorithm.md §4
+export function generatePrim(rows: number, cols: number, rng: Rng): Cell[][] {
+  const grid: Cell[][] = Array.from({ length: rows }, () =>
+    Array.from({ length: cols }, () => ({ top: true, right: true, bottom: true, left: true })),
+  )
+  const visited = Array.from({ length: rows }, () => Array<boolean>(cols).fill(false))
+
+  type Edge = { r: number; c: number; dir: Dir } // 從已訪格 (r,c) 往 dir 的邊界邊
+  const frontier: Edge[] = []
+
+  const addEdges = (r: number, c: number) => {
+    for (const dir of ['top', 'right', 'bottom', 'left'] as Dir[]) {
+      const nr = r + DELTA[dir][0]
+      const nc = c + DELTA[dir][1]
+      if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && !visited[nr]![nc]) frontier.push({ r, c, dir })
+    }
+  }
+
+  visited[0]![0] = true
+  addEdges(0, 0)
+
+  while (frontier.length > 0) {
+    // 隨機挑一條邊界邊；用 swap-remove 做 O(1) 移除
+    const idx = Math.floor(rng() * frontier.length)
+    const { r, c, dir } = frontier[idx]!
+    frontier[idx] = frontier[frontier.length - 1]!
+    frontier.pop()
+
+    const nr = r + DELTA[dir][0]
+    const nc = c + DELTA[dir][1]
+    if (visited[nr]![nc]) continue // 對側已被別條邊先訪問 → 跳過
+
+    // 打通這道牆，納入新格，再擴充其邊界邊
+    grid[r]![c]![dir] = false
+    grid[nr]![nc]![OPPOSITE[dir]] = false
+    visited[nr]![nc] = true
+    addEdges(nr, nc)
+  }
+
+  return grid
+}
+
 // 計算一格有幾個開口（牆 = false 的邊數）
 function openings(cell: Cell): number {
   return (!cell.top ? 1 : 0) + (!cell.right ? 1 : 0) + (!cell.bottom ? 1 : 0) + (!cell.left ? 1 : 0)

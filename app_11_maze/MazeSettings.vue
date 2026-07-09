@@ -2,7 +2,7 @@
   // 迷宮控制面板：難度、尺寸、格子寬、動畫時長、換迷宮、顯示/隱藏解答。
   // 尺寸/格子寬/動畫時長用 v-model 雙向綁定；換迷宮、切換解答以事件回報父層。
   import { ref, watch } from 'vue'
-  import { DIFFICULTIES, type Difficulty } from './useMaze'
+  import { ALGORITHMS, DIFFICULTIES, type MazeAlgo, type Difficulty } from './useMaze'
 
   defineProps<{
     showSolution: boolean
@@ -14,6 +14,7 @@
   const cols = defineModel<number>('cols', { required: true })
   const cellSize = defineModel<number>('cellSize', { required: true })
   const drawTotal = defineModel<number>('drawTotal', { required: true })
+  const algorithm = defineModel<MazeAlgo>('algorithm', { required: true })
   const difficulty = defineModel<Difficulty>('difficulty', { required: true })
   const seed = defineModel<string>('seed', { required: true })
 
@@ -42,6 +43,24 @@
 
 <template>
   <div class="flex w-full max-w-md flex-col gap-4 rounded-xl border border-gray-200 p-5 shadow-sm dark:border-gray-700">
+    <div>
+      <span class="text-sm font-medium">演算法：</span>
+      <UFieldGroup orientation="horizontal" class="mt-3">
+        <UButton
+          v-for="a in ALGORITHMS"
+          :key="a.value"
+          :color="algorithm === a.value ? 'primary' : 'neutral'"
+          :variant="algorithm === a.value ? 'solid' : 'outline'"
+          @click="
+            () => {
+              algorithm = a.value
+            }
+          "
+        >
+          {{ a.label }}
+        </UButton>
+      </UFieldGroup>
+    </div>
     <div>
       <span class="text-sm font-medium">難度：</span>
       <UFieldGroup orientation="horizontal" class="mt-3">
