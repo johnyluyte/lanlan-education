@@ -1,11 +1,15 @@
 <script setup lang="ts">
+  import { ref } from 'vue'
   import { useMaze, DIFFICULTIES } from './useMaze'
   import type { Cell } from './generator'
 
   const { rows, cols, difficulty, setDifficulty, grid, reroll, showSolution, solutionIndex, solutionLength, toggleSolution, MIN, MAX } =
     useMaze()
 
-  const CELL = 24 // 每格邊長 (px)
+  // 每格小正方形邊長 (px)，使用者可調。只影響繪製、不影響迷宮生成
+  const cellSize = ref(24)
+  const CELL_MIN = 8
+  const CELL_MAX = 48
 
   // 依步序回傳彩虹 hue 底色：沿路徑由藍漸變到桃紅
   function pathColor(index: number, len: number) {
@@ -26,8 +30,8 @@
     const idx = solutionIndex.value.get(`${r},${c}`)
     const onPath = idx !== undefined && !isStart && !isEnd // 起終點用 class 綠/紅，不設 inline bg
     return {
-      width: `${CELL}px`,
-      height: `${CELL}px`,
+      width: `${cellSize.value}px`,
+      height: `${cellSize.value}px`,
       marginRight: '-2px', // 與右鄰重疊 2px，共用垂直牆收成單條
       borderTop: cell.top ? wall : none,
       borderRight: cell.right ? wall : none,
@@ -63,6 +67,10 @@
       <div>
         <span class="text-sm font-medium">行數 (cols)：{{ cols }}</span>
         <USlider v-model="cols" :min="MIN" :max="MAX" :step="1" class="mt-3" />
+      </div>
+      <div>
+        <span class="text-sm font-medium">格子寬 (px)：{{ cellSize }}</span>
+        <USlider v-model="cellSize" :min="CELL_MIN" :max="CELL_MAX" :step="1" class="mt-3" />
       </div>
       <UButton icon="i-lucide-dices" color="primary" block @click="reroll">換一張迷宮</UButton>
       <UButton :icon="showSolution ? 'i-lucide-eye-off' : 'i-lucide-route'" color="neutral" variant="outline" block @click="toggleSolution">
