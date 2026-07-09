@@ -55,6 +55,7 @@ export default defineNuxtConfig({
     '#alias-imitate-dot': fileURLToPath(new URL('./app_20_imitate_dot', import.meta.url)),
     '#alias-imitate-line': fileURLToPath(new URL('./app_21_imitate_line', import.meta.url)),
     '#alias-paper-staging': fileURLToPath(new URL('./app_30_paper_staging', import.meta.url)),
+    '#alias-svg-drawing': fileURLToPath(new URL('./app_31_svg_drawing', import.meta.url)),
     '#alias-tile-matching': fileURLToPath(new URL('./app_90_tile_matching', import.meta.url)),
   },
 
