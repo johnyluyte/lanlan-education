@@ -10,7 +10,7 @@
   <div class="flex min-h-screen">
     <aside
       class="border-muted/90 bg-default shrink-0 border-r p-2 transition-[width] duration-200"
-      :class="isDesktopCollapsed ? 'w-16' : 'w-56'"
+      :class="isDesktopCollapsed ? 'w-12' : 'w-44'"
     >
       <LayoutDrawerContent :collapsed="isDesktopCollapsed" />
     </aside>
