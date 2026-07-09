@@ -8,6 +8,7 @@
   const rows = defineModel<number>('rows', { required: true })
   const cols = defineModel<number>('cols', { required: true })
   const cellSize = defineModel<number>('cellSize', { required: true })
+  const showGrid = defineModel<boolean>('showGrid', { required: true })
 
   // 純 UI 範圍常數
   const CELL_MIN = 8
@@ -27,6 +28,10 @@
     <div>
       <span class="text-sm font-medium">格子寬 (px)：{{ cellSize }}</span>
       <USlider v-model="cellSize" :min="CELL_MIN" :max="CELL_MAX" :step="1" class="mt-3" />
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-sm font-medium">顯示 cell 框線</span>
+      <USwitch v-model="showGrid" />
     </div>
   </div>
 </template>
