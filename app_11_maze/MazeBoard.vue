@@ -1,6 +1,7 @@
 <script setup lang="ts">
   // 迷宮繪製：SVG 三圖層（起終點標記 → 牆壁 → 解答），疊序 = 文件順序，不用 z-index。
   import { ref, computed, watch } from 'vue'
+  import type { ContextMenuItem } from '@nuxt/ui'
   import type { Cell } from './generator'
 
   const props = defineProps<{
@@ -99,66 +100,71 @@
     rightClicked.value = cell
     emit('cellRightClick', cell[0], cell[1])
   }
+
+  // 右鍵選單項目（暫時不做事）
+  const menuItems: ContextMenuItem[] = [{ label: 'button1' }, { label: 'button2' }]
 </script>
 
 <template>
-  <svg
-    :width="dims.w + STROKE"
-    :height="dims.h + STROKE"
-    :viewBox="viewBox"
-    class="cursor-pointer text-gray-800 dark:text-gray-200"
-    @click="onClick"
-    @contextmenu.prevent="onContextMenu"
-  >
-    <!-- 圖層 1：起終點標記 -->
-    <g class="layer-markers">
-      <rect :x="0" :y="0" :width="cellSize" :height="cellSize" fill="rgb(74 222 128 / 0.4)" />
-      <rect :x="(C - 1) * cellSize" :y="(R - 1) * cellSize" :width="cellSize" :height="cellSize" fill="rgb(248 113 113 / 0.4)" />
-    </g>
+  <UContextMenu :items="menuItems">
+    <svg
+      :width="dims.w + STROKE"
+      :height="dims.h + STROKE"
+      :viewBox="viewBox"
+      class="cursor-pointer text-gray-800 dark:text-gray-200"
+      @click="onClick"
+      @contextmenu="onContextMenu"
+    >
+      <!-- 圖層 1：起終點標記 -->
+      <g class="layer-markers">
+        <rect :x="0" :y="0" :width="cellSize" :height="cellSize" fill="rgb(74 222 128 / 0.4)" />
+        <rect :x="(C - 1) * cellSize" :y="(R - 1) * cellSize" :width="cellSize" :height="cellSize" fill="rgb(248 113 113 / 0.4)" />
+      </g>
 
-    <!-- 圖層 1.5：左鍵點擊格（琥珀）、右鍵點擊格（紫），證明偵測到哪一格 -->
-    <rect
-      v-if="clicked"
-      :x="clicked[1] * cellSize"
-      :y="clicked[0] * cellSize"
-      :width="cellSize"
-      :height="cellSize"
-      fill="rgb(251 191 36 / 0.45)"
-    />
-    <rect
-      v-if="rightClicked"
-      :x="rightClicked[1] * cellSize"
-      :y="rightClicked[0] * cellSize"
-      :width="cellSize"
-      :height="cellSize"
-      fill="rgb(168 85 247 / 0.45)"
-    />
-
-    <!-- 圖層 2：牆壁 -->
-    <path class="layer-walls" :d="wallsD" fill="none" stroke="currentColor" :stroke-width="STROKE" stroke-linecap="square" />
-
-    <!-- 圖層 3：解答（彩虹最短路，逐段畫出）。key=drawKey → 重算時重掛重播動畫 -->
-    <g v-if="showSolution" :key="drawKey" class="layer-solution">
-      <line
-        v-for="(s, i) in solutionSegments"
-        :key="i"
-        class="sol-seg"
-        :x1="s.x1"
-        :y1="s.y1"
-        :x2="s.x2"
-        :y2="s.y2"
-        :stroke="s.color"
-        :stroke-width="solStroke"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        :style="{
-          strokeDasharray: cellSize,
-          strokeDashoffset: cellSize,
-          animationDelay: `${s.delay}s`,
-        }"
+      <!-- 圖層 1.5：左鍵點擊格（琥珀）、右鍵點擊格（紫），證明偵測到哪一格 -->
+      <rect
+        v-if="clicked"
+        :x="clicked[1] * cellSize"
+        :y="clicked[0] * cellSize"
+        :width="cellSize"
+        :height="cellSize"
+        fill="rgb(251 191 36 / 0.45)"
       />
-    </g>
-  </svg>
+      <rect
+        v-if="rightClicked"
+        :x="rightClicked[1] * cellSize"
+        :y="rightClicked[0] * cellSize"
+        :width="cellSize"
+        :height="cellSize"
+        fill="rgb(168 85 247 / 0.45)"
+      />
+
+      <!-- 圖層 2：牆壁 -->
+      <path class="layer-walls" :d="wallsD" fill="none" stroke="currentColor" :stroke-width="STROKE" stroke-linecap="square" />
+
+      <!-- 圖層 3：解答（彩虹最短路，逐段畫出）。key=drawKey → 重算時重掛重播動畫 -->
+      <g v-if="showSolution" :key="drawKey" class="layer-solution">
+        <line
+          v-for="(s, i) in solutionSegments"
+          :key="i"
+          class="sol-seg"
+          :x1="s.x1"
+          :y1="s.y1"
+          :x2="s.x2"
+          :y2="s.y2"
+          :stroke="s.color"
+          :stroke-width="solStroke"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          :style="{
+            strokeDasharray: cellSize,
+            strokeDashoffset: cellSize,
+            animationDelay: `${s.delay}s`,
+          }"
+        />
+      </g>
+    </svg>
+  </UContextMenu>
 </template>
 
 <style scoped>
