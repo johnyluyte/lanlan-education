@@ -2,9 +2,16 @@
   import { useMaze } from './useMaze'
   import type { Cell } from './generator'
 
-  const { rows, cols, grid, reroll, showSolution, solutionSet, toggleSolution, MIN, MAX } = useMaze()
+  const { rows, cols, grid, reroll, showSolution, solutionIndex, solutionLength, toggleSolution, MIN, MAX } = useMaze()
 
   const CELL = 24 // 每格邊長 (px)
+
+  // 依步序回傳彩虹 hue 底色：沿路徑由藍漸變到桃紅
+  function pathColor(index: number, len: number) {
+    const t = len <= 1 ? 0 : index / (len - 1)
+    const hue = 200 + t * 140 // 200°(藍) → 340°(桃紅)
+    return `hsl(${hue} 85% 55% / 0.55)`
+  }
 
   // 牆用 border 畫。為避免相鄰兩格把共用牆各畫一次（線變兩倍粗），
   // 每格只畫 top / left；最右欄、最底列再補畫外框的 right / bottom。
@@ -12,13 +19,18 @@
   function cellStyle(cell: Cell, r: number, c: number) {
     const wall = '2px solid currentColor'
     const none = '2px solid transparent'
+    const isStart = r === 0 && c === 0
+    const isEnd = r === rows.value - 1 && c === cols.value - 1
+    const idx = solutionIndex.value.get(`${r},${c}`)
+    const onPath = idx !== undefined && !isStart && !isEnd // 起終點用 class 綠/紅，不設 inline bg
     return {
       width: `${CELL}px`,
       height: `${CELL}px`,
       borderTop: cell.top ? wall : none,
       borderLeft: cell.left ? wall : none,
       borderRight: c === cols.value - 1 && cell.right ? wall : none,
-      borderBottom: r === rows.value - 1 && cell.bottom ? wall : none
+      borderBottom: r === rows.value - 1 && cell.bottom ? wall : none,
+      ...(onPath ? { backgroundColor: pathColor(idx, solutionLength.value) } : {}),
     }
   }
 </script>
@@ -36,13 +48,7 @@
         <USlider v-model="cols" :min="MIN" :max="MAX" :step="1" class="mt-3" />
       </div>
       <UButton icon="i-lucide-dices" color="primary" block @click="reroll">換一張迷宮</UButton>
-      <UButton
-        :icon="showSolution ? 'i-lucide-eye-off' : 'i-lucide-route'"
-        color="neutral"
-        variant="outline"
-        block
-        @click="toggleSolution"
-      >
+      <UButton :icon="showSolution ? 'i-lucide-eye-off' : 'i-lucide-route'" color="neutral" variant="outline" block @click="toggleSolution">
         {{ showSolution ? '隱藏解答' : '顯示解答' }}
       </UButton>
     </div>
@@ -61,8 +67,6 @@
             :class="{
               'bg-green-400/40': r === 0 && c === 0,
               'bg-red-400/40': r === rows - 1 && c === cols - 1,
-              'bg-sky-400/40':
-                solutionSet.has(`${r},${c}`) && !(r === 0 && c === 0) && !(r === rows - 1 && c === cols - 1)
             }"
             :style="cellStyle(cell, r, c)"
           />

@@ -8,12 +8,12 @@
 - 「拆掉兩格之間的牆」= 連一條邊；「保留牆」= 不連。
 - 大多數迷宮要的是 **perfect maze (完美迷宮)**：任兩格之間**恰好一條路徑**、無迴圈、全部連通。這在圖論上正好是格點圖的**生成樹**。
 
-| 名詞 | 對應 | 說明 |
-| --- | --- | --- |
-| 格子 cell | 節點 node | N×M 個 |
-| 相鄰格 | 潛在邊 edge | 上/右/下/左 4 個方向 |
-| 拆牆 carve | 加入生成樹的邊 | 恰好 `N*M - 1` 條 |
-| 死路 dead-end | 度數 1 的節點 | 只有一個開口 |
+| 名詞          | 對應           | 說明                 |
+| ------------- | -------------- | -------------------- |
+| 格子 cell     | 節點 node      | N×M 個               |
+| 相鄰格        | 潛在邊 edge    | 上/右/下/左 4 個方向 |
+| 拆牆 carve    | 加入生成樹的邊 | 恰好 `N*M - 1` 條    |
+| 死路 dead-end | 度數 1 的節點  | 只有一個開口         |
 
 > perfect maze 恰好 `N*M - 1` 道被拆的牆（生成樹邊數 = 節點數 − 1）。若刻意多拆幾道牆製造迴圈，就變成 **braid maze (有環迷宮)**，難度較低、路線較多。
 
@@ -74,7 +74,7 @@ const DELTA: Record<Dir, [number, number]> = { top: [-1, 0], right: [0, 1], bott
 export function generateMaze(rows: number, cols: number): Cell[][] {
   // 初始：每格四面皆有牆
   const grid: Cell[][] = Array.from({ length: rows }, () =>
-    Array.from({ length: cols }, () => ({ top: true, right: true, bottom: true, left: true }))
+    Array.from({ length: cols }, () => ({ top: true, right: true, bottom: true, left: true })),
   )
   const visited = Array.from({ length: rows }, () => Array<boolean>(cols).fill(false))
 
@@ -118,15 +118,15 @@ export function generateMaze(rows: number, cols: number): Cell[][] {
 
 ## 4. 其他經典演算法（風格差異）
 
-| 演算法 | 風格 | 難度 | 備註 |
-| --- | --- | --- | --- |
-| **Recursive Backtracker (DFS)** | 長走廊、彎繞、死路少 | 易 | 本專案首選 |
-| **Randomized Prim** | 短分岔、死路多、灌木叢感 | 中 | 維護「邊界牆表」隨機挑 |
-| **Randomized Kruskal** | 均勻、規律 | 中 | 需 union-find (DSU) 判連通 |
-| **Wilson / Aldous-Broder** | 無偏 (uniform spanning tree) | 難 | 統計上最公平但慢 |
-| **Eller's** | 逐列生成 | 難 | O(1) 記憶體、可產生無限長迷宮 |
-| **Recursive Division** | 用「加牆」切矩形，而非「挖路」 | 中 | 產生明顯的房間感 |
-| **Binary Tree / Sidewinder** | 有明顯對角偏向 | 極易 | trivial 但視覺偏頗 |
+| 演算法                          | 風格                           | 難度 | 備註                          |
+| ------------------------------- | ------------------------------ | ---- | ----------------------------- |
+| **Recursive Backtracker (DFS)** | 長走廊、彎繞、死路少           | 易   | 本專案首選                    |
+| **Randomized Prim**             | 短分岔、死路多、灌木叢感       | 中   | 維護「邊界牆表」隨機挑        |
+| **Randomized Kruskal**          | 均勻、規律                     | 中   | 需 union-find (DSU) 判連通    |
+| **Wilson / Aldous-Broder**      | 無偏 (uniform spanning tree)   | 難   | 統計上最公平但慢              |
+| **Eller's**                     | 逐列生成                       | 難   | O(1) 記憶體、可產生無限長迷宮 |
+| **Recursive Division**          | 用「加牆」切矩形，而非「挖路」 | 中   | 產生明顯的房間感              |
+| **Binary Tree / Sidewinder**    | 有明顯對角偏向                 | 極易 | trivial 但視覺偏頗            |
 
 > Prim 與 Kruskal 都是最小生成樹 (MST) 演算法套在隨機權重上；DFS 則因「盡量往深走」而產生長走廊。要不同視覺風格時可換演算法，資料結構（4 面牆）不用改。
 

@@ -25,7 +25,7 @@ function shuffle<T>(arr: T[]): T[] {
 export function generateMaze(rows: number, cols: number): Cell[][] {
   // 初始：每格四面皆有牆
   const grid: Cell[][] = Array.from({ length: rows }, () =>
-    Array.from({ length: cols }, () => ({ top: true, right: true, bottom: true, left: true }))
+    Array.from({ length: cols }, () => ({ top: true, right: true, bottom: true, left: true })),
   )
   const visited = Array.from({ length: rows }, () => Array<boolean>(cols).fill(false))
 
@@ -77,7 +77,7 @@ export function solveMaze(grid: Cell[][]): [number, number][] {
       [cell.top, r - 1, c],
       [cell.right, r, c + 1],
       [cell.bottom, r + 1, c],
-      [cell.left, r, c - 1]
+      [cell.left, r, c - 1],
     ]
     for (const [wall, nr, nc] of moves) {
       if (!wall && nr >= 0 && nr < rows && nc >= 0 && nc < cols && !visited[nr]![nc]) {
@@ -93,7 +93,7 @@ export function solveMaze(grid: Cell[][]): [number, number][] {
   let cur: [number, number] | null = goal
   while (cur) {
     path.push(cur)
-    cur = parent[cur[0]]![cur[1]]
+    cur = parent[cur[0]]![cur[1]] ?? null
   }
   return path.reverse()
 }

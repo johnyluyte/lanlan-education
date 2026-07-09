@@ -12,11 +12,13 @@ export function useMaze() {
   const grid = shallowRef<Cell[][]>(generateMaze(rows.value, cols.value))
   const showSolution = ref(true)
 
-  // showSolution 開啟時算最短路，轉成 `${r},${c}` key 集合供 template O(1) 查
-  const solutionSet = computed<Set<string>>(() => {
-    if (!showSolution.value) return new Set()
-    return new Set(solveMaze(grid.value).map(([r, c]) => `${r},${c}`))
+  // showSolution 開啟時算最短路，轉成 `${r},${c}` → 步序 index 的 Map，
+  // 供 template O(1) 查（.has 判在不在路徑上；.get 取步序做漸層）
+  const solutionIndex = computed<Map<string, number>>(() => {
+    if (!showSolution.value) return new Map()
+    return new Map(solveMaze(grid.value).map(([r, c], i) => [`${r},${c}`, i]))
   })
+  const solutionLength = computed(() => solutionIndex.value.size)
 
   const toggleSolution = () => {
     showSolution.value = !showSolution.value
@@ -36,5 +38,5 @@ export function useMaze() {
     grid.value = generateMaze(r, c)
   })
 
-  return { rows, cols, grid, reroll, showSolution, solutionSet, toggleSolution, MIN, MAX }
+  return { rows, cols, grid, reroll, showSolution, solutionIndex, solutionLength, toggleSolution, MIN, MAX }
 }
