@@ -16,7 +16,7 @@
   const dotKinds = defineModel<DotKind[]>('dotKinds', { required: true })
 
   // 純 UI 範圍常數
-  const CELL_MIN = 8
+  const CELL_MIN = 25
   const CELL_MAX = 64
 </script>
 
@@ -41,7 +41,7 @@
     <div class="border-muted flex flex-col gap-4 border-t pt-4">
       <span class="text-sm font-medium">顏色欄位（色碼可調，權重為相對值、不需總和為 1）：</span>
       <div v-for="(kind, i) in dotKinds" :key="i" class="flex items-center gap-3">
-        <UColorPicker v-model="kind.color" size="sm" />
+        <UColorPicker v-model="kind.color" size="xs" />
         <div class="flex-1">
           <span class="text-xs text-gray-500">權重：{{ kind.weight.toFixed(2) }}</span>
           <USlider v-model="kind.weight" :min="0" :max="1" :step="0.01" class="mt-2" />

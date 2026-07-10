@@ -12,10 +12,10 @@
   const dotRadius = defineModel<number>('dotRadius', { required: true })
 
   // 純 UI 範圍常數
-  const CELL_MIN = 8
-  const CELL_MAX = 64
-  const DOT_RADIUS_MIN = 2
-  const DOT_RADIUS_MAX = 32
+  const CELL_MIN = 12
+  const CELL_MAX = 128
+  const DOT_RADIUS_MIN = 4
+  const DOT_RADIUS_MAX = 48
 </script>
 
 <template>

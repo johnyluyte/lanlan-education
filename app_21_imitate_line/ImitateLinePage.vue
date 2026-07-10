@@ -4,7 +4,7 @@
   import ImitateLineBoard from './ImitateLineBoard.vue'
 
   const MIN = 2
-  const MAX = 40
+  const MAX = 8
 
   const rows = ref(3) // M：列數
   const cols = ref(3) // N：行數
@@ -14,7 +14,7 @@
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-6 p-8">
+  <div class="flex items-start gap-6 p-8">
     <ImitateLineSettings
       v-model:rows="rows"
       v-model:cols="cols"

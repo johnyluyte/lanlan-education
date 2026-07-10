@@ -5,7 +5,7 @@
   import type { DotKind } from './dotKind'
 
   const MIN = 2
-  const MAX = 40
+  const MAX = 10
 
   const rows = ref(8) // M：列數
   const cols = ref(8) // N：行數
@@ -22,7 +22,7 @@
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-6 p-8">
+  <div class="flex items-start gap-6 p-8">
     <ImitateDotSettings
       v-model:rows="rows"
       v-model:cols="cols"
