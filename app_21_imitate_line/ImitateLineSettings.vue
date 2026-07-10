@@ -19,7 +19,7 @@
 </script>
 
 <template>
-  <div class="flex w-full max-w-md flex-col gap-4 rounded-xl border border-gray-200 p-5 shadow-sm dark:border-gray-700">
+  <div class="flex w-full max-w-xs flex-col gap-4 rounded-xl border border-gray-200 p-5 shadow-sm dark:border-gray-700">
     <div>
       <span class="text-sm font-medium">列數 M (rows)：{{ rows }}</span>
       <USlider v-model="rows" :min="min" :max="max" :step="1" class="mt-3" />

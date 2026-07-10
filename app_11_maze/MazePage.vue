@@ -18,7 +18,7 @@
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-6 p-8">
+  <div class="flex items-start gap-6 p-8">
     <MazeSettings
       v-model:rows="rows"
       v-model:cols="cols"
