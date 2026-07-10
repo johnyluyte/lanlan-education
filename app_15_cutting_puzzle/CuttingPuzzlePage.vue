@@ -64,7 +64,11 @@
       class="grid aspect-1215/717 w-full max-w-3xl gap-1 bg-slate-300 dark:bg-slate-700"
       :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)` }"
     >
-      <div v-for="pieceIndex in order" :key="pieceIndex" class="bg-cover" :style="pieces[pieceIndex]!.style" />
+      <div v-for="pieceIndex in order" :key="pieceIndex" class="relative bg-cover" :style="pieces[pieceIndex]!.style">
+        <span class="absolute top-1 right-1 rounded bg-black/60 px-1.5 py-0.5 text-xs font-semibold text-white">
+          {{ pieceIndex + 1 }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
