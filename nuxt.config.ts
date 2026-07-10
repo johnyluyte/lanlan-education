@@ -82,7 +82,15 @@ export default defineNuxtConfig({
   // Learn more: https://vite.dev/guide/dep-pre-bundling.html
   vite: {
     optimizeDeps: {
-      include: ['@supabase/supabase-js', '@vueuse/core', 'nanoid', 'sortablejs', 'valibot'],
+      include: [
+        '@supabase/supabase-js',
+        '@vueuse/core',
+        'nanoid',
+        'sortablejs',
+        'three',
+        'three/examples/jsm/controls/OrbitControls.js',
+        'valibot',
+      ],
     },
   },
 
