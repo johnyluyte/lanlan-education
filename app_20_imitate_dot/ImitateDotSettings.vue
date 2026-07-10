@@ -14,7 +14,7 @@
   const cols = defineModel<number>('cols', { required: true })
   const cellSize = defineModel<number>('cellSize', { required: true })
   const density = defineModel<number>('density', { required: true })
-  // 固定 4 格：每格自帶色碼（UColorPicker）+ 權重（USlider）。dotKinds 是同一個 reactive 陣列，
+  // 固定 4 格：每格自帶色碼（色塊點開 UColorPicker）+ 權重（USlider）。dotKinds 是同一個 reactive 陣列，
   // 直接改 dotKinds[i].color / .weight 就會同步回 Page，不需另外 emit。
   const dotKinds = defineModel<DotKind[]>('dotKinds', { required: true })
 
@@ -53,7 +53,26 @@
     <div class="border-muted flex flex-col gap-4 border-t pt-4">
       <span class="text-sm font-medium">顏色欄位（色碼可調，權重為相對值、不需總和為 1）：</span>
       <div v-for="(kind, i) in dotKinds" :key="i" class="flex items-center gap-3">
-        <UColorPicker v-model="kind.color" size="xs" />
+        <UPopover :content="{ side: 'right', align: 'start' }">
+          <UButton
+            :aria-label="`調整第 ${i + 1} 個顏色`"
+            color="neutral"
+            variant="outline"
+            square
+            class="relative size-9 overflow-hidden"
+          >
+            <span
+              class="absolute inset-1 rounded-sm border border-gray-200 dark:border-gray-700"
+              :style="{ backgroundColor: kind.color }"
+            />
+          </UButton>
+
+          <template #content>
+            <div class="p-3">
+              <UColorPicker v-model="kind.color" />
+            </div>
+          </template>
+        </UPopover>
         <div class="flex-1">
           <span class="text-xs text-gray-500">權重：{{ kind.weight.toFixed(2) }}</span>
           <USlider v-model="kind.weight" :min="0" :max="1" :step="0.01" class="mt-2" />
