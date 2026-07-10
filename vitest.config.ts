@@ -19,6 +19,7 @@ export default defineConfig({
       { find: /^#alias-maze\//, replacement: fileURLToPath(new URL('./app_11_maze/', import.meta.url)) },
       { find: /^#alias-matching-game\//, replacement: fileURLToPath(new URL('./app_12_matching_game/', import.meta.url)) },
       { find: /^#alias-connect-the-dots\//, replacement: fileURLToPath(new URL('./app_13_connect_the_dots/', import.meta.url)) },
+      { find: /^#alias-3d-box\//, replacement: fileURLToPath(new URL('./app_14_3d_box/', import.meta.url)) },
       { find: /^#alias-imitate-dot\//, replacement: fileURLToPath(new URL('./app_20_imitate_dot/', import.meta.url)) },
       { find: /^#alias-imitate-line\//, replacement: fileURLToPath(new URL('./app_21_imitate_line/', import.meta.url)) },
       { find: /^#alias-paper-staging\//, replacement: fileURLToPath(new URL('./app_30_paper_staging/', import.meta.url)) },
