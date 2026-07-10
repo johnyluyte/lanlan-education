@@ -42,7 +42,8 @@
       "Bash(pnpm -v)",
       "Bash(xargs -I{} basename {})",
       "Bash(pnpm check *)",
-      "Bash(echo \"EXIT_CODE=$?\")"
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/cchien/git/lanlan-education/app_15_cutting_puzzle/example.jpg)"
     ]
   }
 }
