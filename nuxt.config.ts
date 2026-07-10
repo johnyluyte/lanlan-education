@@ -85,6 +85,8 @@ export default defineNuxtConfig({
       include: [
         '@supabase/supabase-js',
         '@vueuse/core',
+        'esm-potrace-wasm',
+        'imagetracerjs', // CJS
         'nanoid',
         'sortablejs',
         'three',

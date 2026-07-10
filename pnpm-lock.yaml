@@ -38,6 +38,12 @@ importers:
       '@tresjs/post-processing':
         specifier: ^3.7.4
         version: 3.7.4(@tresjs/core@5.8.3(three@0.185.1)(vue@3.5.39(typescript@6.0.3)))(three@0.185.1)(vue@3.5.39(typescript@6.0.3))
+      esm-potrace-wasm:
+        specifier: ^0.5.0
+        version: 0.5.0
+      imagetracerjs:
+        specifier: ^1.2.6
+        version: 1.2.6
       nanoid:
         specifier: ^5.1.11
         version: 5.1.16
@@ -4098,6 +4104,9 @@ packages:
       jiti:
         optional: true
 
+  esm-potrace-wasm@0.5.0:
+    resolution: {integrity: sha512-69/KI2wrq6G7KzWJGasICQFFShia1TOF0vtVbvER9yzYjD79lVsMO7EHoj2fXKm0tUARUEdEPdyc+/HIq2Ct/w==}
+
   espree@10.4.0:
     resolution: {integrity: sha512-j6PAQ2uUr79PZhBjP5C5fhl8e39FmRnOjsD5lGnWrFU8i2G776tBK7+nP8KuQUTTyAZUwfQqXAgrVH5MbH9CYQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -4456,6 +4465,9 @@ packages:
 
   image-meta@0.2.2:
     resolution: {integrity: sha512-3MOLanc3sb3LNGWQl1RlQlNWURE5g32aUphrDyFeCsxBTk08iE3VNe4CwsUZ0Qs1X+EfX0+r29Sxdpza4B+yRA==}
+
+  imagetracerjs@1.2.6:
+    resolution: {integrity: sha512-LKJlnKmXFzDdh6IZtXTyBxXcCLTAkwgKYS+NMiPXiXVnlTLjQC8fq7U89laUSgHtypJB3TdMMDK4ecG5NI/Cgw==}
 
   import-meta-resolve@4.2.0:
     resolution: {integrity: sha512-Iqv2fzaTQN28s/FwZAoFq0ZSs/7hMAHJVX+w8PZl3cY19Pxk6jFFalxQoIfW2826i/fDLXv8IiEZRIT0lDuWcg==}
@@ -10590,6 +10602,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  esm-potrace-wasm@0.5.0: {}
+
   espree@10.4.0:
     dependencies:
       acorn: 8.17.0
@@ -10957,6 +10971,8 @@ snapshots:
   ignore@7.0.5: {}
 
   image-meta@0.2.2: {}
+
+  imagetracerjs@1.2.6: {}
 
   import-meta-resolve@4.2.0: {}
 

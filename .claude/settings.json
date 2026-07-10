@@ -43,7 +43,12 @@
       "Bash(xargs -I{} basename {})",
       "Bash(pnpm check *)",
       "Bash(echo \"EXIT_CODE=$?\")",
-      "Bash(sips -g pixelWidth -g pixelHeight /Users/cchien/git/lanlan-education/app_15_cutting_puzzle/example.jpg)"
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/cchien/git/lanlan-education/app_15_cutting_puzzle/example.jpg)",
+      "Bash(npm view *)",
+      "Bash(npm search *)",
+      "Bash(pnpm add *)",
+      "Bash(sips -g pixelWidth -g pixelHeight app_13_connect_the_dots/example.jpg)",
+      "Bash(git mv *)"
     ]
   }
 }
