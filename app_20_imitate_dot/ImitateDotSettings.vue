@@ -6,6 +6,9 @@
     min: number // rows/cols 下限
     max: number // rows/cols 上限
   }>()
+  const emit = defineEmits<{
+    regenerate: []
+  }>()
 
   const rows = defineModel<number>('rows', { required: true })
   const cols = defineModel<number>('cols', { required: true })
@@ -37,6 +40,15 @@
     <div>
       <span class="text-sm font-medium">點點出現機率：{{ Math.round(density * 100) }}%</span>
       <USlider v-model="density" :min="0" :max="1" :step="0.01" class="mt-3" />
+      <UButton
+        icon="i-lucide-refresh-cw"
+        label="換一個題目"
+        color="neutral"
+        variant="soft"
+        block
+        class="mt-3"
+        @click="emit('regenerate')"
+      />
     </div>
     <div class="border-muted flex flex-col gap-4 border-t pt-4">
       <span class="text-sm font-medium">顏色欄位（色碼可調，權重為相對值、不需總和為 1）：</span>
