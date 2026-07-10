@@ -5,17 +5,31 @@
   import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
   const viewportEl = ref<HTMLElement | null>(null)
-  const isSpinning = ref(true)
+  const isCubeSelected = ref(false)
 
   let renderer: THREE.WebGLRenderer | null = null
   let scene: THREE.Scene | null = null
   let camera: THREE.PerspectiveCamera | null = null
   let controls: OrbitControls | null = null
   let cube: THREE.Group | null = null
+  let cubeMesh: THREE.Mesh | null = null
   let animationId: number | null = null
 
   const materials: THREE.Material[] = []
   const disposables: Array<{ dispose: () => void }> = []
+  const raycaster = new THREE.Raycaster()
+  const pointer = new THREE.Vector2()
+
+  function handleClick(event: MouseEvent) {
+    if (!renderer || !camera || !cubeMesh) return
+
+    const rect = renderer.domElement.getBoundingClientRect()
+    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+
+    raycaster.setFromCamera(pointer, camera)
+    isCubeSelected.value = raycaster.intersectObject(cubeMesh).length > 0
+  }
 
   function resizeScene() {
     if (!viewportEl.value || !renderer || !camera) return
@@ -32,19 +46,15 @@
   function resetView() {
     if (!camera || !controls || !cube) return
 
-    cube.rotation.set(-0.18, 0.42, 0.08)
-    camera.position.set(4.2, 3.4, 5.2)
+    cube.position.set(0, 0, 0)
+    cube.rotation.set(0, 0, 0)
+    camera.position.set(5, 5, 5)
     controls.target.set(0, 0, 0)
     controls.update()
   }
 
   function animate() {
     if (!renderer || !scene || !camera || !controls || !cube) return
-
-    if (isSpinning.value) {
-      cube.rotation.y += 0.008
-      cube.rotation.x += 0.002
-    }
 
     controls.update()
     renderer.render(scene, camera)
@@ -88,6 +98,7 @@
     const mesh = new THREE.Mesh(geometry, faceMaterials)
     mesh.castShadow = true
     mesh.receiveShadow = true
+    cubeMesh = mesh
 
     const edgesGeometry = new THREE.EdgesGeometry(geometry)
     const edgesMaterial = new THREE.LineBasicMaterial({ color: '#111827', linewidth: 2 })
@@ -119,6 +130,8 @@
     controls.minDistance = 3.5
     controls.maxDistance = 9
 
+    renderer.domElement.addEventListener('click', handleClick)
+
     disposables.push(geometry, edgesGeometry, edgesMaterial, floorGeometry, floorMaterial, grid.geometry)
     if (Array.isArray(grid.material)) disposables.push(...grid.material)
     else disposables.push(grid.material)
@@ -134,6 +147,7 @@
     disposables.forEach((item) => item.dispose())
 
     if (renderer) {
+      renderer.domElement.removeEventListener('click', handleClick)
       renderer.dispose()
       renderer.domElement.remove()
     }
@@ -143,6 +157,7 @@
     camera = null
     controls = null
     cube = null
+    cubeMesh = null
   })
 </script>
 
@@ -151,18 +166,10 @@
     <div ref="viewportEl" class="absolute inset-0" />
 
     <div class="absolute top-4 left-4 flex items-center gap-2 rounded-md bg-white/85 p-2 shadow-sm backdrop-blur dark:bg-gray-950/80">
-      <UButton
-        :icon="isSpinning ? 'i-lucide-pause' : 'i-lucide-play'"
-        :label="isSpinning ? '暫停' : '旋轉'"
-        color="neutral"
-        variant="soft"
-        @click="
-          () => {
-            isSpinning = !isSpinning
-          }
-        "
-      />
       <UButton icon="i-lucide-rotate-ccw" label="重置" color="neutral" variant="outline" @click="resetView" />
+      <UBadge :color="isCubeSelected ? 'primary' : 'neutral'" variant="soft">
+        {{ isCubeSelected ? '已點選正方體' : '未點選正方體' }}
+      </UBadge>
     </div>
   </div>
 </template>
