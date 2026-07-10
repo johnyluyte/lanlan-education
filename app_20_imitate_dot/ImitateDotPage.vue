@@ -36,14 +36,7 @@
     />
 
     <!-- 題目 -->
-    <ImitateDotBoard
-      :key="questionKey"
-      :rows="rows"
-      :cols="cols"
-      :cell-size="cellSize"
-      :density="density"
-      :dot-kinds="dotKinds"
-    />
+    <ImitateDotBoard :key="questionKey" :rows="rows" :cols="cols" :cell-size="cellSize" :density="density" :dot-kinds="dotKinds" />
     <!-- 給小朋友照著畫 -->
     <ImitateDotBoard :rows="rows" :cols="cols" :cell-size="cellSize" :density="0" :dot-kinds="[]" />
   </div>

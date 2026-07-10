@@ -54,13 +54,7 @@
       <span class="text-sm font-medium">顏色欄位（色碼可調，權重為相對值、不需總和為 1）：</span>
       <div v-for="(kind, i) in dotKinds" :key="i" class="flex items-center gap-3">
         <UPopover :content="{ side: 'right', align: 'start' }">
-          <UButton
-            :aria-label="`調整第 ${i + 1} 個顏色`"
-            color="neutral"
-            variant="outline"
-            square
-            class="relative size-9 overflow-hidden"
-          >
+          <UButton :aria-label="`調整第 ${i + 1} 個顏色`" color="neutral" variant="outline" square class="relative size-9 overflow-hidden">
             <span
               class="absolute inset-1 rounded-sm border border-gray-200 dark:border-gray-700"
               :style="{ backgroundColor: kind.color }"

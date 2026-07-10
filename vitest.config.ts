@@ -1,13 +1,21 @@
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 import AutoImport from 'unplugin-auto-import/vite'
+import vue from '@vitejs/plugin-vue'
+import { templateCompilerOptions } from '@tresjs/core'
 
 // 全部測試都跑在純 happy-dom 環境：邏輯抽成純函式 / composable 直接測，殼層（plugin/middleware/元件）交給 Playwright E2E。
 // 不再需要 nuxt 測試環境（environment: 'nuxt'）——它只在需要真 Nuxt runtime（useFetch、NuxtLink、元件 render 等）時才必要，本專案目前無此需求。
 // 若日後要寫元件 / Nuxt-runtime 整合測試，再重新引入 @nuxt/test-utils 的 defineVitestProject 即可。
 export default defineConfig({
   // 用 unplugin-auto-import 的 AutoImport 解決「測試環境找不到 Vue/Pinia 等 Nuxt 自動 auto-import 模組」的問題
-  plugins: [AutoImport({ imports: ['vue', 'pinia'], dts: false })],
+  plugins: [
+    vue({
+      // Other config
+      ...templateCompilerOptions,
+    }),
+    AutoImport({ imports: ['vue', 'pinia'], dts: false }),
+  ],
   // 用以下 alias 解決「測試環境無法解析 `~/` 路徑」 的問題
   resolve: {
     alias: [

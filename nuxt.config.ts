@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 export default defineNuxtConfig({
   // 若有要讓 layers 實現 nuxt 的 pages, layouts, middleware 等功能的話，才需要 extends
   // extends: ['./app_20_admin'],
-  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxt/test-utils', '@pinia/nuxt', '@nuxtjs/i18n'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxt/test-utils', '@pinia/nuxt', '@nuxtjs/i18n', '@tresjs/nuxt'],
 
   // 禁用 SSR，並啟用 SPA 模式
   ssr: false,
