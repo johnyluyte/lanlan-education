@@ -1,6 +1,8 @@
 <script setup lang="ts">
   // 控制面板：M（列數）、N（欄數）。參考 app_20_imitate_dot/ImitateDotSettings.vue 的慣例。
+  import { ref } from 'vue'
   import ThreeDBoxCellGrid from './ThreeDBoxCellGrid.vue'
+  import type { DotKind } from './dotKind'
 
   defineProps<{
     min: number // rows/cols 下限
@@ -11,6 +13,17 @@
   const cols = defineModel<number>('cols', { required: true })
 
   const PREVIEW_CELL_SIZE = 28
+  const RANDOM_DOT_DENSITY = 0.3
+  const YELLOW_DOT_KIND: DotKind[] = [{ color: '#facc15', weight: 1 }]
+
+  // 點點只在按下按鈕後才出現；density 沒變時 computed 不會重算，故用 key 強制重新隨機
+  const previewKey = ref(0)
+  const previewDensity = ref(0)
+
+  function randomizeDots() {
+    previewDensity.value = RANDOM_DOT_DENSITY
+    previewKey.value++
+  }
 </script>
 
 <template>
@@ -23,8 +36,16 @@
       <span class="text-sm font-medium">欄數 N (cols)：{{ cols }}</span>
       <USlider v-model="cols" :min="min" :max="max" :step="1" class="mt-3" />
     </div>
-    <div class="border-muted flex justify-center border-t pt-4">
-      <ThreeDBoxCellGrid :rows="rows" :cols="cols" :cell-size="PREVIEW_CELL_SIZE" :density="0" :dot-kinds="[]" />
+    <div class="border-muted flex flex-col items-center gap-3 border-t pt-4">
+      <ThreeDBoxCellGrid
+        :key="previewKey"
+        :rows="rows"
+        :cols="cols"
+        :cell-size="PREVIEW_CELL_SIZE"
+        :density="previewDensity"
+        :dot-kinds="previewDensity > 0 ? YELLOW_DOT_KIND : []"
+      />
+      <UButton icon="i-lucide-sparkles" label="隨機產生點點" color="neutral" variant="soft" block @click="randomizeDots" />
     </div>
   </div>
 </template>
