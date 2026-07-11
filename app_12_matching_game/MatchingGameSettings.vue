@@ -32,7 +32,7 @@
       <USlider v-model="cellSize" :min="CELL_MIN" :max="CELL_MAX" :step="1" class="mt-3" />
     </div>
     <div>
-      <span class="text-sm font-medium">黃點半徑 (px)：{{ dotRadius }}</span>
+      <span class="text-sm font-medium">點點半徑 (px)：{{ dotRadius }}</span>
       <USlider v-model="dotRadius" :min="DOT_RADIUS_MIN" :max="DOT_RADIUS_MAX" :step="1" class="mt-3" />
     </div>
   </div>
