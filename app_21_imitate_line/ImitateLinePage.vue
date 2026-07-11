@@ -8,8 +8,8 @@
 
   const rows = ref(3) // M：列數
   const cols = ref(3) // N：行數
-  const cellWidth = ref(32) // 每格寬 (px)
-  const cellHeight = ref(32) // 每格高 (px)
+  const cellWidth = ref(96) // 每格寬 (px)
+  const cellHeight = ref(96) // 每格高 (px)
   const showGrid = ref(false) // 是否顯示 cell 框線，預設關閉
   const dotRadius = ref(9) // 黃點半徑 (px)，跟 cell 尺寸分開設定
 </script>

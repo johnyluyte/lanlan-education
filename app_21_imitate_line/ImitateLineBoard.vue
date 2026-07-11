@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  // 完整表格繪製：SVG 兩圖層（框線 → 黃點），疊序 = 文件順序，不用 z-index。
+  // 完整表格繪製：SVG 三圖層（框線 → 相鄰點連線 → 黃點），疊序 = 文件順序，不用 z-index。
   // 這裡格線恆全部顯示（無牆壁開合邏輯），每格中心固定畫一顆黃點。
   import { computed } from 'vue'
 
@@ -13,6 +13,8 @@
   }>()
 
   const STROKE = 2 // 框線寬
+  const LINE_STROKE = 3 // 相鄰點連線線寬，跟框線、黃點分開設定
+  const LINE_COLOR = 'rgb(59 130 246)' // 相鄰點連線顏色（藍），跟黃點區分
 
   // SVG 尺寸；外框線的 stroke 有一半會超出邊界，故 viewBox 往外留半個 stroke
   const dims = computed(() => ({ w: props.cols * props.cellWidth, h: props.rows * props.cellHeight }))
@@ -25,6 +27,22 @@
     let d = ''
     for (let r = 0; r <= props.rows; r++) d += `M0 ${r * ch}L${dims.value.w} ${r * ch}`
     for (let c = 0; c <= props.cols; c++) d += `M${c * cw} 0L${c * cw} ${dims.value.h}`
+    return d
+  })
+
+  // 【圖層：相鄰點連線】每個黃點跟右邊、下面垂直/水平相鄰的黃點各連一條線
+  const linesD = computed(() => {
+    const cw = props.cellWidth
+    const ch = props.cellHeight
+    let d = ''
+    for (let r = 0; r < props.rows; r++) {
+      for (let c = 0; c < props.cols; c++) {
+        const cx = c * cw + cw / 2
+        const cy = r * ch + ch / 2
+        if (c < props.cols - 1) d += `M${cx} ${cy}L${cx + cw} ${cy}` // 水平：接右邊相鄰點
+        if (r < props.rows - 1) d += `M${cx} ${cy}L${cx} ${cy + ch}` // 垂直：接下面相鄰點
+      }
+    }
     return d
   })
 
@@ -47,7 +65,10 @@
     <!-- 圖層 1：框線（預設隱藏，由 showGrid 開關控制） -->
     <path v-if="showGrid" class="layer-grid" :d="gridD" fill="none" stroke="currentColor" :stroke-width="STROKE" stroke-linecap="square" />
 
-    <!-- 圖層 2：黃點 -->
+    <!-- 圖層 2：相鄰點連線 -->
+    <path class="layer-lines" :d="linesD" fill="none" :stroke="LINE_COLOR" :stroke-width="LINE_STROKE" stroke-linecap="round" />
+
+    <!-- 圖層 3：黃點 -->
     <g class="layer-dots">
       <circle v-for="(d, i) in dots" :key="i" :cx="d.cx" :cy="d.cy" :r="dotRadius" fill="rgb(250 204 21)" />
     </g>
