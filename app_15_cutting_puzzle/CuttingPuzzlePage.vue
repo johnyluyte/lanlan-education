@@ -1,12 +1,13 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
+  import CuttingPuzzleSettings from './CuttingPuzzleSettings.vue'
   import exampleImage from './example.jpg'
 
-  const MIN_GRID_SIZE = 1
+  const MIN_GRID_SIZE = 2
   const MAX_GRID_SIZE = 10
 
-  const columns = ref(4)
-  const rows = ref(4)
+  const rows = ref(4) // M：列數
+  const columns = ref(4) // N：欄數
 
   const pieces = computed(() =>
     Array.from({ length: columns.value * rows.value }, (_, index) => {
@@ -48,26 +49,24 @@
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-6 p-8">
-    <div class="flex flex-wrap items-end gap-4 rounded-md bg-white/85 p-4 shadow-sm dark:bg-gray-950/80">
-      <UFormField label="欄數 (m)">
-        <UInputNumber v-model="columns" :min="MIN_GRID_SIZE" :max="MAX_GRID_SIZE" class="w-32" />
-      </UFormField>
-      <UFormField label="列數 (n)">
-        <UInputNumber v-model="rows" :min="MIN_GRID_SIZE" :max="MAX_GRID_SIZE" class="w-32" />
-      </UFormField>
-      <UButton icon="i-lucide-shuffle" label="打亂順序" color="neutral" variant="soft" @click="shuffleOrder" />
-      <UButton icon="i-lucide-rotate-ccw" label="恢復順序" color="neutral" variant="outline" @click="restoreOrder" />
-    </div>
+  <div class="flex items-start gap-6 p-8">
+    <CuttingPuzzleSettings v-model:rows="rows" v-model:cols="columns" :min="MIN_GRID_SIZE" :max="MAX_GRID_SIZE" />
 
-    <div
-      class="grid aspect-1215/717 w-full max-w-3xl gap-1 bg-slate-300 dark:bg-slate-700"
-      :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)` }"
-    >
-      <div v-for="pieceIndex in order" :key="pieceIndex" class="relative bg-cover" :style="pieces[pieceIndex]!.style">
-        <span class="absolute top-1 right-1 rounded bg-black/60 px-1.5 py-0.5 text-xs font-semibold text-white">
-          {{ pieceIndex + 1 }}
-        </span>
+    <div class="flex flex-1 flex-col items-center gap-6">
+      <div class="flex flex-wrap items-center gap-4">
+        <UButton icon="i-lucide-shuffle" label="打亂順序" color="neutral" variant="soft" @click="shuffleOrder" />
+        <UButton icon="i-lucide-rotate-ccw" label="恢復順序" color="neutral" variant="outline" @click="restoreOrder" />
+      </div>
+
+      <div
+        class="grid aspect-1215/717 w-full max-w-3xl gap-1 bg-slate-300 dark:bg-slate-700"
+        :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)` }"
+      >
+        <div v-for="pieceIndex in order" :key="pieceIndex" class="relative bg-cover" :style="pieces[pieceIndex]!.style">
+          <span class="absolute top-1 right-1 rounded bg-black/60 px-1.5 py-0.5 text-xs font-semibold text-white">
+            {{ pieceIndex + 1 }}
+          </span>
+        </div>
       </div>
     </div>
   </div>
