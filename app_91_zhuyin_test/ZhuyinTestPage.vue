@@ -2,6 +2,7 @@
   import { ref } from 'vue'
   import ZhuyinText from '#alias-zhuyin-test/zhuyin/ZhuyinText.vue'
   import ZhuyinSettings from '#alias-zhuyin-test/zhuyin/ZhuyinSettings.vue'
+  import bo from './all-words/bo'
 
   const inputText = ref('')
   const gapLeft = ref(2)
@@ -11,81 +12,6 @@
   const lineHeight = ref(8)
   const charFontSize = ref(24)
   const symbolScaleY = ref(1)
-
-  const bo = [
-    '八',
-    '拔',
-    '把',
-    '爸',
-    '。',
-    '播',
-    '伯',
-    '跛',
-    '擘',
-    '。',
-    '掰',
-    '白',
-    '擺',
-    '拜',
-    '。',
-    '杯',
-    '北',
-    '貝',
-    '背',
-    '。',
-    '包',
-    '薄',
-    '飽',
-    '抱',
-    '。',
-    '班',
-    '板',
-    '辦',
-    '。',
-    '奔',
-    '本',
-    '笨',
-    '。',
-    '幫',
-    '綁',
-    '棒',
-    '。',
-    '崩',
-    '甭',
-    '繃',
-    '蹦',
-    '。',
-    '逼',
-    '鼻',
-    '比',
-    '必',
-    '。',
-    '鱉',
-    '別',
-    '癟',
-    '彆',
-    '。',
-    '標',
-    '	',
-    '	',
-    '。',
-    '邊',
-    '	',
-    '扁',
-    '變',
-    '。',
-    '賓',
-    '稟',
-    '鬢',
-    '。',
-    '冰',
-    '	',
-    '丙',
-    '並',
-    '。',
-    '餔',
-    '不',
-  ]
 </script>
 
 <template>
