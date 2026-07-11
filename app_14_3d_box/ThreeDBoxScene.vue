@@ -31,7 +31,7 @@
     return texture
   }
 
-  const isCubeSelected = ref(false)
+  const isCubeSelected = defineModel<boolean>('isCubeSelected', { default: false })
   const viewportEl = ref<HTMLElement | null>(null)
   const cameraRef = ref()
   const controlsRef = ref()
@@ -77,6 +77,8 @@
     controlsRef.value.instance.target.set(0, 0, 0)
     controlsRef.value.instance.update()
   }
+
+  defineExpose({ resetView })
 </script>
 
 <template>
@@ -123,12 +125,5 @@
         <TresSpriteMaterial :map="compass.texture" transparent :depth-test="false" />
       </TresSprite>
     </TresCanvas>
-
-    <div class="absolute top-4 left-4 flex items-center gap-2 rounded-md bg-white/85 p-2 shadow-sm backdrop-blur dark:bg-gray-950/80">
-      <UButton icon="i-lucide-rotate-ccw" label="重置" color="neutral" variant="outline" @click="resetView" />
-      <UBadge :color="isCubeSelected ? 'primary' : 'neutral'" variant="soft">
-        {{ isCubeSelected ? '已點選正方體' : '未點選正方體' }}
-      </UBadge>
-    </div>
   </div>
 </template>
