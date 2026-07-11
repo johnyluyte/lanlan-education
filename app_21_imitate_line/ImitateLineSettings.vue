@@ -11,6 +11,7 @@
   const cellHeight = defineModel<number>('cellHeight', { required: true })
   const showGrid = defineModel<boolean>('showGrid', { required: true })
   const showLines = defineModel<boolean>('showLines', { required: true })
+  const showDiagonals = defineModel<boolean>('showDiagonals', { required: true })
   const dotRadius = defineModel<number>('dotRadius', { required: true })
 
   // 純 UI 範圍常數
@@ -49,6 +50,10 @@
     <div class="flex items-center justify-between">
       <span class="text-sm font-medium">顯示相鄰垂直、水平線</span>
       <USwitch v-model="showLines" />
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-sm font-medium">顯示相鄰斜角線</span>
+      <USwitch v-model="showDiagonals" />
     </div>
   </div>
 </template>
