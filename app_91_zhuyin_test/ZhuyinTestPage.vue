@@ -9,6 +9,7 @@
   const toneGap = ref(6)
   const fontSize = ref(0.4)
   const lineHeight = ref(8)
+  const charFontSize = ref(24)
 </script>
 
 <template>
@@ -20,6 +21,7 @@
         v-model:tone-gap="toneGap"
         v-model:font-size="fontSize"
         v-model:line-height="lineHeight"
+        v-model:char-font-size="charFontSize"
         :min="0"
         :max="20"
       />
@@ -27,7 +29,7 @@
 
     <div class="flex-1 space-y-6 bg-white p-6 shadow">
       <UTextarea v-model="inputText" placeholder="輸入文字，下方會即時套用注音" :rows="4" class="w-full" />
-      <div class="text-2xl">
+      <div>
         <ZhuyinText
           :text="inputText"
           :gap-left="gapLeft"
@@ -35,9 +37,13 @@
           :tone-gap="toneGap"
           :font-size="fontSize"
           :line-height="lineHeight"
+          :char-font-size="charFontSize"
         />
       </div>
-      <div class="text-2xl">
+
+      <div class="border-muted h-2 w-full border-t"></div>
+
+      <div>
         <ZhuyinText
           text="能不能在中文旁邊加上注音"
           :gap-left="gapLeft"
@@ -45,9 +51,10 @@
           :tone-gap="toneGap"
           :font-size="fontSize"
           :line-height="lineHeight"
+          :char-font-size="charFontSize"
         />
       </div>
-      <div class="text-2xl">
+      <div>
         <ZhuyinText
           text="小蘭說每題之間可以加上粗線，因為特生眼睛不好"
           :gap-left="gapLeft"
@@ -55,6 +62,7 @@
           :tone-gap="toneGap"
           :font-size="fontSize"
           :line-height="lineHeight"
+          :char-font-size="charFontSize"
         />
       </div>
     </div>

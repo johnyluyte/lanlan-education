@@ -10,6 +10,7 @@
       toneGap?: number // 二、三、四聲聲調符號與左邊注音符號欄的距離（px）
       fontSize?: number // 注音符號字體大小，相對中文字級的倍率（em）
       lineHeight?: number // 換行時，行與行之間的間距（px）；注音字體變大時，行距要跟著加大避免重疊
+      charFontSize?: number // 中文字級大小（px）；注音字級是相對這個值的倍率，改這個會連帶影響注音大小
     }>(),
     {
       gapLeft: 2,
@@ -17,6 +18,7 @@
       toneGap: 4,
       fontSize: 0.4,
       lineHeight: 8,
+      charFontSize: 24,
     },
   )
 
@@ -24,7 +26,7 @@
 </script>
 
 <template>
-  <span class="inline-flex flex-wrap items-end" :style="{ rowGap: `${lineHeight}px` }">
+  <span class="inline-flex flex-wrap items-end" :style="{ rowGap: `${lineHeight}px`, fontSize: `${charFontSize}px` }">
     <template v-for="(segment, index) in segments" :key="index">
       <span v-if="segment.symbols" class="inline-flex items-center">
         <span>{{ segment.char }}</span>
