@@ -12,6 +12,7 @@
   const showGrid = defineModel<boolean>('showGrid', { required: true })
   const showLines = defineModel<boolean>('showLines', { required: true })
   const showDiagonals = defineModel<boolean>('showDiagonals', { required: true })
+  const showOtherLines = defineModel<boolean>('showOtherLines', { required: true })
   const dotRadius = defineModel<number>('dotRadius', { required: true })
 
   // 純 UI 範圍常數
@@ -54,6 +55,10 @@
     <div class="flex items-center justify-between">
       <span class="text-sm font-medium">顯示相鄰斜角線</span>
       <USwitch v-model="showDiagonals" />
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-sm font-medium">顯示其餘連線</span>
+      <USwitch v-model="showOtherLines" />
     </div>
   </div>
 </template>
