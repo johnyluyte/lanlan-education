@@ -36,22 +36,30 @@
   const sizeStyle = { width: `${props.width}px`, height: `${props.height}px` }
 
   let rotating = false
+  let startPointerAngle = 0 // 開始拖拉手柄那一刻，指標相對圖形中心的角度
+  let startRotation = 0 // 開始拖拉手柄那一刻，圖形當下的旋轉角度
 
-  // 旋轉角度 = 指標位置相對圖形中心的角度，+90 讓手柄在正上方時對應 0 度
-  const onRotate = (e: PointerEvent) => {
-    if (!rotating || !wrapper.value) return
+  const pointerAngle = (e: PointerEvent) => {
+    if (!wrapper.value) return 0
     const rect = wrapper.value.getBoundingClientRect()
     const cx = rect.left + rect.width / 2
     const cy = rect.top + rect.height / 2
-    store.setRotation(props.id, Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI) + 90)
+    return Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI)
+  }
+  // 用「指標角度變化量」疊加到拖拉前的旋轉角度，才能接著上次角度繼續轉，而不是每次都跳回以指標位置換算出的絕對角度
+  const onRotate = (e: PointerEvent) => {
+    if (!rotating) return
+    store.setRotation(props.id, startRotation + (pointerAngle(e) - startPointerAngle))
   }
   const endRotate = () => {
     rotating = false
     window.removeEventListener('pointermove', onRotate)
     window.removeEventListener('pointerup', endRotate)
   }
-  const startRotate = () => {
+  const startRotate = (e: PointerEvent) => {
     rotating = true
+    startPointerAngle = pointerAngle(e)
+    startRotation = store.shapes[props.id]?.rotation ?? 0
     window.addEventListener('pointermove', onRotate)
     window.addEventListener('pointerup', endRotate)
   }
@@ -74,6 +82,10 @@
       class="absolute top-0 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-6 cursor-grab touch-none rounded-full border-2 border-white bg-gray-700"
       @pointerdown="startRotate"
     />
-    <div v-if="selected" class="pointer-events-none absolute inset-0 ring-2 ring-gray-900 ring-offset-2 dark:ring-white" />
+    <div
+      v-if="selected"
+      class="pointer-events-none absolute inset-0 ring-2 ring-gray-900 ring-offset-2 dark:ring-white"
+      :style="{ transform: `rotate(${rotation}deg)` }"
+    />
   </div>
 </template>
