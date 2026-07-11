@@ -11,6 +11,17 @@
   const cameraRef = ref()
   const controlsRef = ref()
 
+  const DEFAULT_CAMERA_POSITION: [number, number, number] = [8, 6, 10]
+
+  // 三個相鄰 Cube，顏色用 Cube.vue 預設的固定色盤（不覆寫 colors）——顏色是油漆在實體面上的，
+  // 對面關係固定不變（黃(+X)↔紅(-X)、綠(+Y)↔藍(-Y)、紫(+Z)↔橘(-Z)）。要哪色朝上只能靠旋轉整個方塊達成，
+  // 這樣「黃在上時紅必定在下」才會自動成立，而不是每個 cube 各自换贴一套顏色。
+  const cubes: { position: [number, number, number]; rotation: [number, number, number] }[] = [
+    { position: [-2, 0, 0], rotation: [0, 0, Math.PI / 2] }, // 繞 Z 轉 90 度：+X(黃) 轉到上面，-X(紅) 自動到下面
+    { position: [0, 0, 0], rotation: [0, 0, 0] }, // 預設姿態：+Y(綠) 在上，-Y(藍) 在下
+    { position: [2, 0, 0], rotation: [Math.PI, 0, 0] }, // 繞 X 轉 180 度：-Y(藍) 轉到上面，+Y(綠) 自動到下面
+  ]
+
   useResizeObserver(viewportEl, () => {
     if (!viewportEl.value || !cameraRef.value) return
 
@@ -24,7 +35,7 @@
   function resetView() {
     if (!cameraRef.value || !controlsRef.value) return
 
-    cameraRef.value.position.set(5, 5, 5)
+    cameraRef.value.position.set(...DEFAULT_CAMERA_POSITION)
     controlsRef.value.instance.target.set(0, 0, 0)
     controlsRef.value.instance.update()
   }
@@ -40,20 +51,26 @@
       preserve-drawing-buffer
       @pointermissed="isCubeSelected = false"
     >
-      <TresPerspectiveCamera ref="cameraRef" :position-x="5" :position-y="5" :position-z="5" :args="[45, 1, 0.1, 100]" />
-      <OrbitControls ref="controlsRef" make-default :enable-damping="true" :enable-pan="false" :min-distance="3.5" :max-distance="9" />
+      <TresPerspectiveCamera
+        ref="cameraRef"
+        :position-x="DEFAULT_CAMERA_POSITION[0]"
+        :position-y="DEFAULT_CAMERA_POSITION[1]"
+        :position-z="DEFAULT_CAMERA_POSITION[2]"
+        :args="[45, 1, 0.1, 100]"
+      />
+      <OrbitControls ref="controlsRef" make-default :enable-damping="true" :enable-pan="false" :min-distance="4" :max-distance="16" />
 
       <TresHemisphereLight :args="['#ffffff', '#94a3b8', 1.8]" />
       <TresDirectionalLight :args="['#ffffff', 2.8]" :position-x="4" :position-y="6" :position-z="5" cast-shadow />
 
-      <Cube @click="isCubeSelected = true" />
+      <Cube v-for="(cube, i) in cubes" :key="i" :position="cube.position" :rotation="cube.rotation" @click="isCubeSelected = true" />
 
       <TresMesh :rotation-x="-Math.PI / 2" :position-y="-1.35" receive-shadow @click="isCubeSelected = false">
-        <TresCircleGeometry :args="[2.4, 72]" />
+        <TresCircleGeometry :args="[4.2, 72]" />
         <TresMeshStandardMaterial color="#f8fafc" :roughness="0.72" :metalness="0" />
       </TresMesh>
 
-      <TresGridHelper :args="[7, 14, '#94a3b8', '#cbd5e1']" :position-y="-1.34" />
+      <TresGridHelper :args="[10, 20, '#94a3b8', '#cbd5e1']" :position-y="-1.34" />
     </TresCanvas>
 
     <div class="absolute top-4 left-4 flex items-center gap-2 rounded-md bg-white/85 p-2 shadow-sm backdrop-blur dark:bg-gray-950/80">
