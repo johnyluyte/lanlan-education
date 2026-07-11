@@ -9,6 +9,7 @@
     cellWidth: number
     cellHeight: number
     showGrid: boolean
+    showLines: boolean
     dotRadius: number // 黃點半徑 (px)，跟 cell 尺寸分開設定，故不用比例換算
   }>()
 
@@ -65,8 +66,8 @@
     <!-- 圖層 1：框線（預設隱藏，由 showGrid 開關控制） -->
     <path v-if="showGrid" class="layer-grid" :d="gridD" fill="none" stroke="currentColor" :stroke-width="STROKE" stroke-linecap="square" />
 
-    <!-- 圖層 2：相鄰點連線 -->
-    <path class="layer-lines" :d="linesD" fill="none" :stroke="LINE_COLOR" :stroke-width="LINE_STROKE" stroke-linecap="round" />
+    <!-- 圖層 2：相鄰點連線（由 showLines 開關控制） -->
+    <path v-if="showLines" class="layer-lines" :d="linesD" fill="none" :stroke="LINE_COLOR" :stroke-width="LINE_STROKE" stroke-linecap="round" />
 
     <!-- 圖層 3：黃點 -->
     <g class="layer-dots">

@@ -11,6 +11,7 @@
   const cellWidth = ref(96) // 每格寬 (px)
   const cellHeight = ref(96) // 每格高 (px)
   const showGrid = ref(false) // 是否顯示 cell 框線，預設關閉
+  const showLines = ref(true) // 是否顯示相鄰點連線，預設開啟
   const dotRadius = ref(9) // 黃點半徑 (px)，跟 cell 尺寸分開設定
 </script>
 
@@ -22,6 +23,7 @@
       v-model:cell-width="cellWidth"
       v-model:cell-height="cellHeight"
       v-model:show-grid="showGrid"
+      v-model:show-lines="showLines"
       v-model:dot-radius="dotRadius"
       :min="MIN"
       :max="MAX"
@@ -33,6 +35,7 @@
       :cell-width="cellWidth"
       :cell-height="cellHeight"
       :show-grid="showGrid"
+      :show-lines="showLines"
       :dot-radius="dotRadius"
     />
   </div>
