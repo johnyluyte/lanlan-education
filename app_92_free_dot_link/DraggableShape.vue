@@ -68,12 +68,13 @@
 </script>
 
 <template>
-  <div ref="wrapper" class="absolute" :style="[dragStyle, sizeStyle]" @click="emit('select')">
+  <div ref="wrapper" class="absolute" :style="[dragStyle, sizeStyle]">
     <div
       ref="shapeInner"
       class="h-full w-full cursor-move touch-none"
       :class="[color, clipPath]"
       :style="{ transform: `rotate(${rotation}deg)` }"
+      @click="emit('select')"
     />
     <button
       v-if="selected"
