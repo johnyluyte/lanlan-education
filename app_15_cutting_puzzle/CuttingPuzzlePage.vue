@@ -50,14 +50,16 @@
 
 <template>
   <div class="flex items-start gap-6 p-8">
-    <CuttingPuzzleSettings v-model:rows="rows" v-model:cols="columns" :min="MIN_GRID_SIZE" :max="MAX_GRID_SIZE" />
+    <CuttingPuzzleSettings
+      v-model:rows="rows"
+      v-model:cols="columns"
+      :min="MIN_GRID_SIZE"
+      :max="MAX_GRID_SIZE"
+      @shuffle="shuffleOrder"
+      @restore="restoreOrder"
+    />
 
     <div class="flex flex-1 flex-col items-center gap-6">
-      <div class="flex flex-wrap items-center gap-4">
-        <UButton icon="i-lucide-shuffle" label="打亂順序" color="neutral" variant="soft" @click="shuffleOrder" />
-        <UButton icon="i-lucide-rotate-ccw" label="恢復順序" color="neutral" variant="outline" @click="restoreOrder" />
-      </div>
-
       <div
         class="grid aspect-1215/717 w-full max-w-3xl gap-1 bg-slate-300 dark:bg-slate-700"
         :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)` }"

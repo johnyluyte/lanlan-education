@@ -4,6 +4,10 @@
     min: number // rows/cols 下限
     max: number // rows/cols 上限
   }>()
+  const emit = defineEmits<{
+    shuffle: []
+    restore: []
+  }>()
 
   const rows = defineModel<number>('rows', { required: true })
   const cols = defineModel<number>('cols', { required: true })
@@ -18,6 +22,10 @@
     <div>
       <span class="text-sm font-medium">欄數 N (cols)：{{ cols }}</span>
       <USlider v-model="cols" :min="min" :max="max" :step="1" class="mt-3" />
+    </div>
+    <div class="border-muted flex flex-col gap-3 border-t pt-4">
+      <UButton icon="i-lucide-shuffle" label="打亂順序" color="neutral" variant="soft" block @click="emit('shuffle')" />
+      <UButton icon="i-lucide-rotate-ccw" label="恢復順序" color="neutral" variant="outline" block @click="emit('restore')" />
     </div>
   </div>
 </template>
