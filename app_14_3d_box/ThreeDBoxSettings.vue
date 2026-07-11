@@ -14,7 +14,14 @@
 
   const PREVIEW_CELL_SIZE = 28
   const RANDOM_CUBE_DENSITY = 0.3
-  const YELLOW_CUBE_KIND: CubeKind[] = [{ color: '#facc15', weight: 1 }]
+
+  // 固定 4 個顏色欄位，色碼與權重都可調整。參考 app_20_imitate_dot 的預設黃/紅/綠/藍。
+  const cubeKinds = ref<CubeKind[]>([
+    { color: '#facc15', weight: 1 },
+    { color: '#f87171', weight: 1 },
+    { color: '#4ade80', weight: 1 },
+    { color: '#60a5fa', weight: 1 },
+  ])
 
   // 方塊只在按下按鈕後才出現；density 沒變時 computed 不會重算，故用 key 強制重新隨機
   const previewKey = ref(0)
@@ -46,9 +53,33 @@
         :cols="cols"
         :cell-size="PREVIEW_CELL_SIZE"
         :density="previewDensity"
-        :cube-kinds="previewDensity > 0 ? YELLOW_CUBE_KIND : []"
+        :cube-kinds="previewDensity > 0 ? cubeKinds : []"
       />
       <UButton icon="i-lucide-sparkles" label="隨機產生方塊" color="neutral" variant="soft" block @click="randomizeCubes" />
+    </div>
+
+    <div class="border-muted flex flex-col gap-4 border-t pt-4">
+      <span class="text-sm font-medium">顏色欄位（色碼可調，權重為相對值、不需總和為 1）：</span>
+      <div v-for="(kind, i) in cubeKinds" :key="i" class="flex items-center gap-3">
+        <UPopover :content="{ side: 'right', align: 'start' }">
+          <UButton :aria-label="`調整第 ${i + 1} 個顏色`" color="neutral" variant="outline" square class="relative size-9 overflow-hidden">
+            <span
+              class="absolute inset-1 rounded-sm border border-gray-200 dark:border-gray-700"
+              :style="{ backgroundColor: kind.color }"
+            />
+          </UButton>
+
+          <template #content>
+            <div class="p-3">
+              <UColorPicker v-model="kind.color" />
+            </div>
+          </template>
+        </UPopover>
+        <div class="flex-1">
+          <span class="text-xs text-gray-500">權重：{{ kind.weight.toFixed(2) }}</span>
+          <USlider v-model="kind.weight" :min="0" :max="1" :step="0.01" class="mt-2" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
