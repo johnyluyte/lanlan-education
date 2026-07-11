@@ -2,9 +2,17 @@
   import { computed } from 'vue'
   import { toZhuyinSegments } from '#alias-zhuyin-test/zhuyin/zhuyin'
 
-  const props = defineProps<{
-    text: string
-  }>()
+  const props = withDefaults(
+    defineProps<{
+      text: string
+      gapLeft?: number // 中文字與注音符號欄之間的左邊距離（px）
+      gapRight?: number // 注音符號欄右側距離（px），影響跟下一個字之間的間距
+    }>(),
+    {
+      gapLeft: 2,
+      gapRight: 0,
+    },
+  )
 
   const segments = computed(() => toZhuyinSegments(props.text))
 </script>
@@ -14,7 +22,10 @@
     <template v-for="(segment, index) in segments" :key="index">
       <span v-if="segment.symbols" class="inline-flex items-center">
         <span>{{ segment.char }}</span>
-        <span class="relative ml-0.5 inline-flex flex-col justify-center text-[0.4em] leading-none">
+        <span
+          class="relative inline-flex flex-col justify-center text-[0.4em] leading-none"
+          :style="{ marginLeft: `${gapLeft}px`, marginRight: `${gapRight}px` }"
+        >
           <span v-for="(symbol, symbolIndex) in segment.symbols" :key="symbolIndex">{{ symbol }}</span>
           <!-- 輕聲：點標在符號欄左上角 -->
           <span v-if="segment.tone === '˙'" class="absolute -top-1 -left-1">{{ segment.tone }}</span>
