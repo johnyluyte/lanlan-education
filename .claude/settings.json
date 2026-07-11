@@ -55,7 +55,9 @@
       "Bash(git -C /Users/cchien/git/lanlan-education log --oneline -5 -- app_14_3d_box)",
       "Bash(git -C /Users/cchien/git/lanlan-education status --short)",
       "Bash(git -C /Users/cchien/git/lanlan-education mv app_14_3d_box/dotKind.ts app_14_3d_box/cubeKind.ts)",
-      "WebFetch(domain:www.npmjs.com)"
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:pinyin-pro.cn)",
+      "Bash(node -e ' *)"
     ]
   }
 }

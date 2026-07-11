@@ -27,14 +27,15 @@
     return d
   })
 
-  // 【圖層：方塊】兩階段隨機：先依 density 決定這格要不要出現方塊，再依 cubeKinds 的權重加權抽色碼
+  // 【圖層：方塊】兩階段隨機：先依 density 決定這格要不要出現方塊，再依 cubeKinds 的權重加權抽色碼，
+  // 同時隨機給 1-3 的數字標在方塊上（每次重新隨機時一起重算）。
   // （權重不需正規化，抽色時除以權重總和即可；權重全 0 則該格不畫方塊）。
   // 只依 rows/cols/density/cubeKinds 重新隨機，改 cellSize 只換算像素位置，
-  // 故拆成 cubeCells（邏輯格 + 色碼）→ cubes（像素座標 + 色碼）兩層 computed。
-  const cubeCells = computed<{ r: number; c: number; color: string }[]>(() => {
+  // 故拆成 cubeCells（邏輯格 + 色碼 + 數字）→ cubes（像素座標 + 色碼 + 數字）兩層 computed。
+  const cubeCells = computed<{ r: number; c: number; color: string; value: number }[]>(() => {
     const total = props.cubeKinds.reduce((sum, kind) => sum + kind.weight, 0)
 
-    const list: { r: number; c: number; color: string }[] = []
+    const list: { r: number; c: number; color: string; value: number }[] = []
     for (let r = 0; r < props.rows; r++) {
       for (let c = 0; c < props.cols; c++) {
         if (Math.random() >= props.density) continue
@@ -49,7 +50,7 @@
             break
           }
         }
-        list.push({ r, c, color })
+        list.push({ r, c, color, value: Math.floor(Math.random() * 3) + 1 })
       }
     }
     return list
@@ -57,7 +58,7 @@
 
   const cubes = computed(() => {
     const cell = props.cellSize
-    return cubeCells.value.map(({ r, c, color }) => ({ x: c * cell, y: r * cell, color }))
+    return cubeCells.value.map(({ r, c, color, value }) => ({ x: c * cell, y: r * cell, color, value }))
   })
 </script>
 
@@ -70,5 +71,21 @@
 
     <!-- 圖層 2：框線（後畫，蓋在方塊上面，相鄰方塊之間才看得到分隔線） -->
     <path class="layer-grid" :d="gridD" fill="none" stroke="currentColor" :stroke-width="STROKE" stroke-linecap="square" />
+
+    <!-- 圖層 3：方塊上的隨機數字 -->
+    <g class="layer-cube-values">
+      <text
+        v-for="(d, i) in cubes"
+        :key="i"
+        :x="d.x + cellSize / 2"
+        :y="d.y + cellSize / 2"
+        text-anchor="middle"
+        dominant-baseline="central"
+        :font-size="cellSize * 0.55"
+        class="fill-gray-900 font-bold select-none"
+      >
+        {{ d.value }}
+      </text>
+    </g>
   </svg>
 </template>
