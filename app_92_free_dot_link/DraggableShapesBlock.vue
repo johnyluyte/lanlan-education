@@ -65,7 +65,7 @@
 
 <template>
   <div ref="container" class="relative h-128 w-full max-w-7xl rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
-    <div ref="square" class="absolute cursor-move touch-none bg-blue-500" :style="[squareStyle, squareSize]" />
+    <div ref="square" class="absolute cursor-move touch-none bg-orange-500" :style="[squareStyle, squareSize]" />
     <div
       ref="triangle"
       class="absolute cursor-move touch-none bg-green-500 [clip-path:polygon(50%_0%,0%_100%,100%_100%)]"
@@ -73,22 +73,22 @@
     />
     <div
       ref="hexagon"
-      class="absolute cursor-move touch-none bg-amber-500 [clip-path:polygon(25%_0%,75%_0%,100%_50%,75%_100%,25%_100%,0%_50%)]"
+      class="absolute cursor-move touch-none bg-yellow-500 [clip-path:polygon(25%_0%,75%_0%,100%_50%,75%_100%,25%_100%,0%_50%)]"
       :style="[hexagonStyle, hexagonSize]"
     />
     <div
       ref="rhombus"
-      class="absolute cursor-move touch-none bg-pink-500 [clip-path:polygon(50%_0%,100%_50%,50%_100%,0%_50%)]"
+      class="absolute cursor-move touch-none bg-blue-500 [clip-path:polygon(50%_0%,100%_50%,50%_100%,0%_50%)]"
       :style="[rhombusStyle, rhombusSize]"
     />
     <div
       ref="rhombus30"
-      class="absolute cursor-move touch-none bg-purple-500 [clip-path:polygon(50%_0%,100%_50%,50%_100%,0%_50%)]"
+      class="absolute cursor-move touch-none bg-[#D2B48C] [clip-path:polygon(50%_0%,100%_50%,50%_100%,0%_50%)]"
       :style="[rhombus30Style, rhombus30Size]"
     />
     <div
       ref="trapezoid"
-      class="absolute cursor-move touch-none bg-orange-500 [clip-path:polygon(25%_0%,75%_0%,100%_100%,0%_100%)]"
+      class="absolute cursor-move touch-none bg-red-500 [clip-path:polygon(25%_0%,75%_0%,100%_100%,0%_100%)]"
       :style="[trapezoidStyle, trapezoidSize]"
     />
   </div>
