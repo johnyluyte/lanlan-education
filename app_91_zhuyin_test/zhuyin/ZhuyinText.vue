@@ -8,11 +8,15 @@
       gapLeft?: number // 中文字與注音符號欄之間的左邊距離（px）
       gapRight?: number // 注音符號欄右側距離（px），影響跟下一個字之間的間距
       toneGap?: number // 二、三、四聲聲調符號與左邊注音符號欄的距離（px）
+      fontSize?: number // 注音符號字體大小，相對中文字級的倍率（em）
+      lineHeight?: number // 換行時，行與行之間的間距（px）；注音字體變大時，行距要跟著加大避免重疊
     }>(),
     {
       gapLeft: 2,
       gapRight: 0,
       toneGap: 4,
+      fontSize: 0.4,
+      lineHeight: 8,
     },
   )
 
@@ -20,13 +24,13 @@
 </script>
 
 <template>
-  <span class="inline-flex flex-wrap items-end">
+  <span class="inline-flex flex-wrap items-end" :style="{ rowGap: `${lineHeight}px` }">
     <template v-for="(segment, index) in segments" :key="index">
       <span v-if="segment.symbols" class="inline-flex items-center">
         <span>{{ segment.char }}</span>
         <span
-          class="relative inline-flex flex-col justify-center text-[0.4em] leading-none"
-          :style="{ marginLeft: `${gapLeft}px`, marginRight: `${gapRight}px` }"
+          class="relative inline-flex flex-col justify-center leading-none"
+          :style="{ marginLeft: `${gapLeft}px`, marginRight: `${gapRight}px`, fontSize: `${fontSize}em` }"
         >
           <span v-for="(symbol, symbolIndex) in segment.symbols" :key="symbolIndex">{{ symbol }}</span>
           <!-- 輕聲：點標在符號欄左上角 -->
