@@ -1,169 +1,60 @@
 <script setup lang="ts">
+  // 場景外殼（相機／燈光／地板／格線／控制器），Cube 已拆成獨立元件。改用 TresJS 宣告式寫法，不再手動管理 renderer/scene/animate loop。
+  // 注意：useTres()/useTresContext() 只能在 <TresCanvas> 底下的子元件呼叫；這裡跟 <TresCanvas> 同層，
+  // 故相機/控制器改用 template ref 直接拿底層 Three.js 物件，resize 監聽沿用 useResizeObserver。
+  import { ref } from 'vue'
   import { useResizeObserver } from '@vueuse/core'
-  import { onBeforeUnmount, onMounted, ref } from 'vue'
-  import * as THREE from 'three'
-  import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+  import Cube from './Cube.vue'
 
-  const viewportEl = ref<HTMLElement | null>(null)
   const isCubeSelected = ref(false)
+  const viewportEl = ref<HTMLElement | null>(null)
+  const cameraRef = ref()
+  const controlsRef = ref()
 
-  let renderer: THREE.WebGLRenderer | null = null
-  let scene: THREE.Scene | null = null
-  let camera: THREE.PerspectiveCamera | null = null
-  let controls: OrbitControls | null = null
-  let cube: THREE.Group | null = null
-  let cubeMesh: THREE.Mesh | null = null
-  let animationId: number | null = null
-
-  const materials: THREE.Material[] = []
-  const disposables: Array<{ dispose: () => void }> = []
-  const raycaster = new THREE.Raycaster()
-  const pointer = new THREE.Vector2()
-
-  function handleClick(event: MouseEvent) {
-    if (!renderer || !camera || !cubeMesh) return
-
-    const rect = renderer.domElement.getBoundingClientRect()
-    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
-    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
-
-    raycaster.setFromCamera(pointer, camera)
-    isCubeSelected.value = raycaster.intersectObject(cubeMesh).length > 0
-  }
-
-  function resizeScene() {
-    if (!viewportEl.value || !renderer || !camera) return
+  useResizeObserver(viewportEl, () => {
+    if (!viewportEl.value || !cameraRef.value) return
 
     const { width, height } = viewportEl.value.getBoundingClientRect()
     if (width <= 0 || height <= 0) return
 
-    renderer.setSize(width, height, false)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    camera.aspect = width / height
-    camera.updateProjectionMatrix()
-  }
+    cameraRef.value.aspect = width / height
+    cameraRef.value.updateProjectionMatrix()
+  })
 
   function resetView() {
-    if (!camera || !controls || !cube) return
+    if (!cameraRef.value || !controlsRef.value) return
 
-    cube.position.set(0, 0, 0)
-    cube.rotation.set(0, 0, 0)
-    camera.position.set(5, 5, 5)
-    controls.target.set(0, 0, 0)
-    controls.update()
+    cameraRef.value.position.set(5, 5, 5)
+    controlsRef.value.instance.target.set(0, 0, 0)
+    controlsRef.value.instance.update()
   }
-
-  function animate() {
-    if (!renderer || !scene || !camera || !controls || !cube) return
-
-    controls.update()
-    renderer.render(scene, camera)
-    animationId = window.requestAnimationFrame(animate)
-  }
-
-  useResizeObserver(viewportEl, resizeScene)
-
-  onMounted(() => {
-    if (!viewportEl.value) return
-
-    scene = new THREE.Scene()
-    scene.background = new THREE.Color('#eef2ff')
-
-    camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100)
-
-    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true })
-    renderer.outputColorSpace = THREE.SRGBColorSpace
-    renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap
-    renderer.domElement.className = 'block h-full w-full'
-    viewportEl.value.appendChild(renderer.domElement)
-
-    const ambientLight = new THREE.HemisphereLight('#ffffff', '#94a3b8', 1.8)
-    const keyLight = new THREE.DirectionalLight('#ffffff', 2.8)
-    keyLight.position.set(4, 6, 5)
-    keyLight.castShadow = true
-    scene.add(ambientLight, keyLight)
-
-    const geometry = new THREE.BoxGeometry(2, 2, 2)
-    const faceMaterials = ['#facc15', '#f87171', '#4ade80', '#60a5fa', '#c084fc', '#fb923c'].map((color) => {
-      const material = new THREE.MeshStandardMaterial({
-        color,
-        roughness: 0.5,
-        metalness: 0.08,
-      })
-      materials.push(material)
-      return material
-    })
-
-    const mesh = new THREE.Mesh(geometry, faceMaterials)
-    mesh.castShadow = true
-    mesh.receiveShadow = true
-    cubeMesh = mesh
-
-    const edgesGeometry = new THREE.EdgesGeometry(geometry)
-    const edgesMaterial = new THREE.LineBasicMaterial({ color: '#111827', linewidth: 2 })
-    const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial)
-
-    cube = new THREE.Group()
-    cube.add(mesh, edges)
-    scene.add(cube)
-
-    const floorGeometry = new THREE.CircleGeometry(2.4, 72)
-    const floorMaterial = new THREE.MeshStandardMaterial({
-      color: '#f8fafc',
-      roughness: 0.72,
-      metalness: 0,
-    })
-    const floor = new THREE.Mesh(floorGeometry, floorMaterial)
-    floor.rotation.x = -Math.PI / 2
-    floor.position.y = -1.35
-    floor.receiveShadow = true
-    scene.add(floor)
-
-    const grid = new THREE.GridHelper(7, 14, '#94a3b8', '#cbd5e1')
-    grid.position.y = -1.34
-    scene.add(grid)
-
-    controls = new OrbitControls(camera, renderer.domElement)
-    controls.enableDamping = true
-    controls.enablePan = false
-    controls.minDistance = 3.5
-    controls.maxDistance = 9
-
-    renderer.domElement.addEventListener('click', handleClick)
-
-    disposables.push(geometry, edgesGeometry, edgesMaterial, floorGeometry, floorMaterial, grid.geometry)
-    if (Array.isArray(grid.material)) disposables.push(...grid.material)
-    else disposables.push(grid.material)
-    resetView()
-    resizeScene()
-    animate()
-  })
-
-  onBeforeUnmount(() => {
-    if (animationId !== null) window.cancelAnimationFrame(animationId)
-    controls?.dispose()
-    materials.forEach((material) => material.dispose())
-    disposables.forEach((item) => item.dispose())
-
-    if (renderer) {
-      renderer.domElement.removeEventListener('click', handleClick)
-      renderer.dispose()
-      renderer.domElement.remove()
-    }
-
-    renderer = null
-    scene = null
-    camera = null
-    controls = null
-    cube = null
-    cubeMesh = null
-  })
 </script>
 
 <template>
-  <div class="relative overflow-hidden bg-slate-100 dark:bg-slate-950">
-    <div ref="viewportEl" class="absolute inset-0" />
+  <div ref="viewportEl" class="relative overflow-hidden bg-slate-100 dark:bg-slate-950">
+    <TresCanvas
+      shadows
+      shadow-map-type="PCFShadowMap"
+      clear-color="#eef2ff"
+      :dpr="[1, 2]"
+      preserve-drawing-buffer
+      @pointermissed="isCubeSelected = false"
+    >
+      <TresPerspectiveCamera ref="cameraRef" :position-x="5" :position-y="5" :position-z="5" :args="[45, 1, 0.1, 100]" />
+      <OrbitControls ref="controlsRef" make-default :enable-damping="true" :enable-pan="false" :min-distance="3.5" :max-distance="9" />
+
+      <TresHemisphereLight :args="['#ffffff', '#94a3b8', 1.8]" />
+      <TresDirectionalLight :args="['#ffffff', 2.8]" :position-x="4" :position-y="6" :position-z="5" cast-shadow />
+
+      <Cube @click="isCubeSelected = true" />
+
+      <TresMesh :rotation-x="-Math.PI / 2" :position-y="-1.35" receive-shadow @click="isCubeSelected = false">
+        <TresCircleGeometry :args="[2.4, 72]" />
+        <TresMeshStandardMaterial color="#f8fafc" :roughness="0.72" :metalness="0" />
+      </TresMesh>
+
+      <TresGridHelper :args="[7, 14, '#94a3b8', '#cbd5e1']" :position-y="-1.34" />
+    </TresCanvas>
 
     <div class="absolute top-4 left-4 flex items-center gap-2 rounded-md bg-white/85 p-2 shadow-sm backdrop-blur dark:bg-gray-950/80">
       <UButton icon="i-lucide-rotate-ccw" label="重置" color="neutral" variant="outline" @click="resetView" />

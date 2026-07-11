@@ -59,6 +59,7 @@ export default defineNuxtConfig({
     '#alias-paper-staging': fileURLToPath(new URL('./app_30_paper_staging', import.meta.url)),
     '#alias-svg-drawing': fileURLToPath(new URL('./app_31_svg_drawing', import.meta.url)),
     '#alias-tile-matching': fileURLToPath(new URL('./app_90_tile_matching', import.meta.url)),
+    '#alias-zhuyin-test': fileURLToPath(new URL('./app_91_zhuyin_test', import.meta.url)),
   },
 
   routeRules: {
@@ -84,6 +85,7 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: [
         '@supabase/supabase-js',
+        '@tresjs/cientos',
         '@vueuse/core',
         'esm-potrace-wasm',
         'imagetracerjs', // CJS
@@ -100,6 +102,9 @@ export default defineNuxtConfig({
 
   typescript: {
     tsConfig: {
+      // 根目錄 .d.ts 之外，額外把 types/ 底下的 ambient 型別宣告也納入編譯範圍
+      // 路徑要相對於產生出來的 .nuxt/tsconfig.app.json，所以用 "../"
+      include: ['../types/**/*.d.ts'],
       compilerOptions: {
         // "module": "esnext",
         // "moduleResolution": "bundler",
