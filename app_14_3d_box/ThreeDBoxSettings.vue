@@ -36,6 +36,9 @@
       <span class="text-sm font-medium">欄數 N (cols)：{{ cols }}</span>
       <USlider v-model="cols" :min="min" :max="max" :step="1" class="mt-3" />
     </div>
+
+    <div class="border-muted border-t pt-4">M x N 的小方格稱之為 Cell；裡面有顏色的格子稱之為 Cube。</div>
+
     <div class="border-muted flex flex-col items-center gap-3 border-t pt-4">
       <ThreeDBoxCellGrid
         :key="previewKey"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  // 完整表格繪製：SVG 兩圖層（框線 → 方塊），疊序 = 文件順序，不用 z-index。
+  // 完整表格繪製：SVG 兩圖層（方塊 → 框線），疊序 = 文件順序，不用 z-index。框線後畫，蓋在方塊上面才不會被相鄰同色方塊糊掉。
   // 複製自 app_20_imitate_dot/ImitateDotBoard.vue，獨立成自己的元件方便日後修改。
   import { computed } from 'vue'
   import type { CubeKind } from './cubeKind'
@@ -63,12 +63,12 @@
 
 <template>
   <svg :width="dims.w + STROKE" :height="dims.h + STROKE" :viewBox="viewBox" class="text-gray-800 dark:text-gray-200">
-    <!-- 圖層 1：框線 -->
-    <path class="layer-grid" :d="gridD" fill="none" stroke="currentColor" :stroke-width="STROKE" stroke-linecap="square" />
-
-    <!-- 圖層 2：方塊（四色共用一個圖層，畫成與 cell 等大的正方形） -->
+    <!-- 圖層 1：方塊（四色共用一個圖層，畫成與 cell 等大的正方形） -->
     <g class="layer-cubes">
       <rect v-for="(d, i) in cubes" :key="i" :x="d.x" :y="d.y" :width="cellSize" :height="cellSize" :fill="d.color" />
     </g>
+
+    <!-- 圖層 2：框線（後畫，蓋在方塊上面，相鄰方塊之間才看得到分隔線） -->
+    <path class="layer-grid" :d="gridD" fill="none" stroke="currentColor" :stroke-width="STROKE" stroke-linecap="square" />
   </svg>
 </template>
