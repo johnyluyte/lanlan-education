@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  // 控制面板：M（列數）、N（行數）、格子寬。全部用 v-model 雙向綁定。
+  // 控制面板：M（列數）、N（行數）、格子寬、格子高。全部用 v-model 雙向綁定。
   defineProps<{
     min: number // rows/cols 下限
     max: number // rows/cols 上限
@@ -7,7 +7,8 @@
 
   const rows = defineModel<number>('rows', { required: true })
   const cols = defineModel<number>('cols', { required: true })
-  const cellSize = defineModel<number>('cellSize', { required: true })
+  const cellWidth = defineModel<number>('cellWidth', { required: true })
+  const cellHeight = defineModel<number>('cellHeight', { required: true })
   const showGrid = defineModel<boolean>('showGrid', { required: true })
   const dotRadius = defineModel<number>('dotRadius', { required: true })
 
@@ -29,8 +30,12 @@
       <USlider v-model="cols" :min="min" :max="max" :step="1" class="mt-3" />
     </div>
     <div>
-      <span class="text-sm font-medium">格子寬 (px)：{{ cellSize }}</span>
-      <USlider v-model="cellSize" :min="CELL_MIN" :max="CELL_MAX" :step="1" class="mt-3" />
+      <span class="text-sm font-medium">格子寬 (px)：{{ cellWidth }}</span>
+      <USlider v-model="cellWidth" :min="CELL_MIN" :max="CELL_MAX" :step="1" class="mt-3" />
+    </div>
+    <div>
+      <span class="text-sm font-medium">格子高 (px)：{{ cellHeight }}</span>
+      <USlider v-model="cellHeight" :min="CELL_MIN" :max="CELL_MAX" :step="1" class="mt-3" />
     </div>
     <div>
       <span class="text-sm font-medium">黃點半徑 (px)：{{ dotRadius }}</span>

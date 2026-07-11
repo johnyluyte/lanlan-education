@@ -6,33 +6,36 @@
   const props = defineProps<{
     rows: number
     cols: number
-    cellSize: number
+    cellWidth: number
+    cellHeight: number
     showGrid: boolean
-    dotRadius: number // 黃點半徑 (px)，跟 cellSize 分開設定，故不用比例換算
+    dotRadius: number // 黃點半徑 (px)，跟 cell 尺寸分開設定，故不用比例換算
   }>()
 
   const STROKE = 2 // 框線寬
 
   // SVG 尺寸；外框線的 stroke 有一半會超出邊界，故 viewBox 往外留半個 stroke
-  const dims = computed(() => ({ w: props.cols * props.cellSize, h: props.rows * props.cellSize }))
+  const dims = computed(() => ({ w: props.cols * props.cellWidth, h: props.rows * props.cellHeight }))
   const viewBox = computed(() => `${-STROKE / 2} ${-STROKE / 2} ${dims.value.w + STROKE} ${dims.value.h + STROKE}`)
 
   // 【圖層：框線】每一列、每一行的格線都畫出來，湊成一張完整表格
   const gridD = computed(() => {
-    const cell = props.cellSize
+    const cw = props.cellWidth
+    const ch = props.cellHeight
     let d = ''
-    for (let r = 0; r <= props.rows; r++) d += `M0 ${r * cell}L${dims.value.w} ${r * cell}`
-    for (let c = 0; c <= props.cols; c++) d += `M${c * cell} 0L${c * cell} ${dims.value.h}`
+    for (let r = 0; r <= props.rows; r++) d += `M0 ${r * ch}L${dims.value.w} ${r * ch}`
+    for (let c = 0; c <= props.cols; c++) d += `M${c * cw} 0L${c * cw} ${dims.value.h}`
     return d
   })
 
   // 【圖層：黃點】每格中心一顆黃色圓點
   const dots = computed(() => {
-    const cell = props.cellSize
+    const cw = props.cellWidth
+    const ch = props.cellHeight
     const list: { cx: number; cy: number }[] = []
     for (let r = 0; r < props.rows; r++) {
       for (let c = 0; c < props.cols; c++) {
-        list.push({ cx: c * cell + cell / 2, cy: r * cell + cell / 2 })
+        list.push({ cx: c * cw + cw / 2, cy: r * ch + ch / 2 })
       }
     }
     return list
