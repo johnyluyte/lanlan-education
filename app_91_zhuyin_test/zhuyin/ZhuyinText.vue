@@ -11,6 +11,7 @@
       fontSize?: number // 注音符號字體大小，相對中文字級的倍率（em）
       lineHeight?: number // 換行時，行與行之間的間距（px）；注音字體變大時，行距要跟著加大避免重疊
       charFontSize?: number // 中文字級大小（px）；注音字級是相對這個值的倍率，改這個會連帶影響注音大小
+      symbolScaleY?: number // 注音符號垂直縮放比例（1 = 不縮放）；只壓縮高度、不影響寬度，類似 Photoshop 非等比縮放
     }>(),
     {
       gapLeft: 2,
@@ -19,6 +20,7 @@
       fontSize: 0.4,
       lineHeight: 8,
       charFontSize: 24,
+      symbolScaleY: 1,
     },
   )
 
@@ -34,9 +36,14 @@
           class="relative inline-flex flex-col justify-center leading-none"
           :style="{ marginLeft: `${gapLeft}px`, marginRight: `${gapRight}px`, fontSize: `${fontSize}em` }"
         >
-          <span v-for="(symbol, symbolIndex) in segment.symbols" :key="symbolIndex">{{ symbol }}</span>
+          <span
+            v-for="(symbol, symbolIndex) in segment.symbols"
+            :key="symbolIndex"
+            :style="{ transform: `scaleY(${symbolScaleY}) translateY(1px)`, marginTop: `-1.5px` }"
+            >{{ symbol }}</span
+          >
           <!-- 輕聲：點標在符號欄左上角 -->
-          <span v-if="segment.tone === '˙'" class="absolute -top-2 left-0.5">{{ segment.tone }}</span>
+          <span v-if="segment.tone === '˙'" class="absolute -top-1.5 left-0.5">{{ segment.tone }}</span>
           <!-- 二、三、四聲：貼在符號欄右側置中 -->
           <span v-else-if="segment.tone" class="absolute top-1/2 -translate-y-1/4" :style="{ right: `-${toneGap}px` }">{{
             segment.tone

@@ -11,6 +11,7 @@
   const fontSize = defineModel<number>('fontSize', { required: true })
   const lineHeight = defineModel<number>('lineHeight', { required: true })
   const charFontSize = defineModel<number>('charFontSize', { required: true })
+  const symbolScaleY = defineModel<number>('symbolScaleY', { required: true })
 
   // 字級用「相對中文字的倍率（em）」，跟其他 px 間距是不同量級，固定一組合理範圍
   const FONT_SIZE_MIN = 0.2
@@ -20,6 +21,11 @@
   // 中文字級直接用 px，跟注音的相對倍率是不同量級，固定一組合理範圍
   const CHAR_FONT_SIZE_MIN = 12
   const CHAR_FONT_SIZE_MAX = 64
+
+  // 垂直縮放比例：1 = 不縮放，值愈小愈扁，跟其他量級都不同
+  const SYMBOL_SCALE_Y_MIN = 0.3
+  const SYMBOL_SCALE_Y_MAX = 1
+  const SYMBOL_SCALE_Y_STEP = 0.05
 </script>
 
 <template>
@@ -47,6 +53,10 @@
     <div>
       <span class="text-sm font-medium">中文字大小：{{ charFontSize }}px</span>
       <USlider v-model="charFontSize" :min="CHAR_FONT_SIZE_MIN" :max="CHAR_FONT_SIZE_MAX" :step="1" class="mt-3" />
+    </div>
+    <div>
+      <span class="text-sm font-medium">注音符號垂直縮放：{{ symbolScaleY }}</span>
+      <USlider v-model="symbolScaleY" :min="SYMBOL_SCALE_Y_MIN" :max="SYMBOL_SCALE_Y_MAX" :step="SYMBOL_SCALE_Y_STEP" class="mt-3" />
     </div>
   </div>
 </template>

@@ -10,6 +10,7 @@
   const fontSize = ref(0.4)
   const lineHeight = ref(8)
   const charFontSize = ref(24)
+  const symbolScaleY = ref(1)
 </script>
 
 <template>
@@ -22,6 +23,7 @@
         v-model:font-size="fontSize"
         v-model:line-height="lineHeight"
         v-model:char-font-size="charFontSize"
+        v-model:symbol-scale-y="symbolScaleY"
         :min="0"
         :max="20"
       />
@@ -38,11 +40,24 @@
           :font-size="fontSize"
           :line-height="lineHeight"
           :char-font-size="charFontSize"
+          :symbol-scale-y="symbolScaleY"
         />
       </div>
 
       <div class="border-muted h-2 w-full border-t"></div>
 
+      <div>
+        <ZhuyinText
+          text="青蛙"
+          :gap-left="gapLeft"
+          :gap-right="gapRight"
+          :tone-gap="toneGap"
+          :font-size="fontSize"
+          :line-height="lineHeight"
+          :char-font-size="charFontSize"
+          :symbol-scale-y="symbolScaleY"
+        />
+      </div>
       <div>
         <ZhuyinText
           text="能不能在中文旁邊加上注音"
@@ -52,6 +67,7 @@
           :font-size="fontSize"
           :line-height="lineHeight"
           :char-font-size="charFontSize"
+          :symbol-scale-y="symbolScaleY"
         />
       </div>
       <div>
@@ -63,6 +79,7 @@
           :font-size="fontSize"
           :line-height="lineHeight"
           :char-font-size="charFontSize"
+          :symbol-scale-y="symbolScaleY"
         />
       </div>
     </div>
