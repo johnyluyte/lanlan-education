@@ -16,7 +16,7 @@
   // 字級用「相對中文字的倍率（em）」，跟其他 px 間距是不同量級，固定一組合理範圍
   const FONT_SIZE_MIN = 0.2
   const FONT_SIZE_MAX = 1
-  const FONT_SIZE_STEP = 0.05
+  const FONT_SIZE_STEP = 0.01
 
   // 中文字級直接用 px，跟注音的相對倍率是不同量級，固定一組合理範圍
   const CHAR_FONT_SIZE_MIN = 12

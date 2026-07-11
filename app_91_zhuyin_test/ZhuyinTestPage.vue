@@ -5,9 +5,9 @@
 
   const inputText = ref('')
   const gapLeft = ref(2)
-  const gapRight = ref(6)
-  const toneGap = ref(6)
-  const fontSize = ref(0.4)
+  const gapRight = ref(8)
+  const toneGap = ref(5)
+  const fontSize = ref(0.33)
   const lineHeight = ref(8)
   const charFontSize = ref(24)
   const symbolScaleY = ref(1)

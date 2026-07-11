@@ -25,6 +25,18 @@
   )
 
   const segments = computed(() => toZhuyinSegments(props.text))
+
+  function getSymbolStyle(symbols: string[]) {
+    if (symbols.length === 0) {
+      return
+    } else if (symbols.length === 1) {
+      return { transform: `scaleY(${props.symbolScaleY}) translateY(1px)`, marginTop: `` }
+    } else if (symbols.length === 2) {
+      return { transform: `scaleY(${props.symbolScaleY}) translateY(0.5px)`, marginTop: `2px` }
+    } else if (symbols.length === 3) {
+      return { transform: `scaleY(${props.symbolScaleY}) translateY(1px)`, marginTop: `-1px` }
+    }
+  }
 </script>
 
 <template>
@@ -33,19 +45,16 @@
       <span v-if="segment.symbols" class="inline-flex items-center">
         <span>{{ segment.char }}</span>
         <span
-          class="relative inline-flex flex-col justify-center leading-none"
+          class="relative inline-flex flex-col items-center justify-center leading-none font-semibold"
           :style="{ marginLeft: `${gapLeft}px`, marginRight: `${gapRight}px`, fontSize: `${fontSize}em` }"
         >
-          <span
-            v-for="(symbol, symbolIndex) in segment.symbols"
-            :key="symbolIndex"
-            :style="{ transform: `scaleY(${symbolScaleY}) translateY(1px)`, marginTop: `-1.5px` }"
-            >{{ symbol }}</span
-          >
+          <span v-for="(symbol, symbolIndex) in segment.symbols" :key="symbolIndex" :style="getSymbolStyle(segment.symbols)">{{
+            symbol
+          }}</span>
           <!-- 輕聲：點標在符號欄左上角 -->
-          <span v-if="segment.tone === '˙'" class="absolute -top-1.5 left-0.5">{{ segment.tone }}</span>
+          <span v-if="segment.tone === '˙'" class="absolute -top-1 left-0.5">{{ segment.tone }}</span>
           <!-- 二、三、四聲：貼在符號欄右側置中 -->
-          <span v-else-if="segment.tone" class="absolute top-1/2 -translate-y-1/4" :style="{ right: `-${toneGap}px` }">{{
+          <span v-else-if="segment.tone" class="absolute top-1/2 -translate-y-1/11" :style="{ right: `-${toneGap}px` }">{{
             segment.tone
           }}</span>
         </span>
