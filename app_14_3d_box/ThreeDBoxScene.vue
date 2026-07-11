@@ -36,7 +36,7 @@
   const cameraRef = ref()
   const controlsRef = ref()
 
-  const DEFAULT_CAMERA_POSITION: [number, number, number] = [9, 7, 12]
+  const DEFAULT_CAMERA_POSITION: [number, number, number] = [15, 10, 18]
 
   // 方位約定：-Z 為北（畫面深處、離相機較遠），+Z 為南。目前場景沒有指北針之類的 UI，這是暫定的慣例。
   // 顏色用 Cube.vue 預設的固定色盤（不覆寫 colors）——顏色是油漆在實體面上的，
@@ -47,10 +47,12 @@
     { position: [0, 0, 0], rotation: [0, 0, 0] }, // 預設姿態：+Y(綠) 在上，-Y(藍) 在下
     { position: [2, 0, 0], rotation: [Math.PI, 0, 0] }, // 繞 X 轉 180 度：-Y(藍) 轉到上面，+Y(綠) 自動到下面
     { position: [2, 0, -2], rotation: [Math.PI / 2, 0, 0] }, // 藍在上那個 cube 的北方；繞 X 轉 90 度：-Z(橘) 轉到上面，+Z(紫) 自動到下面
+    { position: [4, 0, 0], rotation: [0, 0, 0] }, // 藍在上那個 cube 的東方；預設姿態：+Y(綠) 在上
+    { position: [6, 0, 0], rotation: [-Math.PI / 2, 0, 0] }, // 再往東一格；繞 X 轉 -90 度：+Z(紫) 轉到上面，-Z(橘) 自動到下面
   ]
 
-  // 東南西北字樣，放在地板邊緣（跟 floor 半徑 5.5 對齊），方便使用者理解方位約定
-  const COMPASS_LABEL_DISTANCE = 5.5
+  // 東南西北字樣，放在地板邊緣（跟 floor 半徑對齊），方便使用者理解方位約定
+  const COMPASS_LABEL_DISTANCE = 8.5
   const compassLabels = [
     { label: '北', position: [0, 0, -COMPASS_LABEL_DISTANCE] as [number, number, number], texture: createLabelTexture('北') },
     { label: '南', position: [0, 0, COMPASS_LABEL_DISTANCE] as [number, number, number], texture: createLabelTexture('南') },
@@ -94,7 +96,7 @@
         :position-z="DEFAULT_CAMERA_POSITION[2]"
         :args="[45, 1, 0.1, 100]"
       />
-      <OrbitControls ref="controlsRef" make-default :enable-damping="true" :enable-pan="false" :min-distance="4" :max-distance="20" />
+      <OrbitControls ref="controlsRef" make-default :enable-damping="true" :enable-pan="false" :min-distance="5" :max-distance="32" />
 
       <TresHemisphereLight :args="['#ffffff', '#94a3b8', 1.8]" />
       <TresDirectionalLight :args="['#ffffff', 2.8]" :position-x="4" :position-y="6" :position-z="5" cast-shadow />
@@ -102,11 +104,11 @@
       <Cube v-for="(cube, i) in cubes" :key="i" :position="cube.position" :rotation="cube.rotation" @click="isCubeSelected = true" />
 
       <TresMesh :rotation-x="-Math.PI / 2" :position-y="-1.35" receive-shadow @click="isCubeSelected = false">
-        <TresCircleGeometry :args="[5.5, 72]" />
+        <TresCircleGeometry :args="[8.5, 72]" />
         <TresMeshStandardMaterial color="#f8fafc" :roughness="0.72" :metalness="0" />
       </TresMesh>
 
-      <TresGridHelper :args="[14, 28, '#94a3b8', '#cbd5e1']" :position-y="-1.34" />
+      <TresGridHelper :args="[20, 40, '#94a3b8', '#cbd5e1']" :position-y="-1.34" />
 
       <TresSprite
         v-for="compass in compassLabels"
