@@ -2,7 +2,7 @@
   // 控制面板：M（列數）、N（欄數）。參考 app_20_imitate_dot/ImitateDotSettings.vue 的慣例。
   import { ref } from 'vue'
   import ThreeDBoxCellGrid from './ThreeDBoxCellGrid.vue'
-  import type { CubeKind } from './cubeKind'
+  import type { SquareKind } from './squareKind'
 
   defineProps<{
     min: number // rows/cols 下限
@@ -13,22 +13,22 @@
   const cols = defineModel<number>('cols', { required: true })
 
   const PREVIEW_CELL_SIZE = 28
-  const RANDOM_CUBE_DENSITY = 0.3
+  const RANDOM_SQUARE_DENSITY = 0.3
 
   // 固定 4 個顏色欄位，色碼與權重都可調整。參考 app_20_imitate_dot 的預設黃/紅/綠/藍。
-  const cubeKinds = ref<CubeKind[]>([
+  const squareKinds = ref<SquareKind[]>([
     { color: '#facc15', weight: 1 },
     { color: '#f87171', weight: 1 },
     { color: '#4ade80', weight: 1 },
     { color: '#60a5fa', weight: 1 },
   ])
 
-  // 方塊只在按下按鈕後才出現；density 沒變時 computed 不會重算，故用 key 強制重新隨機
+  // 正方形只在按下按鈕後才出現；density 沒變時 computed 不會重算，故用 key 強制重新隨機
   const previewKey = ref(0)
   const previewDensity = ref(0)
 
-  function randomizeCubes() {
-    previewDensity.value = RANDOM_CUBE_DENSITY
+  function randomizeSquares() {
+    previewDensity.value = RANDOM_SQUARE_DENSITY
     previewKey.value++
   }
 </script>
@@ -44,7 +44,11 @@
       <USlider v-model="cols" :min="min" :max="max" :step="1" class="mt-3" />
     </div>
 
-    <div class="border-muted border-t pt-4">M x N 的小方格稱之為 Cell；裡面有顏色的格子稱之為 Cube。</div>
+    <div class="border-muted text-muted border-t pt-4 text-sm">
+      <div>M x N 的小方格稱為 Cell</div>
+      <div>裡面有顏色+數字的格子稱為 Square</div>
+      <div>3D 場景內的正方體稱為 Cube</div>
+    </div>
 
     <div class="border-muted flex flex-col items-center gap-3 border-t pt-4">
       <ThreeDBoxCellGrid
@@ -53,14 +57,14 @@
         :cols="cols"
         :cell-size="PREVIEW_CELL_SIZE"
         :density="previewDensity"
-        :cube-kinds="previewDensity > 0 ? cubeKinds : []"
+        :square-kinds="previewDensity > 0 ? squareKinds : []"
       />
-      <UButton icon="i-lucide-sparkles" label="隨機產生方塊" color="neutral" variant="soft" block @click="randomizeCubes" />
+      <UButton icon="i-lucide-sparkles" label="隨機產生正方形" color="neutral" variant="soft" block @click="randomizeSquares" />
     </div>
 
     <div class="border-muted flex flex-col gap-4 border-t pt-4">
       <span class="text-sm font-medium">顏色欄位（色碼可調，權重為相對值、不需總和為 1）：</span>
-      <div v-for="(kind, i) in cubeKinds" :key="i" class="flex items-center gap-3">
+      <div v-for="(kind, i) in squareKinds" :key="i" class="flex items-center gap-3">
         <UPopover :content="{ side: 'right', align: 'start' }">
           <UButton :aria-label="`調整第 ${i + 1} 個顏色`" color="neutral" variant="outline" square class="relative size-9 overflow-hidden">
             <span

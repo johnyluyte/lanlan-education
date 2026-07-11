@@ -1,15 +1,15 @@
 <script setup lang="ts">
-  // 完整表格繪製：SVG 兩圖層（方塊 → 框線），疊序 = 文件順序，不用 z-index。框線後畫，蓋在方塊上面才不會被相鄰同色方塊糊掉。
+  // 完整表格繪製：SVG 兩圖層（正方形 → 框線），疊序 = 文件順序，不用 z-index。框線後畫，蓋在正方形上面才不會被相鄰同色正方形糊掉。
   // 複製自 app_20_imitate_dot/ImitateDotBoard.vue，獨立成自己的元件方便日後修改。
   import { computed } from 'vue'
-  import type { CubeKind } from './cubeKind'
+  import type { SquareKind } from './squareKind'
 
   const props = defineProps<{
     rows: number
     cols: number
     cellSize: number
-    density: number // 每格出現方塊的機率
-    cubeKinds: CubeKind[] // 固定 4 格，每格自帶色碼 + 相對權重
+    density: number // 每格出現正方形的機率
+    squareKinds: SquareKind[] // 固定 4 格，每格自帶色碼 + 相對權重
   }>()
 
   const STROKE = 2 // 框線寬
@@ -27,13 +27,13 @@
     return d
   })
 
-  // 【圖層：方塊】兩階段隨機：先依 density 決定這格要不要出現方塊，再依 cubeKinds 的權重加權抽色碼，
-  // 同時隨機給 1-3 的數字標在方塊上（每次重新隨機時一起重算）。
-  // （權重不需正規化，抽色時除以權重總和即可；權重全 0 則該格不畫方塊）。
-  // 只依 rows/cols/density/cubeKinds 重新隨機，改 cellSize 只換算像素位置，
-  // 故拆成 cubeCells（邏輯格 + 色碼 + 數字）→ cubes（像素座標 + 色碼 + 數字）兩層 computed。
-  const cubeCells = computed<{ r: number; c: number; color: string; value: number }[]>(() => {
-    const total = props.cubeKinds.reduce((sum, kind) => sum + kind.weight, 0)
+  // 【圖層：正方形】兩階段隨機：先依 density 決定這格要不要出現正方形，再依 squareKinds 的權重加權抽色碼，
+  // 同時隨機給 1-3 的數字標在正方形上（每次重新隨機時一起重算）。
+  // （權重不需正規化，抽色時除以權重總和即可；權重全 0 則該格不畫正方形）。
+  // 只依 rows/cols/density/squareKinds 重新隨機，改 cellSize 只換算像素位置，
+  // 故拆成 squareCells（邏輯格 + 色碼 + 數字）→ squares（像素座標 + 色碼 + 數字）兩層 computed。
+  const squareCells = computed<{ r: number; c: number; color: string; value: number }[]>(() => {
+    const total = props.squareKinds.reduce((sum, kind) => sum + kind.weight, 0)
 
     const list: { r: number; c: number; color: string; value: number }[] = []
     for (let r = 0; r < props.rows; r++) {
@@ -42,8 +42,8 @@
         if (total <= 0) continue
 
         let pick = Math.random() * total
-        let color = props.cubeKinds[0]!.color
-        for (const kind of props.cubeKinds) {
+        let color = props.squareKinds[0]!.color
+        for (const kind of props.squareKinds) {
           pick -= kind.weight
           if (pick <= 0) {
             color = kind.color
@@ -56,26 +56,26 @@
     return list
   })
 
-  const cubes = computed(() => {
+  const squares = computed(() => {
     const cell = props.cellSize
-    return cubeCells.value.map(({ r, c, color, value }) => ({ x: c * cell, y: r * cell, color, value }))
+    return squareCells.value.map(({ r, c, color, value }) => ({ x: c * cell, y: r * cell, color, value }))
   })
 </script>
 
 <template>
   <svg :width="dims.w + STROKE" :height="dims.h + STROKE" :viewBox="viewBox" class="text-gray-800 dark:text-gray-200">
-    <!-- 圖層 1：方塊（四色共用一個圖層，畫成與 cell 等大的正方形） -->
-    <g class="layer-cubes">
-      <rect v-for="(d, i) in cubes" :key="i" :x="d.x" :y="d.y" :width="cellSize" :height="cellSize" :fill="d.color" />
+    <!-- 圖層 1：正方形（四色共用一個圖層，畫成與 cell 等大的正方形） -->
+    <g class="layer-squares">
+      <rect v-for="(d, i) in squares" :key="i" :x="d.x" :y="d.y" :width="cellSize" :height="cellSize" :fill="d.color" />
     </g>
 
-    <!-- 圖層 2：框線（後畫，蓋在方塊上面，相鄰方塊之間才看得到分隔線） -->
+    <!-- 圖層 2：框線（後畫，蓋在正方形上面，相鄰正方形之間才看得到分隔線） -->
     <path class="layer-grid" :d="gridD" fill="none" stroke="currentColor" :stroke-width="STROKE" stroke-linecap="square" />
 
-    <!-- 圖層 3：方塊上的隨機數字 -->
-    <g class="layer-cube-values">
+    <!-- 圖層 3：正方形上的隨機數字 -->
+    <g class="layer-square-values">
       <text
-        v-for="(d, i) in cubes"
+        v-for="(d, i) in squares"
         :key="i"
         :x="d.x + cellSize / 2"
         :y="d.y + cellSize / 2"
