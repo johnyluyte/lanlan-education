@@ -7,6 +7,7 @@
 
   const gapLeft = defineModel<number>('gapLeft', { required: true })
   const gapRight = defineModel<number>('gapRight', { required: true })
+  const toneGap = defineModel<number>('toneGap', { required: true })
 </script>
 
 <template>
@@ -18,6 +19,10 @@
     <div>
       <span class="text-sm font-medium">注音與中文右邊距離：{{ gapRight }}px</span>
       <USlider v-model="gapRight" :min="min" :max="max" :step="1" class="mt-3" />
+    </div>
+    <div>
+      <span class="text-sm font-medium">一、二、三、四聲與左邊注音的距離：{{ toneGap }}px</span>
+      <USlider v-model="toneGap" :min="min" :max="max" :step="1" class="mt-3" />
     </div>
   </div>
 </template>

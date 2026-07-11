@@ -7,10 +7,12 @@
       text: string
       gapLeft?: number // 中文字與注音符號欄之間的左邊距離（px）
       gapRight?: number // 注音符號欄右側距離（px），影響跟下一個字之間的間距
+      toneGap?: number // 二、三、四聲聲調符號與左邊注音符號欄的距離（px）
     }>(),
     {
       gapLeft: 2,
       gapRight: 0,
+      toneGap: 4,
     },
   )
 
@@ -30,7 +32,9 @@
           <!-- 輕聲：點標在符號欄左上角 -->
           <span v-if="segment.tone === '˙'" class="absolute -top-1 -left-1">{{ segment.tone }}</span>
           <!-- 二、三、四聲：貼在符號欄右側置中 -->
-          <span v-else-if="segment.tone" class="absolute top-1/2 -right-1 -translate-y-1/2">{{ segment.tone }}</span>
+          <span v-else-if="segment.tone" class="absolute top-1/2 -translate-y-1/2" :style="{ right: `-${toneGap}px` }">{{
+            segment.tone
+          }}</span>
         </span>
       </span>
       <span v-else>{{ segment.char }}</span>
