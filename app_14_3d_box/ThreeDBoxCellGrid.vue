@@ -1,15 +1,16 @@
 <script setup lang="ts">
   // 完整表格繪製：SVG 兩圖層（正方形 → 框線），疊序 = 文件順序，不用 z-index。框線後畫，蓋在正方形上面才不會被相鄰同色正方形糊掉。
+  // 純渲染元件：squareCells 是「哪些格子有正方形」的資料，由 ThreeDBox2DSettings 產生並傳進來，
+  // 這樣同一份資料也能被 ThreeDBoxScene 拿去生成對應的 3D cube（動態場景）。
   // 複製自 app_20_imitate_dot/ImitateDotBoard.vue，獨立成自己的元件方便日後修改。
   import { computed } from 'vue'
-  import type { SquareKind } from './squareKind'
+  import type { SquareCell } from './squareCell'
 
   const props = defineProps<{
     rows: number
     cols: number
     cellSize: number
-    density: number // 每格出現正方形的機率
-    squareKinds: SquareKind[] // 固定 4 格，每格自帶色碼 + 相對權重
+    squareCells: SquareCell[]
   }>()
 
   const STROKE = 2 // 框線寬
@@ -27,38 +28,10 @@
     return d
   })
 
-  // 【圖層：正方形】兩階段隨機：先依 density 決定這格要不要出現正方形，再依 squareKinds 的權重加權抽色碼，
-  // 同時隨機給 1-3 的數字標在正方形上（每次重新隨機時一起重算）。
-  // （權重不需正規化，抽色時除以權重總和即可；權重全 0 則該格不畫正方形）。
-  // 只依 rows/cols/density/squareKinds 重新隨機，改 cellSize 只換算像素位置，
-  // 故拆成 squareCells（邏輯格 + 色碼 + 數字）→ squares（像素座標 + 色碼 + 數字）兩層 computed。
-  const squareCells = computed<{ r: number; c: number; color: string; value: number }[]>(() => {
-    const total = props.squareKinds.reduce((sum, kind) => sum + kind.weight, 0)
-
-    const list: { r: number; c: number; color: string; value: number }[] = []
-    for (let r = 0; r < props.rows; r++) {
-      for (let c = 0; c < props.cols; c++) {
-        if (Math.random() >= props.density) continue
-        if (total <= 0) continue
-
-        let pick = Math.random() * total
-        let color = props.squareKinds[0]!.color
-        for (const kind of props.squareKinds) {
-          pick -= kind.weight
-          if (pick <= 0) {
-            color = kind.color
-            break
-          }
-        }
-        list.push({ r, c, color, value: Math.floor(Math.random() * 3) + 1 })
-      }
-    }
-    return list
-  })
-
+  // 邏輯格（row/col）換算成像素座標，供畫正方形跟數字用
   const squares = computed(() => {
     const cell = props.cellSize
-    return squareCells.value.map(({ r, c, color, value }) => ({ x: c * cell, y: r * cell, color, value }))
+    return props.squareCells.map(({ row, col, color, value }) => ({ x: col * cell, y: row * cell, color, value }))
   })
 </script>
 

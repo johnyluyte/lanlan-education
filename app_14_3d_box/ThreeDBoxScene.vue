@@ -2,10 +2,21 @@
   // 場景外殼（相機／燈光／地板／格線／控制器），Cube 已拆成獨立元件。改用 TresJS 宣告式寫法，不再手動管理 renderer/scene/animate loop。
   // 注意：useTres()/useTresContext() 只能在 <TresCanvas> 底下的子元件呼叫；這裡跟 <TresCanvas> 同層，
   // 故相機/控制器改用 template ref 直接拿底層 Three.js 物件，resize 監聽沿用 useResizeObserver。
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
   import { useResizeObserver } from '@vueuse/core'
   import { CanvasTexture, SRGBColorSpace } from 'three'
   import Cube from './Cube.vue'
+  import type { SquareCell } from './squareCell'
+
+  type SceneMode = 'default' | 'dynamic'
+  type CubeConfig = { position: [number, number, number]; rotation: [number, number, number] }
+
+  const props = withDefaults(defineProps<{ sceneMode?: SceneMode; rows?: number; cols?: number; squareCells?: SquareCell[] }>(), {
+    sceneMode: 'default',
+    rows: 1,
+    cols: 1,
+    squareCells: () => [],
+  })
 
   // 畫一張圓角底 + 文字的貼圖，給 TresSprite 當 map 用。Sprite 會自動一直面向鏡頭（billboard），
   // 純 Three.js 原生做法，不牽涉 DOM-in-3D 橋接（那套會跟 Nuxt 的 Vue runtime 衝突，整個 app 會掛掉）。
@@ -42,13 +53,37 @@
   // 顏色用 Cube.vue 預設的固定色盤（不覆寫 colors）——顏色是油漆在實體面上的，
   // 對面關係固定不變（黃(+X)↔紅(-X)、綠(+Y)↔藍(-Y)、紫(+Z)↔橘(-Z)）。要哪色朝上只能靠旋轉整個方塊達成，
   // 這樣「黃在上時紅必定在下」才會自動成立，而不是每個 cube 各自换贴一套顏色。
-  const cubes: { position: [number, number, number]; rotation: [number, number, number] }[] = [
+  const DEFAULT_SCENE_CUBES: CubeConfig[] = [
     { position: [-2, 0, 0], rotation: [0, 0, Math.PI / 2] }, // 繞 Z 轉 90 度：+X(黃) 轉到上面，-X(紅) 自動到下面
     { position: [0, 0, 0], rotation: [0, 0, 0] }, // 預設姿態：+Y(綠) 在上，-Y(藍) 在下
     { position: [2, 0, 0], rotation: [Math.PI, 0, 0] }, // 繞 X 轉 180 度：-Y(藍) 轉到上面，+Y(綠) 自動到下面
     { position: [2, 0, -2], rotation: [Math.PI / 2, 0, 0] }, // 藍在上那個 cube 的北方；繞 X 轉 90 度：-Z(橘) 轉到上面，+Z(紫) 自動到下面
     { position: [6, 0, 0], rotation: [-Math.PI / 2, 0, 0] }, // 繞 X 轉 -90 度：+Z(紫) 轉到上面，-Z(橘) 自動到下面
   ]
+
+  // 顏色 → 讓該色轉到頂面所需的旋轉，對應 Cube.vue 固定色盤：黃(+X)/紅(-X)/綠(+Y)/藍(-Y)/紫(+Z)/橘(-Z)。
+  // 若 square 顏色不在這 6 色內（例如使用者自訂色碼），沒有對應的 cube 面可用，退回不轉（綠在上）。
+  const TOP_ROTATION_BY_COLOR: Record<string, [number, number, number]> = {
+    '#facc15': [0, 0, Math.PI / 2], // 黃
+    '#f87171': [0, 0, -Math.PI / 2], // 紅
+    '#4ade80': [0, 0, 0], // 綠
+    '#60a5fa': [Math.PI, 0, 0], // 藍
+    '#c084fc': [-Math.PI / 2, 0, 0], // 紫
+    '#fb923c': [Math.PI / 2, 0, 0], // 橘
+  }
+  const DEFAULT_TOP_ROTATION: [number, number, number] = [0, 0, 0]
+  const CUBE_SPACING = 2 // 跟 Cube 預設 size 一致，邊對邊相鄰
+
+  // 動態場景：依 ThreeDBox2DSettings 產生的 squareCells 生成對應 cube（top-down 視角）。
+  // col 對應 X（西→東）、row 對應 Z（北→南），整個 M x N 網格置中在原點。value（權重數字）先不處理。
+  const dynamicSceneCubes = computed<CubeConfig[]>(() =>
+    props.squareCells.map((cell) => ({
+      position: [(cell.col - (props.cols - 1) / 2) * CUBE_SPACING, 0, (cell.row - (props.rows - 1) / 2) * CUBE_SPACING],
+      rotation: TOP_ROTATION_BY_COLOR[cell.color] ?? DEFAULT_TOP_ROTATION,
+    })),
+  )
+
+  const cubes = computed(() => (props.sceneMode === 'dynamic' ? dynamicSceneCubes.value : DEFAULT_SCENE_CUBES))
 
   // 東南西北字樣，放在地板邊緣（跟 floor 半徑對齊），方便使用者理解方位約定
   const COMPASS_LABEL_DISTANCE = 8.5
