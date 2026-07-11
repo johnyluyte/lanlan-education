@@ -1,4 +1,19 @@
-type ExampleData = {
+import Ahri from './imgs/Ahri.png'
+import Akali from './imgs/Akali.png'
+import Jinx from './imgs/Jinx.png'
+import Trundle from './imgs/Trundle.png'
+import Anivia from './imgs/Anivia.png'
+import Olaf from './imgs/Olaf.png'
+import Qiyana from './imgs/Qiyana.png'
+import Rammus from './imgs/Rammus.png'
+import Vex from './imgs/Vex.png'
+import Viego from './imgs/Viego.png'
+import Warwick from './imgs/Warwick.png'
+import Wukong from './imgs/Wukong.png'
+import Ziggs from './imgs/Ziggs.png'
+import Zoe from './imgs/Zoe.png'
+
+export type ExampleData = {
   img: string
   cName: string
   eName: string
@@ -6,28 +21,73 @@ type ExampleData = {
 
 export const exampleData: ExampleData[] = [
   {
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Flag_of_the_United_States.svg/2560px-Flag_of_the_United_States.svg.png',
-    cName: '美国',
-    eName: 'United States',
+    img: Ahri,
+    cName: '阿璃',
+    eName: 'Ahri',
   },
   {
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png',
-    cName: '俄罗斯',
-    eName: 'Russia',
+    img: Akali,
+    cName: '阿卡莉',
+    eName: 'Akali',
   },
   {
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Canada.svg/2560px-Flag_of_Canada.svg.png',
-    cName: '加拿大',
-    eName: 'Canada',
+    img: Jinx,
+    cName: '金克絲',
+    eName: 'Jinx',
   },
   {
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_Pe    ople%27s_Republic_of_China.svg/2560px-Flag_of_the_People%27s_Republic_of_China.svg.png',
-    cName: '中国',
-    eName: 'China',
+    img: Trundle,
+    cName: '特朗多',
+    eName: 'Trundle',
   },
   {
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/2560px-Flag_of_Brazil.svg.png',
-    cName: '巴西',
-    eName: 'Brazil',
+    img: Anivia,
+    cName: '艾尼維亞',
+    eName: 'Anivia',
+  },
+  {
+    img: Olaf,
+    cName: '歐拉夫',
+    eName: 'Olaf',
+  },
+  {
+    img: Qiyana,
+    cName: '奇亞娜',
+    eName: 'Qiyana',
+  },
+  {
+    img: Rammus,
+    cName: '拉姆斯',
+    eName: 'Rammus',
+  },
+  {
+    img: Vex,
+    cName: '薊古絲',
+    eName: 'Vex',
+  },
+  {
+    img: Viego,
+    cName: '佛耶戈',
+    eName: 'Viego',
+  },
+  {
+    img: Warwick,
+    cName: '沃里克',
+    eName: 'Warwick',
+  },
+  {
+    img: Wukong,
+    cName: '孫悟空',
+    eName: 'Wukong',
+  },
+  {
+    img: Ziggs,
+    cName: '希格斯',
+    eName: 'Ziggs',
+  },
+  {
+    img: Zoe,
+    cName: '佐伊',
+    eName: 'Zoe',
   },
 ]
