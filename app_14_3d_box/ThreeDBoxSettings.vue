@@ -1,6 +1,6 @@
 <script setup lang="ts">
   // 控制面板：M（列數）、N（欄數）。參考 app_20_imitate_dot/ImitateDotSettings.vue 的慣例。
-  import ImitateDotBoard from '#alias-imitate-dot/ImitateDotBoard.vue'
+  import ThreeDBoxCellGrid from './ThreeDBoxCellGrid.vue'
 
   defineProps<{
     min: number // rows/cols 下限
@@ -24,7 +24,7 @@
       <USlider v-model="cols" :min="min" :max="max" :step="1" class="mt-3" />
     </div>
     <div class="border-muted flex justify-center border-t pt-4">
-      <ImitateDotBoard :rows="rows" :cols="cols" :cell-size="PREVIEW_CELL_SIZE" :density="0" :dot-kinds="[]" />
+      <ThreeDBoxCellGrid :rows="rows" :cols="cols" :cell-size="PREVIEW_CELL_SIZE" :density="0" :dot-kinds="[]" />
     </div>
   </div>
 </template>
