@@ -48,7 +48,14 @@
       "Bash(npm search *)",
       "Bash(pnpm add *)",
       "Bash(sips -g pixelWidth -g pixelHeight app_13_connect_the_dots/example.jpg)",
-      "Bash(git mv *)"
+      "Bash(git mv *)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(git -C /Users/cchien/git/lanlan-education status --short app_14_3d_box)",
+      "Bash(git -C /Users/cchien/git/lanlan-education log --oneline -5 -- app_14_3d_box)",
+      "Bash(git -C /Users/cchien/git/lanlan-education status --short)",
+      "Bash(git -C /Users/cchien/git/lanlan-education mv app_14_3d_box/dotKind.ts app_14_3d_box/cubeKind.ts)",
+      "WebFetch(domain:www.npmjs.com)"
     ]
   }
 }

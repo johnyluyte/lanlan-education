@@ -2,7 +2,7 @@
   // 控制面板：M（列數）、N（欄數）。參考 app_20_imitate_dot/ImitateDotSettings.vue 的慣例。
   import { ref } from 'vue'
   import ThreeDBoxCellGrid from './ThreeDBoxCellGrid.vue'
-  import type { DotKind } from './dotKind'
+  import type { CubeKind } from './cubeKind'
 
   defineProps<{
     min: number // rows/cols 下限
@@ -13,15 +13,15 @@
   const cols = defineModel<number>('cols', { required: true })
 
   const PREVIEW_CELL_SIZE = 28
-  const RANDOM_DOT_DENSITY = 0.3
-  const YELLOW_DOT_KIND: DotKind[] = [{ color: '#facc15', weight: 1 }]
+  const RANDOM_CUBE_DENSITY = 0.3
+  const YELLOW_CUBE_KIND: CubeKind[] = [{ color: '#facc15', weight: 1 }]
 
-  // 點點只在按下按鈕後才出現；density 沒變時 computed 不會重算，故用 key 強制重新隨機
+  // 方塊只在按下按鈕後才出現；density 沒變時 computed 不會重算，故用 key 強制重新隨機
   const previewKey = ref(0)
   const previewDensity = ref(0)
 
-  function randomizeDots() {
-    previewDensity.value = RANDOM_DOT_DENSITY
+  function randomizeCubes() {
+    previewDensity.value = RANDOM_CUBE_DENSITY
     previewKey.value++
   }
 </script>
@@ -43,9 +43,9 @@
         :cols="cols"
         :cell-size="PREVIEW_CELL_SIZE"
         :density="previewDensity"
-        :dot-kinds="previewDensity > 0 ? YELLOW_DOT_KIND : []"
+        :cube-kinds="previewDensity > 0 ? YELLOW_CUBE_KIND : []"
       />
-      <UButton icon="i-lucide-sparkles" label="隨機產生點點" color="neutral" variant="soft" block @click="randomizeDots" />
+      <UButton icon="i-lucide-sparkles" label="隨機產生方塊" color="neutral" variant="soft" block @click="randomizeCubes" />
     </div>
   </div>
 </template>
