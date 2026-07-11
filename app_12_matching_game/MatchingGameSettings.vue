@@ -28,6 +28,7 @@
       return
     }
     const next = candidates[Math.floor(Math.random() * candidates.length)]
+    if (!next) return
     items.value.push({ ...next })
   }
 
