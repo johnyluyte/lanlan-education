@@ -17,6 +17,7 @@
 @source '../../../app_31_svg_drawing';
 @source '../../../app_90_tile_matching';
 @source '../../../app_91_zhuyin_test';
+@source '../../../app_92_free_dot_link';
 
 @theme static {
   --font-sans:

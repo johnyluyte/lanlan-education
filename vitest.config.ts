@@ -35,6 +35,7 @@ export default defineConfig({
       { find: /^#alias-svg-drawing\//, replacement: fileURLToPath(new URL('./app_31_svg_drawing/', import.meta.url)) },
       { find: /^#alias-tile-matching\//, replacement: fileURLToPath(new URL('./app_90_tile_matching/', import.meta.url)) },
       { find: /^#alias-zhuyin-test\//, replacement: fileURLToPath(new URL('./app_91_zhuyin_test/', import.meta.url)) },
+      { find: /^#alias-free-dot-link\//, replacement: fileURLToPath(new URL('./app_92_free_dot_link/', import.meta.url)) },
     ],
   },
   test: {
