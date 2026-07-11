@@ -48,15 +48,23 @@
           class="relative inline-flex flex-col items-center justify-center leading-none font-semibold"
           :style="{ marginLeft: `${gapLeft}px`, marginRight: `${gapRight}px`, fontSize: `${fontSize}em` }"
         >
-          <span v-for="(symbol, symbolIndex) in segment.symbols" :key="symbolIndex" :style="getSymbolStyle(segment.symbols)">{{
-            symbol
-          }}</span>
+          <span
+            v-for="(symbol, symbolIndex) in segment.symbols"
+            :key="symbolIndex"
+            class="relative"
+            :style="getSymbolStyle(segment.symbols)"
+          >
+            {{ symbol }}
+            <!-- 二、三、四聲：貼在音節最後一個符號的右上角（教育部規則：不論橫式直式都標在最後一個符號右上角） -->
+            <span
+              v-if="segment.tone && segment.tone !== '˙' && symbolIndex === segment.symbols.length - 1"
+              class="absolute -top-0.5"
+              :style="{ right: `-${toneGap}px` }"
+              >{{ segment.tone }}</span
+            >
+          </span>
           <!-- 輕聲：點標在符號欄左上角 -->
           <span v-if="segment.tone === '˙'" class="absolute -top-1 left-0.5">{{ segment.tone }}</span>
-          <!-- 二、三、四聲：貼在符號欄右側置中 -->
-          <span v-else-if="segment.tone" class="absolute top-1/2 -translate-y-1/11" :style="{ right: `-${toneGap}px` }">{{
-            segment.tone
-          }}</span>
         </span>
       </span>
       <span v-else>{{ segment.char }}</span>

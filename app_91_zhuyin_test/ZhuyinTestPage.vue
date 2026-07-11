@@ -159,7 +159,7 @@
       </div>
       <div>
         <ZhuyinText
-          text="小蘭說每題之間可以加上粗線，因為特生眼睛不好"
+          text="小蘭說每題之間可以加上粗線，因為特生眼睛不好。屋無五物。淤魚與育。衣移椅意。西習喜系。乎湖虎護。需徐許續。"
           :gap-left="gapLeft"
           :gap-right="gapRight"
           :tone-gap="toneGap"
