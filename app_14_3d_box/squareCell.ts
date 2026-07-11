@@ -4,5 +4,5 @@ export interface SquareCell {
   row: number
   col: number
   color: string
-  value: number // 1-3，目前只用於 2D 顯示，3D 動態場景先不處理
+  value: number // 1-3；3D 動態場景會在該位置疊這麼多個 cube
 }

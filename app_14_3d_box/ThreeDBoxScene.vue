@@ -73,12 +73,19 @@
   const CUBE_SPACING = 2 // 跟 Cube 預設 size 一致，邊對邊相鄰
 
   // 動態場景：依 ThreeDBox2DSettings 產生的 squareCells 生成對應 cube（top-down 視角）。
-  // col 對應 X（西→東）、row 對應 Z（北→南），整個 M x N 網格置中在原點。value（權重數字）先不處理。
+  // col 對應 X（西→東）、row 對應 Z（北→南），整個 M x N 網格置中在原點。
+  // value 代表該格要疊幾個 cube（例如 2 就疊 2 個），沿 Y 軸一個接一個往上疊，顏色（頂面朝向）都跟 cell 一致。
   const dynamicSceneCubes = computed<CubeConfig[]>(() =>
-    props.squareCells.map((cell) => ({
-      position: [(cell.col - (props.cols - 1) / 2) * CUBE_SPACING, 0, (cell.row - (props.rows - 1) / 2) * CUBE_SPACING],
-      rotation: TOP_ROTATION_BY_COLOR[cell.color] ?? DEFAULT_TOP_ROTATION,
-    })),
+    props.squareCells.flatMap((cell) => {
+      const x = (cell.col - (props.cols - 1) / 2) * CUBE_SPACING
+      const z = (cell.row - (props.rows - 1) / 2) * CUBE_SPACING
+      const rotation = TOP_ROTATION_BY_COLOR[cell.color] ?? DEFAULT_TOP_ROTATION
+
+      return Array.from({ length: cell.value }, (_, layer) => ({
+        position: [x, layer * CUBE_SPACING, z] as [number, number, number],
+        rotation,
+      }))
+    }),
   )
 
   const cubes = computed(() => (props.sceneMode === 'dynamic' ? dynamicSceneCubes.value : DEFAULT_SCENE_CUBES))
