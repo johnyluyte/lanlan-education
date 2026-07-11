@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { toZhuyinSegments } from '#alias-shared/zhuyin/zhuyin'
+  import { toZhuyinSegments } from '#alias-zhuyin-test/zhuyin/zhuyin'
 
   const props = defineProps<{
     text: string
