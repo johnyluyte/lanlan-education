@@ -47,8 +47,6 @@
   const cameraRef = ref()
   const controlsRef = ref()
 
-  const DEFAULT_CAMERA_POSITION: [number, number, number] = [15, 10, 18]
-
   // 方位約定：-Z 為北（畫面深處、離相機較遠），+Z 為南。目前場景沒有指北針之類的 UI，這是暫定的慣例。
   // 顏色用 Cube.vue 預設的固定色盤（不覆寫 colors）——顏色是油漆在實體面上的，
   // 對面關係固定不變（黃(+X)↔紅(-X)、綠(+Y)↔藍(-Y)、紫(+Z)↔橘(-Z)）。要哪色朝上只能靠旋轉整個方塊達成，
@@ -85,14 +83,55 @@
 
   const cubes = computed(() => (props.sceneMode === 'dynamic' ? dynamicSceneCubes.value : DEFAULT_SCENE_CUBES))
 
+  // 場景實際範圍：依目前顯示的 cubes 算出離原點最遠的角落距離，地板／格線／指標字樣／可拉遠距離都依此縮放，
+  // 這樣不管是「預設場景」還是「動態場景」的 M x N 多大，畫面都會自動放得下。
+  const CUBE_HALF_SIZE = 1 // Cube 預設 size=2
+  const MIN_SCENE_EXTENT = 3 // 沒有任何 cube 時（例如動態場景剛清空）地板仍保留最小尺寸，不會縮成一個點
+  const FLOOR_MARGIN = 2.5
+
+  const sceneExtent = computed(() => {
+    let maxDist = 0
+    for (const cube of cubes.value) {
+      const [x, , z] = cube.position
+      maxDist = Math.max(
+        maxDist,
+        Math.hypot(x - CUBE_HALF_SIZE, z - CUBE_HALF_SIZE),
+        Math.hypot(x + CUBE_HALF_SIZE, z - CUBE_HALF_SIZE),
+        Math.hypot(x - CUBE_HALF_SIZE, z + CUBE_HALF_SIZE),
+        Math.hypot(x + CUBE_HALF_SIZE, z + CUBE_HALF_SIZE),
+      )
+    }
+    return Math.max(maxDist, MIN_SCENE_EXTENT)
+  })
+
+  const floorRadius = computed(() => sceneExtent.value + FLOOR_MARGIN)
+  const gridSize = computed(() => Math.ceil((floorRadius.value * 2) / 2) * 2) // 取偶數，維持 0.5 單位間距
+  const gridDivisions = computed(() => gridSize.value * 2)
+  const orbitMaxDistance = computed(() => floorRadius.value * 3.5)
+
+  // 相機位置比例：沿用原本 [15,10,18]（對應 floorRadius 8.5）的視角比例，依新的 floorRadius 等比縮放
+  const CAMERA_DISTANCE_FACTORS: [number, number, number] = [15 / 8.5, 10 / 8.5, 18 / 8.5]
+  function cameraPositionForRadius(radius: number): [number, number, number] {
+    return [radius * CAMERA_DISTANCE_FACTORS[0], radius * CAMERA_DISTANCE_FACTORS[1], radius * CAMERA_DISTANCE_FACTORS[2]]
+  }
+
+  // 只在 setup 當下取一次快照當初始相機位置；場景之後變大不會自動搬相機（避免跟使用者手動拖曳的 OrbitControls 打架），
+  // 要重新置中請按「重置視角」，屆時會依當下實際場景範圍重新計算。
+  const initialCameraPosition = cameraPositionForRadius(floorRadius.value)
+
   // 東南西北字樣，放在地板邊緣（跟 floor 半徑對齊），方便使用者理解方位約定
-  const COMPASS_LABEL_DISTANCE = 8.5
-  const compassLabels = [
-    { label: '北', position: [0, 0, -COMPASS_LABEL_DISTANCE] as [number, number, number], texture: createLabelTexture('北') },
-    { label: '南', position: [0, 0, COMPASS_LABEL_DISTANCE] as [number, number, number], texture: createLabelTexture('南') },
-    { label: '東', position: [COMPASS_LABEL_DISTANCE, 0, 0] as [number, number, number], texture: createLabelTexture('東') },
-    { label: '西', position: [-COMPASS_LABEL_DISTANCE, 0, 0] as [number, number, number], texture: createLabelTexture('西') },
-  ]
+  const compassTextures = {
+    north: createLabelTexture('北'),
+    south: createLabelTexture('南'),
+    east: createLabelTexture('東'),
+    west: createLabelTexture('西'),
+  }
+  const compassLabels = computed(() => [
+    { label: '北', position: [0, 0, -floorRadius.value] as [number, number, number], texture: compassTextures.north },
+    { label: '南', position: [0, 0, floorRadius.value] as [number, number, number], texture: compassTextures.south },
+    { label: '東', position: [floorRadius.value, 0, 0] as [number, number, number], texture: compassTextures.east },
+    { label: '西', position: [-floorRadius.value, 0, 0] as [number, number, number], texture: compassTextures.west },
+  ])
 
   useResizeObserver(viewportEl, () => {
     if (!viewportEl.value || !cameraRef.value) return
@@ -107,7 +146,7 @@
   function resetView() {
     if (!cameraRef.value || !controlsRef.value) return
 
-    cameraRef.value.position.set(...DEFAULT_CAMERA_POSITION)
+    cameraRef.value.position.set(...cameraPositionForRadius(floorRadius.value))
     controlsRef.value.instance.target.set(0, 0, 0)
     controlsRef.value.instance.update()
   }
@@ -127,12 +166,19 @@
     >
       <TresPerspectiveCamera
         ref="cameraRef"
-        :position-x="DEFAULT_CAMERA_POSITION[0]"
-        :position-y="DEFAULT_CAMERA_POSITION[1]"
-        :position-z="DEFAULT_CAMERA_POSITION[2]"
+        :position-x="initialCameraPosition[0]"
+        :position-y="initialCameraPosition[1]"
+        :position-z="initialCameraPosition[2]"
         :args="[45, 1, 0.1, 100]"
       />
-      <OrbitControls ref="controlsRef" make-default :enable-damping="true" :enable-pan="false" :min-distance="5" :max-distance="32" />
+      <OrbitControls
+        ref="controlsRef"
+        make-default
+        :enable-damping="true"
+        :enable-pan="false"
+        :min-distance="5"
+        :max-distance="orbitMaxDistance"
+      />
 
       <TresHemisphereLight :args="['#ffffff', '#94a3b8', 1.8]" />
       <TresDirectionalLight :args="['#ffffff', 2.8]" :position-x="4" :position-y="6" :position-z="5" cast-shadow />
@@ -140,11 +186,11 @@
       <Cube v-for="(cube, i) in cubes" :key="i" :position="cube.position" :rotation="cube.rotation" @click="isCubeSelected = true" />
 
       <TresMesh :rotation-x="-Math.PI / 2" :position-y="-1.35" receive-shadow @click="isCubeSelected = false">
-        <TresCircleGeometry :args="[8.5, 72]" />
+        <TresCircleGeometry :args="[floorRadius, 72]" />
         <TresMeshStandardMaterial color="#f8fafc" :roughness="0.72" :metalness="0" />
       </TresMesh>
 
-      <TresGridHelper :args="[20, 40, '#94a3b8', '#cbd5e1']" :position-y="-1.34" />
+      <TresGridHelper :args="[gridSize, gridDivisions, '#94a3b8', '#cbd5e1']" :position-y="-1.34" />
 
       <TresSprite
         v-for="compass in compassLabels"
