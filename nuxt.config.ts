@@ -88,6 +88,8 @@ export default defineNuxtConfig({
         'esm-potrace-wasm',
         'imagetracerjs', // CJS
         'nanoid',
+        'pinyin-pro',
+        'pinyin-to-zhuyin',
         'sortablejs',
         'three',
         'three/examples/jsm/controls/OrbitControls.js',

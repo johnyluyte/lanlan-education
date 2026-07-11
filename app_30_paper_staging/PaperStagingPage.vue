@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import ZhuyinText from '#alias-shared/ZhuyinText.vue'
+</script>
 
 <template>
   <div class="flex h-full w-full justify-center bg-gray-200 p-8">
@@ -19,7 +21,7 @@
         </table>
       </div>
       <div class="mt-12">小蘭說每題之間可以加上粗線，因為特生眼睛不好</div>
-      <div class="mt-12">能不能在中文旁邊加上注音</div>
+      <div class="mt-12 text-2xl"><ZhuyinText text="能不能在中文旁邊加上注音" /></div>
     </div>
   </div>
 </template>
