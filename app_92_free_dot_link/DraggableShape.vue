@@ -1,8 +1,10 @@
 <script setup lang="ts">
-  import { onBeforeUnmount, ref, useTemplateRef } from 'vue'
+  import { computed, onBeforeUnmount, useTemplateRef } from 'vue'
   import { useDraggable } from '@vueuse/core'
+  import { useFreeDotLinkStore } from './useFreeDotLinkStore'
 
   const props = defineProps<{
+    id: string
     container: HTMLElement | null
     color: string
     clipPath?: string
@@ -15,6 +17,10 @@
 
   const emit = defineEmits<{ select: [] }>()
 
+  const store = useFreeDotLinkStore()
+  store.initShape(props.id, props.initialX, props.initialY)
+  const rotation = computed(() => store.shapes[props.id]?.rotation ?? 0)
+
   const wrapper = useTemplateRef<HTMLElement>('wrapper')
   // 旋轉手柄要能獨立於拖拉之外運作，handle 只綁在圖形本體上，手柄按鈕是 wrapper 底下的手足元素、不會觸發拖拉
   const shapeInner = useTemplateRef<HTMLElement>('shapeInner')
@@ -24,11 +30,11 @@
     containerElement: () => props.container,
     restrictInView: true,
     initialValue: { x: props.initialX, y: props.initialY },
+    onMove: (pos) => store.setPosition(props.id, pos.x, pos.y),
   })
 
   const sizeStyle = { width: `${props.width}px`, height: `${props.height}px` }
 
-  const rotation = ref(0)
   let rotating = false
 
   // 旋轉角度 = 指標位置相對圖形中心的角度，+90 讓手柄在正上方時對應 0 度
@@ -37,7 +43,7 @@
     const rect = wrapper.value.getBoundingClientRect()
     const cx = rect.left + rect.width / 2
     const cy = rect.top + rect.height / 2
-    rotation.value = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI) + 90
+    store.setRotation(props.id, Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI) + 90)
   }
   const endRotate = () => {
     rotating = false

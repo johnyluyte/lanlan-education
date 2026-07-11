@@ -1,9 +1,10 @@
 <script setup lang="ts">
-  import { ref, useTemplateRef } from 'vue'
+  import { useTemplateRef } from 'vue'
   import DraggableShape from './DraggableShape.vue'
+  import { useFreeDotLinkStore } from './useFreeDotLinkStore'
 
   const container = useTemplateRef<HTMLElement>('container')
-  const selectedId = ref<string | null>(null)
+  const store = useFreeDotLinkStore()
 
   // 各圖形共用同一單邊長，靠邊界框的寬高比換算出實際尺寸
   const SIDE = 100 // px
@@ -74,15 +75,15 @@
   <div
     ref="container"
     class="relative h-128 w-full max-w-7xl rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600"
-    @click.self="selectedId = null"
+    @click.self="store.select(null)"
   >
     <DraggableShape
       v-for="shape in shapes"
       :key="shape.id"
       v-bind="shape"
       :container="container"
-      :selected="selectedId === shape.id"
-      @select="selectedId = shape.id"
+      :selected="store.selectedId === shape.id"
+      @select="store.select(shape.id)"
     />
   </div>
 </template>
