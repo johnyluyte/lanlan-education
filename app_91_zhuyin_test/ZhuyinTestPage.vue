@@ -5,8 +5,8 @@
 
   const inputText = ref('')
   const gapLeft = ref(2)
-  const gapRight = ref(0)
-  const toneGap = ref(4)
+  const gapRight = ref(6)
+  const toneGap = ref(6)
 </script>
 
 <template>

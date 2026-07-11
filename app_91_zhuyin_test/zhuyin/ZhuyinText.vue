@@ -30,9 +30,9 @@
         >
           <span v-for="(symbol, symbolIndex) in segment.symbols" :key="symbolIndex">{{ symbol }}</span>
           <!-- 輕聲：點標在符號欄左上角 -->
-          <span v-if="segment.tone === '˙'" class="absolute -top-1 -left-1">{{ segment.tone }}</span>
+          <span v-if="segment.tone === '˙'" class="absolute -top-2 left-0.5">{{ segment.tone }}</span>
           <!-- 二、三、四聲：貼在符號欄右側置中 -->
-          <span v-else-if="segment.tone" class="absolute top-1/2 -translate-y-1/2" :style="{ right: `-${toneGap}px` }">{{
+          <span v-else-if="segment.tone" class="absolute top-1/2 -translate-y-1/4" :style="{ right: `-${toneGap}px` }">{{
             segment.tone
           }}</span>
         </span>
