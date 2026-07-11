@@ -57,7 +57,28 @@
       "Bash(git -C /Users/cchien/git/lanlan-education mv app_14_3d_box/dotKind.ts app_14_3d_box/cubeKind.ts)",
       "WebFetch(domain:www.npmjs.com)",
       "WebFetch(domain:pinyin-pro.cn)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "WebFetch(domain:www.w3.org)",
+      "WebFetch(domain:r12a.github.io)",
+      "Bash(curl -s https://registry.npmjs.org/react-bpmf)",
+      "Bash(gh api *)",
+      "Bash(curl -s https://api.github.com/repos/dchan3/react-bpmf/contents)",
+      "Bash(curl -s \"https://api.github.com/repos/dchan3/react-bpmf/issues?state=all&per_page=100\")",
+      "Bash(curl -s https://api.github.com/repos/dchan3/react-bpmf/contents/src)",
+      "Bash(curl -s \"https://api.github.com/repos/dchan3/react-bpmf/issues/1\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const i=JSON.parse\\(d\\);console.log\\('TITLE:',i.title\\);console.log\\('BODY:',i.body\\);console.log\\('COMMENTS:',i.comments\\);}\\);\")",
+      "Bash(curl -s \"https://api.github.com/repos/dchan3/react-bpmf/issues/1/comments\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const items=JSON.parse\\(d\\);items.forEach\\(c=>console.log\\('---',c.user.login,'---\\\\n',c.body\\)\\);}\\);\")",
+      "Bash(curl -s https://api.github.com/repos/dchan3/react-bpmf/contents/src/lib)",
+      "Bash(curl -s https://raw.githubusercontent.com/dchan3/react-bpmf/master/src/index.js)",
+      "Bash(curl -s https://raw.githubusercontent.com/dchan3/react-bpmf/master/src/lib/index.js)",
+      "Bash(curl -s https://api.github.com/repos/dchan3/react-bpmf/contents/src/lib/elements)",
+      "Bash(curl -s https://api.github.com/repos/dchan3/react-bpmf/contents/src/lib/utils)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "Bash(curl -s https://api.github.com/repos/dchan3/react-bpmf/contents/src/lib/elements/BpmfText)",
+      "Bash(curl -s https://raw.githubusercontent.com/dchan3/react-bpmf/master/src/lib/utils/convert.js)",
+      "Bash(curl -s https://raw.githubusercontent.com/dchan3/react-bpmf/master/src/lib/elements/BpmfText/BpmfText.js)",
+      "mcp__plugin_context7_context7__query-docs"
     ]
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import ZhuyinText from '#alias-shared/ZhuyinText.vue'
+  import ZhuyinText from '#alias-shared/zhuyin/ZhuyinText.vue'
 </script>
 
 <template>
