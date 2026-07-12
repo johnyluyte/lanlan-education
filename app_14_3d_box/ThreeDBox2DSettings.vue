@@ -18,6 +18,12 @@
   const PREVIEW_CELL_SIZE = 28
   const RANDOM_SQUARE_DENSITY = 0.3
 
+  const MAX_HEIGHT_LOWER_BOUND = 1
+  const MAX_HEIGHT_UPPER_BOUND = 5
+
+  // 「隨機產生正方形」產生的 square 高度（value，疊幾個 cube）上限，範圍 1-5
+  const maxHeight = ref(3)
+
   // 固定 4 個顏色欄位，色碼與權重都可調整。參考 app_20_imitate_dot 的預設黃/紅/綠/藍。
   const squareKinds = ref<SquareKind[]>([
     { color: '#facc15', weight: 1 },
@@ -49,7 +55,8 @@
             break
           }
         }
-        cells.push({ row, col, color, value: Math.floor(Math.random() * 3) + 1 })
+        const value = Math.floor(Math.random() * maxHeight.value) + 1
+        cells.push({ row, col, color, value })
       }
     }
     squareCells.value = cells
@@ -75,6 +82,10 @@
 
     <div class="border-muted flex flex-col items-center gap-3 border-t pt-4">
       <ThreeDBoxCellGrid :rows="rows" :cols="cols" :cell-size="PREVIEW_CELL_SIZE" :square-cells="squareCells" />
+      <div class="w-full">
+        <span class="text-sm font-medium">高度上限：{{ maxHeight }}</span>
+        <USlider v-model="maxHeight" :min="MAX_HEIGHT_LOWER_BOUND" :max="MAX_HEIGHT_UPPER_BOUND" :step="1" class="mt-3" />
+      </div>
       <UButton icon="i-lucide-sparkles" label="隨機產生正方形" color="neutral" variant="soft" block @click="randomizeSquares" />
     </div>
 
