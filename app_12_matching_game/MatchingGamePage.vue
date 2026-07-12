@@ -11,7 +11,7 @@
   const colGap = ref(360) // 兩個區塊之間的距離 (px)
   const rowGap = ref(80) // 相鄰點之間的距離 (px)
   const dotRadius = ref(9) // 黃點半徑 (px)，跟 colGap/rowGap 分開設定
-  const orientation = ref<'horizontal' | 'vertical'>('horizontal') // 排列方向，垂直模式待後續實作，目前 Board 仍固定畫左右連線
+  const orientation = ref<'horizontal' | 'vertical'>('horizontal') // 排列方向
 </script>
 
 <template>
@@ -26,6 +26,6 @@
       :max="MAX"
     />
 
-    <MatchingGameBoard :items="items" :col-gap="colGap" :row-gap="rowGap" :dot-radius="dotRadius" />
+    <MatchingGameBoard :items="items" :col-gap="colGap" :row-gap="rowGap" :dot-radius="dotRadius" :orientation="orientation" />
   </div>
 </template>

@@ -36,6 +36,14 @@
   function removeItem(index: number) {
     items.value.splice(index, 1)
   }
+
+  function setOrientationHorizontal(): void {
+    orientation.value = 'horizontal'
+  }
+
+  function setOrientationVertical(): void {
+    orientation.value = 'vertical'
+  }
 </script>
 
 <template>
@@ -46,14 +54,14 @@
         <UButton
           :color="orientation === 'horizontal' ? 'primary' : 'neutral'"
           :variant="orientation === 'horizontal' ? 'solid' : 'outline'"
-          @click="orientation = 'horizontal'"
+          @click="setOrientationHorizontal"
         >
           水平
         </UButton>
         <UButton
           :color="orientation === 'vertical' ? 'primary' : 'neutral'"
           :variant="orientation === 'vertical' ? 'solid' : 'outline'"
-          @click="orientation = 'vertical'"
+          @click="setOrientationVertical"
         >
           垂直
         </UButton>
