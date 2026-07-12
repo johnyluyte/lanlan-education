@@ -39,23 +39,29 @@
   }))
 
   const WOBBLE_AMPLITUDE = 20 // 第一列連線的基準彎曲幅度 (px)，固定形狀，不隨機
-  // 每段彎曲方向與幅度倍率（乘上 WOBBLE_AMPLITUDE），正負交錯、倍率不規則，讓路徑忽上忽下且難以預測走向，增加辨識難度
-  const WOBBLE_PATTERN = [1, -1.4, 20.1, 35.6, 6.9, -1.2]
+  // 每段彎曲方向與幅度倍率（乘上 WOBBLE_AMPLITUDE）。相鄰數值差距故意放小、正負轉換緩慢，形成一個完整波浪（先上後下），避免相鄰段落幅度落差過大造成轉折感
+  const WOBBLE_PATTERN = [0.8, 1.3, 0.5, 39.5, -1.3, -0.8]
+  // 段與段之間中途點的 y 偏移倍率（乘上 WOBBLE_AMPLITUDE），只影響中途點、不影響起點/終點；長度須為 WOBBLE_PATTERN.length - 1
+  // 數值取相鄰兩段 WOBBLE_PATTERN 的平均並縮小，讓中途點落在前後彎曲趨勢之間，銜接更順
+  const WOBBLE_JOINT_PATTERN = [0.6, 0.5, 10, -0.5, -0.6]
 
-  // 左一到右一的多段起伏貝茲曲線：切成數段，每段用二次貝茲彎向上或下，段落終點都落在原本水平線上
+  // 左一到右一的多段起伏貝茲曲線：切成數段，每段用二次貝茲彎向上或下；中途點 y 可各自偏移，起點與終點固定在原本水平線上
   const firstRowWobblyPath = computed(() => {
     const y = topYHorizontal.value
     const x1 = leftX.value
     const x2 = rightX.value
     const segmentCount = WOBBLE_PATTERN.length
     const step = (x2 - x1) / segmentCount
+    const jointYs = [y, ...WOBBLE_JOINT_PATTERN.map((mult) => y + mult * WOBBLE_AMPLITUDE), y]
     let path = `M ${x1} ${y}`
     for (let i = 0; i < segmentCount; i++) {
       const segStartX = x1 + i * step
       const segEndX = x1 + (i + 1) * step
       const midX = (segStartX + segEndX) / 2
-      const controlY = y + (WOBBLE_PATTERN[i] ?? 0) * WOBBLE_AMPLITUDE
-      path += ` Q ${midX} ${controlY}, ${segEndX} ${y}`
+      const segStartY = jointYs[i] ?? y
+      const segEndY = jointYs[i + 1] ?? y
+      const controlY = (segStartY + segEndY) / 2 + (WOBBLE_PATTERN[i] ?? 0) * WOBBLE_AMPLITUDE
+      path += ` Q ${midX} ${controlY}, ${segEndX} ${segEndY}`
     }
     return path
   })
