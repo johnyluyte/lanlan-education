@@ -17,6 +17,9 @@
 
   const emit = defineEmits<{ select: [] }>()
 
+  // CSS 沒有內建「旋轉」游標關鍵字，用自訂 SVG 游標圖示取代 cursor-grab
+  const ROTATE_CURSOR = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>') 10 10, grab`
+
   const store = useFreeDotLinkStore()
   store.initShape(props.id, props.initialX, props.initialY)
   const rotation = computed(() => store.shapes[props.id]?.rotation ?? 0)
@@ -65,6 +68,14 @@
   }
 
   onBeforeUnmount(endRotate)
+
+  // 四個角落的旋轉手柄位置（仿 Photoshop 變形框），靠 Tailwind 的角落定位 + translate 讓手柄中心對齊角落
+  const rotateHandleCorners = [
+    'top-0 left-0 -translate-x-1/2 -translate-y-1/2',
+    'top-0 right-0 translate-x-1/2 -translate-y-1/2',
+    'bottom-0 right-0 translate-x-1/2 translate-y-1/2',
+    'bottom-0 left-0 -translate-x-1/2 translate-y-1/2',
+  ]
 </script>
 
 <template>
@@ -76,17 +87,18 @@
       :style="{ transform: `rotate(${rotation}deg)` }"
       @click="emit('select')"
     />
-    <button
-      v-if="selected"
-      type="button"
-      aria-label="旋轉"
-      class="absolute top-0 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-6 cursor-grab touch-none rounded-full border-2 border-white bg-gray-700"
-      @pointerdown="startRotate"
-    />
-    <div
-      v-if="selected"
-      class="pointer-events-none absolute inset-0 ring-2 ring-gray-900 ring-offset-2 dark:ring-white"
-      :style="{ transform: `rotate(${rotation}deg)` }"
-    />
+    <div v-if="selected" class="pointer-events-none absolute inset-0" :style="{ transform: `rotate(${rotation}deg)` }">
+      <div class="absolute inset-0 ring-1 ring-gray-400 ring-offset-2 dark:ring-white" />
+      <button
+        v-for="corner in rotateHandleCorners"
+        :key="corner"
+        type="button"
+        aria-label="旋轉"
+        class="pointer-events-auto absolute h-3 w-3 touch-none rounded-full border-2 border-white bg-gray-700"
+        :class="corner"
+        :style="{ cursor: ROTATE_CURSOR }"
+        @pointerdown="startRotate"
+      />
+    </div>
   </div>
 </template>
