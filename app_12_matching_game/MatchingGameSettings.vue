@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  // 控制面板：items（清單，列數 M 由清單長度決定）、左右點點之間的距離、上下點點之間的距離。全部用 v-model 雙向綁定。
+  // 控制面板：items（清單，列數 M 由清單長度決定）、兩個區塊之間的距離、相鄰點之間的距離。全部用 v-model 雙向綁定。
   import { exampleData, type ExampleData } from './example-data'
 
   defineProps<{
@@ -11,6 +11,7 @@
   const colGap = defineModel<number>('colGap', { required: true })
   const rowGap = defineModel<number>('rowGap', { required: true })
   const dotRadius = defineModel<number>('dotRadius', { required: true })
+  const orientation = defineModel<'horizontal' | 'vertical'>('orientation', { required: true })
 
   // 純 UI 範圍常數
   const COL_GAP_MIN = 12
@@ -40,11 +41,30 @@
 <template>
   <div class="flex w-full max-w-xs flex-col gap-4 rounded-xl border border-gray-200 p-5 shadow-sm dark:border-gray-700">
     <div>
-      <span class="text-sm font-medium">左右點點之間的距離 (px)：{{ colGap }}</span>
+      <span class="text-sm font-medium">排列方向：</span>
+      <UFieldGroup orientation="horizontal" class="mt-3">
+        <UButton
+          :color="orientation === 'horizontal' ? 'primary' : 'neutral'"
+          :variant="orientation === 'horizontal' ? 'solid' : 'outline'"
+          @click="orientation = 'horizontal'"
+        >
+          水平
+        </UButton>
+        <UButton
+          :color="orientation === 'vertical' ? 'primary' : 'neutral'"
+          :variant="orientation === 'vertical' ? 'solid' : 'outline'"
+          @click="orientation = 'vertical'"
+        >
+          垂直
+        </UButton>
+      </UFieldGroup>
+    </div>
+    <div>
+      <span class="text-sm font-medium">兩個區塊之間的距離 (px)：{{ colGap }}</span>
       <USlider v-model="colGap" :min="COL_GAP_MIN" :max="COL_GAP_MAX" :step="1" class="mt-3" />
     </div>
     <div>
-      <span class="text-sm font-medium">上下點點之間的距離 (px)：{{ rowGap }}</span>
+      <span class="text-sm font-medium">相鄰點之間的距離 (px)：{{ rowGap }}</span>
       <USlider v-model="rowGap" :min="ROW_GAP_MIN" :max="ROW_GAP_MAX" :step="1" class="mt-3" />
     </div>
     <div>

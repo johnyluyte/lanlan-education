@@ -8,9 +8,10 @@
   const MAX = 8
 
   const items = ref(exampleData.slice(0, MAX).map((item) => ({ ...item }))) // 清單，初始取前 MAX 筆，複製 exampleData 避免直接改到原始常數；M：列數由 items 筆數決定
-  const colGap = ref(360) // 左右點點之間的距離 (px)
-  const rowGap = ref(80) // 上下點點之間的距離 (px)
+  const colGap = ref(360) // 兩個區塊之間的距離 (px)
+  const rowGap = ref(80) // 相鄰點之間的距離 (px)
   const dotRadius = ref(9) // 黃點半徑 (px)，跟 colGap/rowGap 分開設定
+  const orientation = ref<'horizontal' | 'vertical'>('horizontal') // 排列方向，垂直模式待後續實作，目前 Board 仍固定畫左右連線
 </script>
 
 <template>
@@ -20,6 +21,7 @@
       v-model:col-gap="colGap"
       v-model:row-gap="rowGap"
       v-model:dot-radius="dotRadius"
+      v-model:orientation="orientation"
       :min="MIN"
       :max="MAX"
     />

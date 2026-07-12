@@ -9,8 +9,8 @@
 
   const props = defineProps<{
     items: ExampleData[]
-    colGap: number // 左右點點之間的距離 (px)，只影響右邊點點位置
-    rowGap: number // 上下點點之間的距離 (px)，只影響最上排以下的點點位置
+    colGap: number // 兩個區塊之間的距離 (px)，只影響右邊點點位置
+    rowGap: number // 相鄰點之間的距離 (px)，只影響最上排以下的點點位置
     dotRadius: number // 黃點半徑 (px)，跟 colGap/rowGap 分開設定，故不用比例換算
   }>()
 
