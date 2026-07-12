@@ -19,6 +19,10 @@
   function resetView() {
     sceneRef.value?.resetView()
   }
+
+  function captureScreenshot() {
+    sceneRef.value?.captureScreenshot()
+  }
 </script>
 
 <template>
@@ -36,6 +40,7 @@
         :scene-mode="sceneMode"
         @reset="resetView"
         @select-scene="(mode) => (sceneMode = mode)"
+        @screenshot="captureScreenshot"
       />
     </div>
 

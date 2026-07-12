@@ -5,7 +5,7 @@
     sceneMode: 'default' | 'dynamic'
   }>()
 
-  defineEmits<{ reset: []; selectScene: ['default' | 'dynamic'] }>()
+  defineEmits<{ reset: []; selectScene: ['default' | 'dynamic']; screenshot: [] }>()
 </script>
 
 <template>
@@ -13,6 +13,7 @@
     <span class="text-sm font-medium">3D 場景控制</span>
 
     <UButton icon="i-lucide-rotate-ccw" label="重置視角" color="neutral" variant="outline" block @click="$emit('reset')" />
+    <UButton icon="i-lucide-camera" label="截圖" color="neutral" variant="outline" block @click="$emit('screenshot')" />
 
     <div class="flex flex-col gap-2">
       <UButton

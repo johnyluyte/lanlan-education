@@ -158,7 +158,19 @@
     controlsRef.value.instance.update()
   }
 
-  defineExpose({ resetView })
+  // TresCanvas 底下就是標準 <canvas>（renderer.domElement），截圖靠原生 canvas.toDataURL 即可，
+  // 不需要 three.js 額外的 API；能截到畫面全靠 <TresCanvas> 已加的 preserve-drawing-buffer。
+  function captureScreenshot() {
+    const canvas = viewportEl.value?.querySelector('canvas')
+    if (!canvas) return
+
+    const link = document.createElement('a')
+    link.download = `3d-box-${Date.now()}.png`
+    link.href = canvas.toDataURL('image/png')
+    link.click()
+  }
+
+  defineExpose({ resetView, captureScreenshot })
 </script>
 
 <template>
