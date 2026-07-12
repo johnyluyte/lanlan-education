@@ -38,6 +38,28 @@
     h: topYHorizontal.value + (props.items.length - 1) * props.rowGap + Math.max(props.dotRadius, IMG_SIZE / 2),
   }))
 
+  const WOBBLE_AMPLITUDE = 20 // 第一列連線的基準彎曲幅度 (px)，固定形狀，不隨機
+  // 每段彎曲方向與幅度倍率（乘上 WOBBLE_AMPLITUDE），正負交錯、倍率不規則，讓路徑忽上忽下且難以預測走向，增加辨識難度
+  const WOBBLE_PATTERN = [1, -1.4, 20.1, 35.6, 6.9, -1.2]
+
+  // 左一到右一的多段起伏貝茲曲線：切成數段，每段用二次貝茲彎向上或下，段落終點都落在原本水平線上
+  const firstRowWobblyPath = computed(() => {
+    const y = topYHorizontal.value
+    const x1 = leftX.value
+    const x2 = rightX.value
+    const segmentCount = WOBBLE_PATTERN.length
+    const step = (x2 - x1) / segmentCount
+    let path = `M ${x1} ${y}`
+    for (let i = 0; i < segmentCount; i++) {
+      const segStartX = x1 + i * step
+      const segEndX = x1 + (i + 1) * step
+      const midX = (segStartX + segEndX) / 2
+      const controlY = y + (WOBBLE_PATTERN[i] ?? 0) * WOBBLE_AMPLITUDE
+      path += ` Q ${midX} ${controlY}, ${segEndX} ${y}`
+    }
+    return path
+  })
+
   // 每列一筆 item：左邊點 + 左側圖片、右邊點 + 右側文字；左邊點座標固定、右邊點依 colGap 位移；最上排 y 座標固定、下方各排依 rowGap 位移
   const rowsData = computed(() =>
     props.items.map((item, r) => ({
@@ -45,6 +67,8 @@
       item,
     })),
   )
+
+  const secondRowY = computed(() => rowsData.value[1]?.cy)
 
   // 垂直模式座標（新增）
   const topYVertical = computed(() => IMG_SIZE + IMG_GAP + props.dotRadius) // 上點固定座標，需容納上方圖片高度，不受 colGap 影響
@@ -74,6 +98,16 @@
 <template>
   <svg :width="dims.w" :height="dims.h" :viewBox="`0 0 ${dims.w} ${dims.h}`" class="text-gray-800 dark:text-gray-200">
     <template v-if="orientation === 'horizontal'">
+      <path :d="firstRowWobblyPath" fill="none" stroke="rgb(250 204 21)" stroke-width="2" />
+      <line
+        v-if="secondRowY !== undefined"
+        :x1="leftX"
+        :y1="secondRowY"
+        :x2="rightX"
+        :y2="secondRowY"
+        stroke="rgb(250 204 21)"
+        stroke-width="2"
+      />
       <template v-for="(d, i) in rowsData" :key="i">
         <image :href="d.item.img" :x="imgX" :y="d.cy - IMG_SIZE / 2" :width="IMG_SIZE" :height="IMG_SIZE" />
         <circle :cx="leftX" :cy="d.cy" :r="dotRadius" fill="rgb(250 204 21)" />
