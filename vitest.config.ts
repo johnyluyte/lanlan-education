@@ -29,6 +29,7 @@ export default defineConfig({
       { find: /^#alias-connect-the-dots\//, replacement: fileURLToPath(new URL('./app_13_connect_the_dots/', import.meta.url)) },
       { find: /^#alias-3d-box\//, replacement: fileURLToPath(new URL('./app_14_3d_box/', import.meta.url)) },
       { find: /^#alias-cutting-puzzle\//, replacement: fileURLToPath(new URL('./app_15_cutting_puzzle/', import.meta.url)) },
+      { find: /^#alias-special-child-dot\//, replacement: fileURLToPath(new URL('./app_16_special_child_dot/', import.meta.url)) },
       { find: /^#alias-imitate-dot\//, replacement: fileURLToPath(new URL('./app_20_imitate_dot/', import.meta.url)) },
       { find: /^#alias-imitate-line\//, replacement: fileURLToPath(new URL('./app_21_imitate_line/', import.meta.url)) },
       { find: /^#alias-paper-staging\//, replacement: fileURLToPath(new URL('./app_30_paper_staging/', import.meta.url)) },
