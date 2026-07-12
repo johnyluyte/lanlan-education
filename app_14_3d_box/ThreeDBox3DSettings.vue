@@ -3,9 +3,10 @@
   defineProps<{
     isCubeSelected: boolean
     sceneMode: 'default' | 'dynamic'
+    showCompass: boolean
   }>()
 
-  defineEmits<{ reset: []; selectScene: ['default' | 'dynamic']; screenshot: [] }>()
+  defineEmits<{ reset: []; selectScene: ['default' | 'dynamic']; screenshot: []; toggleCompass: [] }>()
 </script>
 
 <template>
@@ -14,6 +15,14 @@
 
     <UButton icon="i-lucide-rotate-ccw" label="重置視角" color="neutral" variant="outline" block @click="$emit('reset')" />
     <UButton icon="i-lucide-camera" label="截圖" color="neutral" variant="outline" block @click="$emit('screenshot')" />
+    <UButton
+      :icon="showCompass ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+      :label="showCompass ? '隱藏東南西北字樣' : '顯示東南西北字樣'"
+      color="neutral"
+      variant="outline"
+      block
+      @click="$emit('toggleCompass')"
+    />
 
     <div class="flex flex-col gap-2">
       <UButton

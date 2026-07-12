@@ -14,6 +14,7 @@
 
   const isCubeSelected = ref(false)
   const sceneMode = ref<'default' | 'dynamic'>('default')
+  const showCompass = ref(true)
   const sceneRef = ref<InstanceType<typeof ThreeDBoxScene> | null>(null)
 
   function resetView() {
@@ -38,9 +39,11 @@
       <ThreeDBox3DSettings
         :is-cube-selected="isCubeSelected"
         :scene-mode="sceneMode"
+        :show-compass="showCompass"
         @reset="resetView"
         @select-scene="(mode) => (sceneMode = mode)"
         @screenshot="captureScreenshot"
+        @toggle-compass="showCompass = !showCompass"
       />
     </div>
 
@@ -51,6 +54,7 @@
       :rows="rows"
       :cols="cols"
       :square-cells="squareCells"
+      :show-compass="showCompass"
       class="h-[calc(100vh-8rem)] w-full flex-1"
     />
   </div>

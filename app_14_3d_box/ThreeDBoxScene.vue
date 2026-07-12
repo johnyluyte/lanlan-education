@@ -11,12 +11,16 @@
   type SceneMode = 'default' | 'dynamic'
   type CubeConfig = { position: [number, number, number]; rotation: [number, number, number] }
 
-  const props = withDefaults(defineProps<{ sceneMode?: SceneMode; rows?: number; cols?: number; squareCells?: SquareCell[] }>(), {
-    sceneMode: 'default',
-    rows: 1,
-    cols: 1,
-    squareCells: () => [],
-  })
+  const props = withDefaults(
+    defineProps<{ sceneMode?: SceneMode; rows?: number; cols?: number; squareCells?: SquareCell[]; showCompass?: boolean }>(),
+    {
+      sceneMode: 'default',
+      rows: 1,
+      cols: 1,
+      squareCells: () => [],
+      showCompass: true,
+    },
+  )
 
   // 畫一張圓角底 + 文字的貼圖，給 TresSprite 當 map 用。Sprite 會自動一直面向鏡頭（billboard），
   // 純 Three.js 原生做法，不牽涉 DOM-in-3D 橋接（那套會跟 Nuxt 的 Vue runtime 衝突，整個 app 會掛掉）。
@@ -211,18 +215,20 @@
 
       <TresGridHelper :args="[gridSize, gridDivisions, '#94a3b8', '#cbd5e1']" :position-y="-1.34" />
 
-      <TresSprite
-        v-for="compass in compassLabels"
-        :key="compass.label"
-        :position-x="compass.position[0]"
-        :position-y="compass.position[1]"
-        :position-z="compass.position[2]"
-        :scale-x="1.4"
-        :scale-y="1.4"
-        :scale-z="1.4"
-      >
-        <TresSpriteMaterial :map="compass.texture" transparent :depth-test="false" />
-      </TresSprite>
+      <template v-if="showCompass">
+        <TresSprite
+          v-for="compass in compassLabels"
+          :key="compass.label"
+          :position-x="compass.position[0]"
+          :position-y="compass.position[1]"
+          :position-z="compass.position[2]"
+          :scale-x="1.4"
+          :scale-y="1.4"
+          :scale-z="1.4"
+        >
+          <TresSpriteMaterial :map="compass.texture" transparent :depth-test="false" />
+        </TresSprite>
+      </template>
     </TresCanvas>
   </div>
 </template>
