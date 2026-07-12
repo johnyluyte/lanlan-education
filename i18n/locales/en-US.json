@@ -30,6 +30,7 @@
     "svgDrawing": "SVG Drawing",
     "tileMatching": "Tile Matching",
     "zhuyinTest": "Zhuyin Test",
-    "freeDotLink": "Free Dot Link"
+    "freeDotLink": "Free Dot Link",
+    "bmiCalculation": "BMI Calculation"
   }
 }

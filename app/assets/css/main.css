@@ -19,6 +19,7 @@
 @source '../../../app_90_tile_matching';
 @source '../../../app_91_zhuyin_test';
 @source '../../../app_92_free_dot_link';
+@source '../../../app_93_bmi_calculation';
 
 @theme static {
   --font-sans:

@@ -62,6 +62,7 @@ export default defineNuxtConfig({
     '#alias-tile-matching': fileURLToPath(new URL('./app_90_tile_matching', import.meta.url)),
     '#alias-zhuyin-test': fileURLToPath(new URL('./app_91_zhuyin_test', import.meta.url)),
     '#alias-free-dot-link': fileURLToPath(new URL('./app_92_free_dot_link', import.meta.url)),
+    '#alias-bmi-calculation': fileURLToPath(new URL('./app_93_bmi_calculation', import.meta.url)),
   },
 
   routeRules: {

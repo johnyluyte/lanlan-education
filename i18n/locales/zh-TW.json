@@ -30,6 +30,7 @@
     "svgDrawing": "SVG 繪圖",
     "tileMatching": "方塊消除",
     "zhuyinTest": "注音測試",
-    "freeDotLink": "自由連點"
+    "freeDotLink": "自由連點",
+    "bmiCalculation": "BMI 計算"
   }
 }
