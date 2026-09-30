@@ -48,6 +48,7 @@ export default defineNuxtConfig({
   // 只要搜尋 "#alias-shared" 找到的就一定是 alias
   alias: {
     '#alias-shared': fileURLToPath(new URL('./app_00_shared', import.meta.url)),
+    '#alias-landing': fileURLToPath(new URL('./app_01_landing', import.meta.url)),
     '#alias-sudoku': fileURLToPath(new URL('./app_10_sudoku', import.meta.url)),
     '#alias-maze': fileURLToPath(new URL('./app_11_maze', import.meta.url)),
     '#alias-matching-game': fileURLToPath(new URL('./app_12_matching_game', import.meta.url)),
@@ -72,6 +73,11 @@ export default defineNuxtConfig({
 
     '/print/**': {
       appLayout: 'layout-print',
+    },
+
+    // 登入前的公開 Landing Page（含 /landing 本身）
+    '/landing/**': {
+      appLayout: 'layout-landing',
     },
 
     // 其他所有頁面
