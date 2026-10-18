@@ -1,11 +1,28 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
+/* Landing Page 專用色票、字體與 html.landing-theme 覆寫（只在 landing 版型生效） */
+@import '../../../app_01_landing/landing.css';
 
 /* Tailwind 預設只掃 Nuxt 來源目錄(app/)。以下 domain layer 在專案 root、又未登記 extends，
    需手動納入掃描，否則「只在這些資料夾用到」的 utility class 不會被產生（例：HomePage 的 pt-8）。
    路徑相對於本檔(app/assets/css/)，往上 3 層到 root。新增 domain 資料夾時要在此補一行。 */
 @source '../../../app_00_shared';
+@source '../../../app_01_landing';
 @source '../../../app_10_sudoku';
+@source '../../../app_11_maze';
+@source '../../../app_12_matching_game';
+@source '../../../app_13_connect_the_dots';
+@source '../../../app_14_3d_box';
+@source '../../../app_15_cutting_puzzle';
+@source '../../../app_16_special_child_dot';
+@source '../../../app_20_imitate_dot';
+@source '../../../app_21_imitate_line';
+@source '../../../app_30_paper_staging';
+@source '../../../app_31_svg_drawing';
+@source '../../../app_90_tile_matching';
+@source '../../../app_91_zhuyin_test';
+@source '../../../app_92_free_dot_link';
+@source '../../../app_93_bmi_calculation';
 
 @theme static {
   --font-sans:

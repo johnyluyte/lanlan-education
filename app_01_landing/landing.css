@@ -1,0 +1,220 @@
+/*
+  Landing Page 專用主題（由 app/assets/css/main.css import）
+
+  - @theme：主色 brand（目前指向薄荷綠 mint #90d19b）、四個學習領域代表色(coral / azure / orchid / sun)、
+    墨色、紙色與標題字體，產生 bg-brand-300 等 utility。元件一律用 brand-*，要換主色只改下方 brand 對應那一段。
+  - html.landing-theme：覆寫 NuxtUI 語意變數。class 由 layout-landing 透過 useHead 掛在 <html>，
+    所以 portal 到 body 的選單、彈窗也吃得到；離開 landing 版型時 class 自動移除，app 端維持原本的藍色。
+*/
+
+@theme static {
+  /* 薄荷綠：300 就是 #90d19b。它很淺，上面的字要用墨色（白字對比只有 1.8:1）；
+     深色的 600–800 給連結、圖示、焦點框用，在紙色底上對比 4.5:1 以上 */
+  --color-mint-50: #eefcf1;
+  --color-mint-100: #def7e3;
+  --color-mint-200: #bfedc8;
+  --color-mint-300: #90d19b;
+  --color-mint-400: #62b777;
+  --color-mint-500: #3e9c5d;
+  --color-mint-600: #22834a;
+  --color-mint-700: #126b3b;
+  --color-mint-800: #0b5430;
+  --color-mint-900: #084226;
+  --color-mint-950: #042917;
+
+  /* 主色對應：換回紫色時把 mint 改成 orchid 即可（按鈕文字色、CTA 區塊也要一起檢查對比） */
+  --color-brand-50: var(--color-mint-50);
+  --color-brand-100: var(--color-mint-100);
+  --color-brand-200: var(--color-mint-200);
+  --color-brand-300: var(--color-mint-300);
+  --color-brand-400: var(--color-mint-400);
+  --color-brand-500: var(--color-mint-500);
+  --color-brand-600: var(--color-mint-600);
+  --color-brand-700: var(--color-mint-700);
+  --color-brand-800: var(--color-mint-800);
+  --color-brand-900: var(--color-mint-900);
+  --color-brand-950: var(--color-mint-950);
+
+  /* 蘭花紫：原本的主色，現在當「身體動作」領域的代表色 */
+  --color-orchid-50: #f9f4ff;
+  --color-orchid-100: #f2e7fe;
+  --color-orchid-200: #e6d1fe;
+  --color-orchid-300: #d4b4fe;
+  --color-orchid-400: #b484f8;
+  --color-orchid-500: #9755f2;
+  --color-orchid-600: #7a3fd1;
+  --color-orchid-700: #672fbb;
+  --color-orchid-800: #52289c;
+  --color-orchid-900: #41227f;
+  --color-orchid-950: #261553;
+
+  --color-sun-50: #fffcf4;
+  --color-sun-100: #fff2cf;
+  --color-sun-200: #fde09c;
+  --color-sun-300: #ffc53d;
+  --color-sun-400: #df9c01;
+  --color-sun-800: #733f01;
+
+  --color-coral-50: #fff6f2;
+  --color-coral-100: #fee9e1;
+  --color-coral-200: #ffd3c3;
+  --color-coral-300: #ffb59c;
+  --color-coral-400: #ff7a59;
+  --color-coral-800: #940d01;
+
+  --color-azure-50: #e9f4fa;
+  --color-azure-100: #d6ebf7;
+  --color-azure-200: #b4dcf5;
+  --color-azure-300: #85c8f4;
+  --color-azure-400: #3ba3e8;
+  --color-azure-800: #014c83;
+
+  /* 墨色（文字）、紙色（底色）、老師批改用的紅筆 */
+  --color-ink: #2b2140;
+  --color-paper: #fffaf3;
+  --color-redpen: #e0413a;
+
+  /* jf open 粉圓（Huninn）：圓潤童趣，只有一個字重 */
+  --font-display: 'Huninn', 'Noto Sans TC', ui-rounded, system-ui, sans-serif;
+}
+
+html.landing-theme {
+  --ui-color-primary-50: var(--color-brand-50);
+  --ui-color-primary-100: var(--color-brand-100);
+  --ui-color-primary-200: var(--color-brand-200);
+  --ui-color-primary-300: var(--color-brand-300);
+  --ui-color-primary-400: var(--color-brand-400);
+  --ui-color-primary-500: var(--color-brand-500);
+  --ui-color-primary-600: var(--color-brand-600);
+  --ui-color-primary-700: var(--color-brand-700);
+  --ui-color-primary-800: var(--color-brand-800);
+  --ui-color-primary-900: var(--color-brand-900);
+  --ui-color-primary-950: var(--color-brand-950);
+  /* 按鈕底色直接用主色 #90d19b；按鈕文字改墨色，見下方 .bg-primary.text-inverted */
+  --ui-primary: var(--ui-color-primary-300);
+
+  --ui-text-dimmed: #9a91ac;
+  --ui-text-muted: #6b6282;
+  --ui-text-toned: #544a69;
+  --ui-text: #3d3452;
+  --ui-text-highlighted: var(--color-ink);
+  --ui-text-inverted: #fff;
+
+  --ui-bg: var(--color-paper);
+  --ui-bg-muted: #fbf4e8;
+  --ui-bg-elevated: #f6eddf;
+  --ui-bg-accented: #eee3d1;
+  --ui-bg-inverted: var(--color-ink);
+
+  --ui-border: #ebdfcc;
+  --ui-border-muted: #f2e9db;
+  --ui-border-accented: #dccdb6;
+  --ui-border-inverted: var(--color-ink);
+
+  --ui-radius: 0.5rem;
+  --ui-header-height: 4.5rem;
+  --ui-container: 80rem;
+
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.landing-theme {
+    scroll-behavior: auto;
+  }
+}
+
+html.landing-theme .font-display {
+  /* 粉圓只有一個字重，避免瀏覽器合成假粗體 */
+  font-synthesis-weight: none;
+}
+
+/* 主色很淺：實心主色按鈕（UButton solid primary）的字改用墨色，對比 8.4:1 */
+html.landing-theme .bg-primary.text-inverted {
+  color: var(--color-ink);
+}
+
+/* 焦點框統一用深綠，淺色主色當框線在紙色底上看不清楚 */
+html.landing-theme :focus-visible {
+  outline-color: var(--color-brand-800);
+}
+
+html.landing-theme a:focus-visible {
+  outline: 2px solid var(--color-brand-800);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+/* 方格紙底紋 */
+@utility landing-grid-paper {
+  background-image:
+    linear-gradient(to right, var(--grid-line, color-mix(in oklab, var(--color-brand-300) 45%, transparent)) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line, color-mix(in oklab, var(--color-brand-300) 45%, transparent)) 1px, transparent 1px);
+  background-size: 1.75rem 1.75rem;
+}
+
+/* 田字格的十字虛線 */
+@utility landing-tianzige {
+  background-image:
+    repeating-linear-gradient(to bottom, var(--tz-guide, var(--color-brand-200)) 0 4px, transparent 4px 8px),
+    repeating-linear-gradient(to right, var(--tz-guide, var(--color-brand-200)) 0 4px, transparent 4px 8px);
+  background-size:
+    1px 100%,
+    100% 1px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 聯絡簿橫線：每 2rem 一條，文字行高也用 2rem 才會落在線上 */
+@utility landing-ruled {
+  background-image: linear-gradient(to bottom, transparent calc(2rem - 1px), var(--rule-line, var(--color-brand-100)) calc(2rem - 1px));
+  background-size: 100% 2rem;
+}
+
+/* 紙膠帶：斜紋 + 鋸齒邊 */
+@utility landing-tape {
+  background-color: var(--tape, color-mix(in oklab, var(--color-sun-200) 85%, transparent));
+  background-image: repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.35) 0 6px, transparent 6px 12px);
+  clip-path: polygon(0 0, 100% 0, 96% 20%, 100% 40%, 96% 60%, 100% 80%, 96% 100%, 0 100%, 4% 80%, 0 60%, 4% 40%, 0 20%);
+}
+
+/* Hero 唯一的進場動畫：字一個個「寫」進格子，最後蓋上獎勵章。
+   clip-path 用負值 inset 往外留空間，否則動畫結束後會把超出框的聲調、輕聲點裁掉 */
+@keyframes landing-write {
+  from {
+    opacity: 0;
+    clip-path: inset(-50% 100% -50% -50%);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(-50% -50% -50% -50%);
+  }
+}
+
+/* 只動 scale / opacity；印章的傾斜角度由元件的 rotate 決定，兩者不互相覆蓋 */
+@keyframes landing-stamp {
+  0% {
+    opacity: 0;
+    scale: 1.7;
+  }
+  55% {
+    opacity: 1;
+    scale: 0.94;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .landing-anim-write {
+    animation: landing-write 420ms cubic-bezier(0.3, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 85ms + 200ms);
+  }
+
+  .landing-anim-stamp {
+    animation: landing-stamp 520ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+    animation-delay: var(--stamp-delay, 1.5s);
+  }
+}

@@ -14,6 +14,7 @@
 
 - Use **NuxtUI** components (`UButton`, `UTooltip`, `UModal`, etc.) for UI elements. No raw `<button>` tags. Only build custom components when necessary.
 - Icons: use **Iconify** with packages already in package.json — `i-lucide-*`, `i-ri-*`, `i-game-icons-*`, `i-simple-icons-*`.
+- 上述 UI 元素的使用規範只有 SPA APP 工具端適用，Landing Page 或其他非 APP 端的部分可以依需求使用原生 HTML 元素或其他 UI 框架。
 
 ## AI Rules
 
@@ -44,8 +45,18 @@ node -v
 
 ## Validation
 
-1. 此專案還沒上線，所以可自由更改舊的 migration，非必要可不寫新的 migration
-2. 完成後不用執行 pnpm run dev，不用執行 typecheck 或 pnpm test 或 supabase migration 或 supabase test db，那些我會自己做。您只要記得 "提醒我要做" 即可
+- 修改程式碼後執行 `pnpm fix`、`pnpm check`、`pnpm test`、`pnpm generate`、`pnpm test:e2e` 等驗證。
+- 測試頁面行為時，執行相應的 dev 指令（如 `pnpm dev:wiki`、`pnpm dev:app:local`、`pnpm dev:inner`），再用 Playwright 等工具驗證。
+
+## 等待背景執行完
+
+- 當你在等背景驗證跑完(例如 `pnpm generate:*`, `pnpm test:e2e` 等)且當下沒其他事情可做時，不要僅講說「完整驗證正在背景跑」，而是要**列印出下方這隻貓咪**，以便讓使用者知道背景任務仍在進行中：
+
+```text
+  /\_/\
+ ( o.o ) < 還在等待背景執行完畢喵~
+  > ^ <
+```
 
 ## 不要​假設
 

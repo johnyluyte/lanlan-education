@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 export default defineNuxtConfig({
   // 若有要讓 layers 實現 nuxt 的 pages, layouts, middleware 等功能的話，才需要 extends
   // extends: ['./app_20_admin'],
-  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxt/test-utils', '@pinia/nuxt', '@nuxtjs/i18n'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxt/test-utils', '@pinia/nuxt', '@nuxtjs/i18n', '@tresjs/nuxt'],
 
   // 禁用 SSR，並啟用 SPA 模式
   ssr: false,
@@ -48,7 +48,22 @@ export default defineNuxtConfig({
   // 只要搜尋 "#alias-shared" 找到的就一定是 alias
   alias: {
     '#alias-shared': fileURLToPath(new URL('./app_00_shared', import.meta.url)),
+    '#alias-landing': fileURLToPath(new URL('./app_01_landing', import.meta.url)),
     '#alias-sudoku': fileURLToPath(new URL('./app_10_sudoku', import.meta.url)),
+    '#alias-maze': fileURLToPath(new URL('./app_11_maze', import.meta.url)),
+    '#alias-matching-game': fileURLToPath(new URL('./app_12_matching_game', import.meta.url)),
+    '#alias-connect-the-dots': fileURLToPath(new URL('./app_13_connect_the_dots', import.meta.url)),
+    '#alias-3d-box': fileURLToPath(new URL('./app_14_3d_box', import.meta.url)),
+    '#alias-cutting-puzzle': fileURLToPath(new URL('./app_15_cutting_puzzle', import.meta.url)),
+    '#alias-special-child-dot': fileURLToPath(new URL('./app_16_special_child_dot', import.meta.url)),
+    '#alias-imitate-dot': fileURLToPath(new URL('./app_20_imitate_dot', import.meta.url)),
+    '#alias-imitate-line': fileURLToPath(new URL('./app_21_imitate_line', import.meta.url)),
+    '#alias-paper-staging': fileURLToPath(new URL('./app_30_paper_staging', import.meta.url)),
+    '#alias-svg-drawing': fileURLToPath(new URL('./app_31_svg_drawing', import.meta.url)),
+    '#alias-tile-matching': fileURLToPath(new URL('./app_90_tile_matching', import.meta.url)),
+    '#alias-zhuyin-test': fileURLToPath(new URL('./app_91_zhuyin_test', import.meta.url)),
+    '#alias-free-dot-link': fileURLToPath(new URL('./app_92_free_dot_link', import.meta.url)),
+    '#alias-bmi-calculation': fileURLToPath(new URL('./app_93_bmi_calculation', import.meta.url)),
   },
 
   routeRules: {
@@ -58,6 +73,11 @@ export default defineNuxtConfig({
 
     '/print/**': {
       appLayout: 'layout-print',
+    },
+
+    // 登入前的公開 Landing Page（含 /landing 本身）
+    '/landing/**': {
+      appLayout: 'layout-landing',
     },
 
     // 其他所有頁面
@@ -72,12 +92,28 @@ export default defineNuxtConfig({
   // Learn more: https://vite.dev/guide/dep-pre-bundling.html
   vite: {
     optimizeDeps: {
-      include: ['@supabase/supabase-js', '@vueuse/core', 'nanoid', 'sortablejs', 'valibot'],
+      include: [
+        '@supabase/supabase-js',
+        '@tresjs/cientos',
+        '@vueuse/core',
+        'esm-potrace-wasm',
+        'imagetracerjs', // CJS
+        'nanoid',
+        'pinyin-pro',
+        'pinyin-to-zhuyin',
+        'sortablejs',
+        'three',
+        'three/examples/jsm/controls/OrbitControls.js',
+        'valibot',
+      ],
     },
   },
 
   typescript: {
     tsConfig: {
+      // 根目錄 .d.ts 之外，額外把 types/ 底下的 ambient 型別宣告也納入編譯範圍
+      // 路徑要相對於產生出來的 .nuxt/tsconfig.app.json，所以用 "../"
+      include: ['../types/**/*.d.ts'],
       compilerOptions: {
         // "module": "esnext",
         // "moduleResolution": "bundler",
