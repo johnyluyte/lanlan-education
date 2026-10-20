@@ -21,14 +21,12 @@ The `useAnimate` function returns the animation instance and control functions.
   const {
     isSupported,
     animate,
-
     // actions
     play,
     pause,
     reverse,
     finish,
     cancel,
-
     // states
     pending,
     playState,
