@@ -1,0 +1,49 @@
+// oxfmt 的設定（取代原本的 .prettierrc 與 .prettierignore，選項沿用 prettier 的寫法）。
+// oxfmt 預設也會讀 .gitignore，所以 node_modules、.nuxt、.output 等不必在這裡重列。
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "printWidth": 140,
+  "trailingComma": "all",
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "vueIndentScriptAndStyle": true,
+  "singleAttributePerLine": false,
+  // 不排序 package.json 的欄位（prettier 本來就不排）。
+  "sortPackageJson": false,
+  // 取代 prettier-plugin-tailwindcss，排序演算法相同。
+  "sortTailwindcss": {},
+  "ignorePatterns": [
+    ".DS_Store",
+    "node_modules",
+    ".pnpm-store",
+
+    // Nuxt build output
+    ".nuxt",
+    ".output",
+    "dist",
+
+    // Capacitor
+    "android",
+    "ios",
+
+    // Env files
+    ".env",
+    ".env.*",
+    "!.env.example",
+
+    // Logs and coverage
+    "*.log",
+    "coverage",
+
+    // Package manager locks
+    "pnpm-lock.yaml",
+    "package-lock.json",
+    "yarn.lock",
+    "bun.lock",
+  ],
+}
